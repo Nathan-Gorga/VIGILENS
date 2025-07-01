@@ -45,6 +45,16 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
 void freeRingBuffer(struct ring_buffer * buffer);
 
 
+
+
+//TODO : write index increment function
+
+void writeIndexIncrement(struct ring_buffer * buffer);
+
+
+
+///INTERNAL RING BUFFER FUNCTIONS
+
 //TODO : ringbuffer add data (1 float at a time) make sure only internal buffer can get accessed through here
 void addFloatToRingBuffer(struct ring_buffer * buffer, const float data); 
 

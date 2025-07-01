@@ -29,9 +29,39 @@ void freeRingBuffer(struct ring_buffer * buffer){
 }
 
 
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * @brief Increments the write index of a ring buffer.
+ *
+ * @param buffer A pointer to the ring buffer whose write index is to be incremented.
+ *
+ * @details This function increments the write index of the given ring buffer. 
+ *          If the write index reaches the buffer's size, it wraps around to 0.
+ *          This operation is optimized to be faster than using the modulo operation.
+ *          The function assumes that the buffer is not NULL.
+ */
+
+/*******  04366a86-36a0-4a7b-bb87-4de128c62a1b  *******/
+void writeIndexIncrement(struct ring_buffer * buffer){//TESTME
+    assert(buffer != NULL);
+    
+    buffer->write++;
+
+    //this is faster than the modulo operation in our case
+    if(buffer->write == buffer->size) buffer->write = 0;
+}
+
+
+
+//TESTME : make sure this function works for all input parameters
 void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
     
     assert(buffer != NULL);
 
+    assert(buffer->type == INTERNAL_RING_BUFFER);
+
+    buffer->memory[buffer->write] = data;
+
+    //FIXME : needs the write index increment function
 
 }
