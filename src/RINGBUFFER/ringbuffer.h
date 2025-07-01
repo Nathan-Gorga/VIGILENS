@@ -63,7 +63,7 @@ struct ring_buffer{
  * @param size_to_add The amount of data to add.
  *
  * @return true if adding the specified amount of data would overflow the buffer, false otherwise.
- */static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add);
+ */bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add);
 
 
 /**

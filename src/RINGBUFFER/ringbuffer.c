@@ -28,7 +28,7 @@ void freeRingBuffer(struct ring_buffer * buffer){
     free(buffer->memory);
 }
 
-static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){//TESTME : write unit test for this one
+bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
     return (buffer->write + size_to_add) > buffer->size;
 }
 
