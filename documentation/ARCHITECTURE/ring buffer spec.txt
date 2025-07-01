@@ -1,0 +1,28 @@
+obviously, they have a buffer of float in our case of predefined size
+
+now lets see how the internal ring buffer operates : 
+
+add continuously to it bits of data
+
+we need to know where to write also so we need an index
+
+for the internal ring buffer, we only need to get the full buffer back when we signal a possible shift from baseline
+
+now for the event ring buffer 
+
+we add data in chunks via the data intake function
+
+we need a head index to know where to write to the buffer
+
+
+we only read (copy) data using the nodes that point to the buffer so we don’t really need to check for overwrite or what
+
+therefore, the structure for a ring buffer should be 
+
+{
+buffer
+bufferSize,
+writeIndex
+}
+
+the other behaviour will be handled by relevant functions
