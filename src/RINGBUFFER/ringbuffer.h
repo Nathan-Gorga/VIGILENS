@@ -11,9 +11,10 @@ struct ring_buffer{
 };
 
 
-//TODO : ringbuffer init
+//GLOBAL RING BUFFER FUNCTIONS
+struct ring_buffer * initRingBuffer(size_t size);
 
-//TODO : ringbuffer free
+void freeRingBuffer(struct ring_buffer * buffer);
 
 //TODO : ringbuffer add data (need to think if we need two functions for adding just 1 value and adding a full chunk of data or combine both, would tend more towards 2 functions, would be simpler)
 
