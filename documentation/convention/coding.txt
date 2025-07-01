@@ -1,0 +1,13 @@
+== CODING RULES ==
+
+before writing any real code :
+
+    pseudocode the function, 
+
+    write the asserts, 
+
+    see how it is going to interact in its lifetime of development
+
+    document the function
+
+
