@@ -15,3 +15,8 @@ before writing any real code :
 
 RULE 2 
 simple scales, fancy fails
+
+RULE 3
+one C file, one header file
+
+avoid as much as possible to sharing header files, except the globaldefinition.header
