@@ -47,9 +47,16 @@ void freeRingBuffer(struct ring_buffer * buffer);
 
 
 
-//TODO : write index increment function
-
-void writeIndexIncrement(struct ring_buffer * buffer);
+/**
+ * @brief Increments the write index of a ring buffer.
+ *
+ * @param buffer A pointer to the ring buffer whose write index is to be incremented.
+ *
+ * @details This function increments the write index of the given ring buffer. 
+ *          If the write index reaches the buffer's size, it wraps around to 0.
+ *          
+ */
+static void writeIndexIncrement(struct ring_buffer * buffer);
 
 
 

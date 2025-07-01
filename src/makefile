@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra -O2
+CFLAGS = -Wall -Wextra
 
 # Target executable
 TARGET = main

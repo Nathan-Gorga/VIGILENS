@@ -6,7 +6,9 @@
 int main(void){
    
     printf("Hello world\n");
-    
+
+    writeIndexIncrement(NULL);
+
     //TODO : init event ring buffer
 
     //TODO : launch data intake
