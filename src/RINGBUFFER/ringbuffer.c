@@ -17,4 +17,11 @@ struct ring_buffer * initRingBuffer(const size_t size){
 }
 
 
+void freeRingBuffer(struct ring_buffer * buffer){
 
+    if(buffer == NULL) return;
+    free(buffer);
+    
+    if(buffer->memory == NULL) return;
+    free(buffer->memory);
+}
