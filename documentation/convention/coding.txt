@@ -1,5 +1,7 @@
 == CODING RULES ==
 
+
+RULE 1
 before writing any real code :
 
     pseudocode the function, 
@@ -11,3 +13,5 @@ before writing any real code :
     document the function
 
 
+RULE 2 
+simple scales, fancy fails
