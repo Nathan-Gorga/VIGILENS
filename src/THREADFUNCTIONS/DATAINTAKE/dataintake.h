@@ -4,4 +4,11 @@
 #include "../../globaldefinition.h"
 
 
+void * launchDataIntake(void * arg);//TESTME : needs to be tested thoroughly to avoid segfaults
+
+void dataIntake(void);
+
+
+
+
 #endif
