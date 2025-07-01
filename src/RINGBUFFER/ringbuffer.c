@@ -41,8 +41,8 @@ static void writeIndexIncrement(struct ring_buffer * buffer){//TESTME
 
 
 
-//TESTME : make sure this function works for all input parameters
-void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
+
+void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){//TESTME : make sure this function works for all input parameters
     
     assert(buffer != NULL);
 
@@ -51,5 +51,4 @@ void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
     buffer->memory[buffer->write] = data;
 
     writeIndexIncrement(buffer);
-
 }

@@ -5,7 +5,8 @@
 
 enum RING_BUFFER_TYPE{
     INTERNAL_RING_BUFFER,
-    EVENT_RING_BUFFER
+    EVENT_RING_BUFFER,
+    NUM_RING_BUFFER_TYPES
 };
 
 struct ring_buffer{
@@ -28,8 +29,7 @@ struct ring_buffer{
  * @details Allocates memory for a ring buffer structure and initializes its members.
  *          The buffer's memory is allocated using calloc, ensuring all floats are initially zero.
  *          The write index is initialized to 0 and the buffer type is set to the specified type.
- */
-struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type);
+ */struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type);
 
 
 
@@ -41,9 +41,7 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
  *
  * @details This function first checks if the ring buffer is not NULL, and if so, it frees the memory allocated for it.
  *          It then checks if the memory of the ring buffer is not NULL, and if so, it frees that memory as well.
- */
-void freeRingBuffer(struct ring_buffer * buffer);
-
+ */void freeRingBuffer(struct ring_buffer * buffer);
 
 
 
@@ -55,15 +53,22 @@ void freeRingBuffer(struct ring_buffer * buffer);
  * @details This function increments the write index of the given ring buffer. 
  *          If the write index reaches the buffer's size, it wraps around to 0.
  *          
- */
-static void writeIndexIncrement(struct ring_buffer * buffer);
-
+ */static void writeIndexIncrement(struct ring_buffer * buffer);
 
 
 ///INTERNAL RING BUFFER FUNCTIONS
 
-//TODO : ringbuffer add data (1 float at a time) make sure only internal buffer can get accessed through here
-void addFloatToRingBuffer(struct ring_buffer * buffer, const float data); 
+/**
+ * @brief Adds a float to an internal ring buffer.
+ *
+ * @param buffer The ring buffer to add the float to.
+ * @param data The float to add.
+ *
+ * @details This function adds the given float to the internal ring buffer at the current write index. 
+ *          It then increments the write index, wrapping it around to the start of the buffer if necessary.
+ *
+ * @pre buffer is not NULL and buffer's type is INTERNAL_RING_BUFFER.
+ */void addFloatToRingBuffer(struct ring_buffer * buffer, const float data); 
 
 
 //TODO : ringbuffer add data (big buffer) make sure only event buffer can get accessed through here
