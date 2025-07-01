@@ -43,6 +43,60 @@ static void writeIndexIncrement(struct ring_buffer * buffer){//TESTME
 }
 
 
+size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t start, const size_t stop){//TESTME : this function absolutely needs testing
+    
+    assert(buffer != NULL);
+
+    assert(data != NULL);
+
+    assert(start != stop);
+
+    bool overflow = false;
+
+    if(start > stop) overflow = true;
+
+    size_t size;
+
+    if(!overflow) size = stop - start;
+
+    else size = buffer->size - start + stop;
+
+    assert(sizeof(data) >= (size) * sizeof(float));
+
+    if(!overflow){
+
+        for(size_t i = start; i < stop; i ++){//FIXME : switch this with a memcpy
+
+            data[i - start] = buffer->memory[i];
+
+        }
+
+    } else {
+
+        for(size_t i = start; i < buffer->size; i ++){//FIXME : switch this with a memcpy
+
+            data[i - start] = buffer->memory[i];
+
+        }
+
+        const size_t offset = buffer->size - start;
+
+        for(size_t i = 0; i < stop; i ++){//FIXME : switch this with a memcpy
+
+            data[i + offset] = buffer->memory[i];
+
+        }
+    }
+
+    return size;
+}
+
+
+
+
+
+
+
 void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){//TESTME : make sure this function works for all input parameters
     
     assert(buffer != NULL);
@@ -53,6 +107,7 @@ void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){//TESTM
 
     writeIndexIncrement(buffer);
 }
+
 
 
 size_t addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size){//TESTME : this function absolutely needs testing

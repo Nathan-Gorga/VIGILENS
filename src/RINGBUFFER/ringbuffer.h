@@ -65,6 +65,17 @@ struct ring_buffer{
  * @return true if adding the specified amount of data would overflow the buffer, false otherwise.
  */static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add);
 
+
+
+
+
+
+
+size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t start, const size_t stop);
+
+
+
+
 ///INTERNAL RING BUFFER FUNCTIONS
 
 /**
@@ -78,13 +89,26 @@ struct ring_buffer{
  *
  * @pre buffer is not NULL and buffer's type is INTERNAL_RING_BUFFER.
  */void addFloatToRingBuffer(struct ring_buffer * buffer, const float data); 
+ 
+ 
 
 
-//TODO : ringbuffer add data (big buffer) make sure only event buffer can get accessed through here
+///EVENT RING BUFFER
 
-size_t addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size);
+/**
+ * @brief Adds a buffer of floats to an event ring buffer.
+ *
+ * @param buffer The event ring buffer to add the buffer to.
+ * @param data The buffer of floats to add.
+ * @param size The size of the buffer to add.
+ *
+ * @return The new write index of the ring buffer.
+ *
+ * @details This function adds a buffer of floats to the event ring buffer.
+ * 
+ * @pre buffer is not NULL and buffer's type is EVENT_RING_BUFFER.
+ */size_t addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size);
 
-//TODO : ringbuffer get full buffer (for internal ring buffer operation)
 
 
 #endif
