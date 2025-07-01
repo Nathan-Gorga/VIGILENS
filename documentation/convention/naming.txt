@@ -1,0 +1,39 @@
+FOR MACROS :   
+
+all caps, words separated by _
+
+example : 
+    #define MACROS
+
+FOR VARIABLES : 
+
+all lower case, words separated by _
+
+example :
+    const int this_is_my_var;
+
+FOR FUNCTIONS : 
+
+camelCase
+
+example : 
+
+    void thisIsAFunction()
+
+FOR FILES :
+
+all lowercase, no separator
+
+example : 
+
+    thisisafile.c
+
+FOR FOLDERS : 
+
+all caps, no separator 
+
+example : 
+
+    THISISAFOLDER
+
+    
