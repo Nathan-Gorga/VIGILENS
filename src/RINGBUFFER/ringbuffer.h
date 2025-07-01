@@ -25,6 +25,14 @@ struct ring_buffer{
  */
 struct ring_buffer * initRingBuffer(const size_t size);
 
+/**
+ * @brief Frees the memory of a ring buffer.
+ *
+ * @param buffer The ring buffer to be freed.
+ *
+ * @details This function first checks if the ring buffer is not NULL, and if so, it frees the memory allocated for it.
+ *          It then checks if the memory of the ring buffer is not NULL, and if so, it frees that memory as well.
+ */
 void freeRingBuffer(struct ring_buffer * buffer);
 
 //TODO : ringbuffer add data (need to think if we need two functions for adding just 1 value and adding a full chunk of data or combine both, would tend more towards 2 functions, would be simpler)
