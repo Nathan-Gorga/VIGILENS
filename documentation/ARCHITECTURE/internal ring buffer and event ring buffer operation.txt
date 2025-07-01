@@ -1,0 +1,22 @@
+data intake receive data from data source (it is coming in byte per byte, allow for the size to change depending on the communication protocol)
+
+have the ring buffer big enough to contain at least two possible events 
+
+when we detect a shift from baseline, we mark the index minus a few milliseconds, continue taking in data in the internal ring buffer
+once a full revolution has been completed of the internal ring buffer, and if we have marked a potential shift from baseline, we analyse the entire buffer
+
+here are the possible outcomes of such an activity
+
+false positive, we only consider an event is an event if it has a minimum length, therefore we ignore the empty buffer and keep going
+
+there is one event  in the ring buffer, we mark the start and end of the event, add it to the event buffer and create a node that points to it, adding it to the list
+
+there is more than one event in the ring buffer, we separate them one by one and add them just as before to the event ring buffer
+
+what if there is an overwrite in the ring buffer of an event
+
+not possible, the ring buffer will be long enough as to contain multiple possible events
+
+once we detect a possible shift from baseline, we save the index a few places back, do a full turn while recording the data and analyse the full buffer
+
+note : the ring buffer cannot be TOO big as it would take too much time to analyse its entirety after a possible shift from baseline, therefore 2 seconds or even 1 seconds of data may be just what is needed for optimal recording
