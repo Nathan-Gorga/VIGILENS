@@ -3,15 +3,13 @@
 
 #include "../globaldefinition.h"
 
-
 struct ring_buffer{
     float * memory;
     size_t size;
     size_t write;
 };
 
-
-//GLOBAL RING BUFFER FUNCTIONS
+///GLOBAL RING BUFFER FUNCTIONS
 
 /**
  * @brief Initializes a ring buffer of floats with a given size.
@@ -25,6 +23,9 @@ struct ring_buffer{
  */
 struct ring_buffer * initRingBuffer(const size_t size);
 
+
+
+
 /**
  * @brief Frees the memory of a ring buffer.
  *
@@ -34,6 +35,8 @@ struct ring_buffer * initRingBuffer(const size_t size);
  *          It then checks if the memory of the ring buffer is not NULL, and if so, it frees that memory as well.
  */
 void freeRingBuffer(struct ring_buffer * buffer);
+
+
 
 //TODO : ringbuffer add data (need to think if we need two functions for adding just 1 value and adding a full chunk of data or combine both, would tend more towards 2 functions, would be simpler)
 
