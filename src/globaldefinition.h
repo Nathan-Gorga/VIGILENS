@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <assert.h>
+#include <stdbool.h>
 
 #endif
 

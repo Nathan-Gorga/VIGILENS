@@ -56,6 +56,15 @@ struct ring_buffer{
  */static void writeIndexIncrement(struct ring_buffer * buffer);
 
 
+/**
+ * @brief Checks if adding a specified amount of data to a ring buffer would overflow it.
+ *
+ * @param buffer The ring buffer to check.
+ * @param size_to_add The amount of data to add.
+ *
+ * @return true if adding the specified amount of data would overflow the buffer, false otherwise.
+ */static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add);
+
 ///INTERNAL RING BUFFER FUNCTIONS
 
 /**
@@ -72,6 +81,8 @@ struct ring_buffer{
 
 
 //TODO : ringbuffer add data (big buffer) make sure only event buffer can get accessed through here
+
+size_t addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size);
 
 //TODO : ringbuffer get full buffer (for internal ring buffer operation)
 
