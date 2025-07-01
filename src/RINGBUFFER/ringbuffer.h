@@ -3,7 +3,13 @@
 
 #include "../globaldefinition.h"
 
-//TODO : ringbuffer struct
+
+struct ring_buffer{
+    float * memory;
+    size_t size;
+    size_t write;
+};
+
 
 //TODO : ringbuffer init
 
