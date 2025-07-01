@@ -12,14 +12,13 @@ struct ring_buffer{
 
 
 //GLOBAL RING BUFFER FUNCTIONS
-struct ring_buffer * initRingBuffer(size_t size);
+struct ring_buffer * initRingBuffer(const size_t size);
 
 void freeRingBuffer(struct ring_buffer * buffer);
 
 //TODO : ringbuffer add data (need to think if we need two functions for adding just 1 value and adding a full chunk of data or combine both, would tend more towards 2 functions, would be simpler)
 
 //TODO : ringbuffer get full buffer (for internal ring buffer operation)
-
 
 
 #endif

@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -O2
 TARGET = main
 
 # Source files
-SRCS = main.c THREADFUNCTIONS/DATAINTAKE/dataintake.c
+SRCS = main.c THREADFUNCTIONS/DATAINTAKE/dataintake.c RINGBUFFER/ringbuffer.c
 OBJS = $(SRCS:.c=.o)
 
 # Default rule
