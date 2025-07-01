@@ -3,25 +3,33 @@
 
 #include "../globaldefinition.h"
 
+enum RING_BUFFER_TYPE{
+    INTERNAL_RING_BUFFER,
+    EVENT_RING_BUFFER
+};
+
 struct ring_buffer{
     float * memory;
     size_t size;
     size_t write;
+    enum RING_BUFFER_TYPE type;  
 };
 
 ///GLOBAL RING BUFFER FUNCTIONS
 
 /**
- * @brief Initializes a ring buffer of floats with a given size.
+ * @brief Initializes a ring buffer of floats with a specified size and type.
  *
- * @param size The size of the buffer in floats.
+ * @param size The number of floats the buffer should hold.
+ * @param type The type of ring buffer, either INTERNAL_RING_BUFFER or EVENT_RING_BUFFER.
  *
- * @return A pointer to the newly allocated ring buffer, or NULL if size is less than or equal to 0.
+ * @return A pointer to the newly created ring buffer, or NULL if the specified size is 0.
  *
- * @details The buffer is allocated with malloc, and the memory is initialized with calloc.
- *          The write index is set to 0.
+ * @details Allocates memory for a ring buffer structure and initializes its members.
+ *          The buffer's memory is allocated using calloc, ensuring all floats are initially zero.
+ *          The write index is initialized to 0 and the buffer type is set to the specified type.
  */
-struct ring_buffer * initRingBuffer(const size_t size);
+struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type);
 
 
 
@@ -37,8 +45,11 @@ struct ring_buffer * initRingBuffer(const size_t size);
 void freeRingBuffer(struct ring_buffer * buffer);
 
 
+//TODO : ringbuffer add data (1 float at a time) make sure only internal buffer can get accessed through here
+void addFloatToRingBuffer(struct ring_buffer * buffer, const float data); 
 
-//TODO : ringbuffer add data (need to think if we need two functions for adding just 1 value and adding a full chunk of data or combine both, would tend more towards 2 functions, would be simpler)
+
+//TODO : ringbuffer add data (big buffer) make sure only event buffer can get accessed through here
 
 //TODO : ringbuffer get full buffer (for internal ring buffer operation)
 

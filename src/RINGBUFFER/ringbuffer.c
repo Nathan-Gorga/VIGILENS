@@ -1,7 +1,7 @@
 #include "ringbuffer.h"
 
 
-struct ring_buffer * initRingBuffer(const size_t size){
+struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){
     
     if(size == 0) return NULL; //size cannot be negative (size_t is unsigned)
 
@@ -13,9 +13,10 @@ struct ring_buffer * initRingBuffer(const size_t size){
 
     buffer->write = 0;
 
+    buffer->type = type;
+
     return buffer;
 }
-
 
 
 void freeRingBuffer(struct ring_buffer * buffer){
@@ -25,4 +26,12 @@ void freeRingBuffer(struct ring_buffer * buffer){
     
     if(buffer->memory == NULL) return;
     free(buffer->memory);
+}
+
+
+void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
+    
+    assert(buffer != NULL);
+
+
 }
