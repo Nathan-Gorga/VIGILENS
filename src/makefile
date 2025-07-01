@@ -6,7 +6,10 @@ CFLAGS = -Wall -Wextra -O2
 TARGET = main
 
 # Source files
-SRCS = main.c THREADFUNCTIONS/DATAINTAKE/dataintake.c RINGBUFFER/ringbuffer.c
+SRCS = main.c \
+	RINGBUFFER/ringbuffer.c \
+	THREADFUNCTIONS/DATAINTAKE/dataintake.c
+	
 OBJS = $(SRCS:.c=.o)
 
 # Default rule
@@ -16,7 +19,7 @@ all: $(TARGET)
 
 # Linking the final binary
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -lpthread -o $@ $^
 
 # Compiling .c to .o
 %.o: %.c %.h
