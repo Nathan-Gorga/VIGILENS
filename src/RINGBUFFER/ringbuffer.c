@@ -43,6 +43,7 @@ static void writeIndexIncrement(struct ring_buffer * buffer){//TESTME
 }
 
 
+
 size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t start, const size_t stop){//TESTME : this function absolutely needs testing
     
     assert(buffer != NULL);
@@ -90,9 +91,6 @@ size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, co
 
     return size;
 }
-
-
-
 
 
 

@@ -66,12 +66,22 @@ struct ring_buffer{
  */static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add);
 
 
-
-
-
-
-
-size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t start, const size_t stop);
+/**
+ * @brief Extracts a portion of data from a ring buffer into a separate buffer.
+ *
+ * @param buffer The ring buffer to extract data from.
+ * @param data The destination buffer where the extracted data will be stored.
+ * @param start The starting index in the ring buffer to begin extraction.
+ * @param stop The stopping index in the ring buffer to end extraction.
+ *
+ * @return The size of the data buffer.
+ *
+ * @details This function extracts data from a ring buffer between the specified
+ *          start and stop indices and stores it in the provided data buffer.
+ *          It handles wrapping around the ring buffer if necessary.
+ *
+ * @pre buffer is not NULL, data is not NULL, and start is not equal to stop.
+ */size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t start, const size_t stop);
 
 
 
