@@ -28,16 +28,16 @@ void freeRingBuffer(struct ring_buffer * buffer){
     free(buffer->memory);
 
     freebuffer:
-    
+
     free(buffer);
 }
 
-bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
+static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
     return (buffer->write + size_to_add) > buffer->size;
 }
 
 
-static void writeIndexIncrement(struct ring_buffer * buffer){//TESTME
+static void writeIndexIncrement(struct ring_buffer * buffer){
     assert(buffer != NULL);
     
     buffer->write++;

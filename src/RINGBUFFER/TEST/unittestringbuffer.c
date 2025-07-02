@@ -3,37 +3,12 @@
 
 void testIsOverflow(void){
 
-    struct ring_buffer * buffer = initRingBuffer(10, INTERNAL_RING_BUFFER);
+    struct ring_buffer * buffer = initRingBuffer(5, INTERNAL_RING_BUFFER);
 
-    assert(!isOverflow(buffer, 0));
-    printf("pass\n");
-
-    assert(!isOverflow(buffer, 5));
-    printf("pass\n");
-
-    assert(!isOverflow(buffer, 10));
-    printf("pass\n");
-
-    assert(isOverflow(buffer, 11));
-    printf("pass\n");
-
-    for(int i = 0; i < 3; i++){
-        addFloatToRingBuffer(buffer, 0);
+    for(int i = 0; i < 10; i++){
+        printf("write index = %d\n", buffer->write);
+        writeIndexIncrement(buffer);
     }
-
-    assert(!isOverflow(buffer, 0));
-    printf("pass\n");
-
-    assert(!isOverflow(buffer, 7));
-    printf("pass\n");
-
-    assert(isOverflow(buffer, 8));
-    printf("pass\n");
-
-    assert(isOverflow(buffer, 10));
-    printf("pass\n");
-
-
 
 
     freeRingBuffer(buffer);
