@@ -52,7 +52,20 @@ struct ring_buffer{
  * @details This function increments the write index of the given ring buffer. 
  *          If the write index reaches the buffer's size, it wraps around to 0.
  *          
- */static inline void writeIndexIncrement(struct ring_buffer * buffer);
+ */static inline void _writeIndexIncrement(struct ring_buffer * buffer);
+
+
+
+ /**
+ * @brief Increments the write index of a ring buffer.
+ *
+ * @param buffer A pointer to the ring buffer whose write index is to be incremented.
+ *
+ * @details This function increments the write index of the given ring buffer. 
+ *          Safe for multithreading.
+ *
+ * @pre buffer is not NULL.
+ */static void writeIndexIncrement(struct ring_buffer * buffer);
 
 
 /**

@@ -44,7 +44,8 @@ static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
 }
 
 
-static inline void writeIndexIncrement(struct ring_buffer * buffer){//FIXME : access this function using a wrapper with the same mutex as thos in eventdatastructure.c
+
+static inline void _writeIndexIncrement(struct ring_buffer * buffer){
     assert(buffer != NULL);
     
     buffer->write++;
@@ -53,6 +54,19 @@ static inline void writeIndexIncrement(struct ring_buffer * buffer){//FIXME : ac
     if(buffer->write == buffer->size) buffer->write = 0;
 }
 
+
+static void writeIndexIncrement(struct ring_buffer * buffer){//TESTME
+
+    if(buffer->type == EVENT_RING_BUFFER){
+
+        //TODO : lock event ring buffer
+
+        _writeIndexIncrement(buffer);
+
+        //TODO : unlock event ring buffer
+
+    } else _writeIndexIncrement(buffer);
+}
 
 
 
@@ -126,7 +140,7 @@ void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
 
     assert(buffer->type == INTERNAL_RING_BUFFER);
 
-    buffer->memory[buffer->write] = data;
+    buffer->memory[buffer->write] = data;// don't need getIndex since it is internal
 
     writeIndexIncrement(buffer);
 }

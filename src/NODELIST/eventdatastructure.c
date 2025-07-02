@@ -140,13 +140,12 @@ static void _addEvent(const float * data, const size_t size_data){//TESTME
 
     assert(head != NULL);
 
-    const size_t writeIndex = getWriteIndex();
     
-    const size_t start = writeIndex;
+    const size_t start = event_ring_buffer->write;
 
     addBufferToRingBuffer(event_ring_buffer,data, size_data);
 
-    const test_stop = writeIndex - 1;
+    const test_stop = event_ring_buffer->write - 1;
 
     const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
 
@@ -155,18 +154,54 @@ static void _addEvent(const float * data, const size_t size_data){//TESTME
     addNodeToList(n);
 }
 
-static inline size_t _getWriteIndex(void){
-    return event_ring_buffer->write;
+
+void initEventDatastructure(const size_t size_buffer){
+
+    assert(size_buffer > 0);
+
+    initEventRingBuffer(size_buffer);
+
+    initList();
 }
 
-size_t getWriteIndex(void){
-    //FIXME : lock
 
-    const size_t ret = _getWriteIndex();
-    //FIXME : unlock
-    return ret;
+void freeEventDatastructure(void){
+
+    freeEventRingBuffer();
+
+    freeList();
 }
 
 
+void addNodeToList(node * n){
+    //TODO : lock head
+    _addNodeToList(n);
+    //TODO : unlock head
+}
 
 
+void popNodeFromList(void){
+    //TODO : lock head
+    _popNodeFromList();
+    //TODO : unlock head
+}
+
+size_t getEvent(float * data){
+    //TODO : lock head
+    //TODO : lock event ring buffer
+
+    const size_t size = _getEvent(data);
+    //TODO : unlock event ring buffer
+    //TODO : unlock head
+
+    return size;
+}
+
+void addEvent(const float * data, const size_t size_data){
+
+    //TODO : lock head
+    //TODO : lock event ring buffer
+    _addEvent(data, size_data);
+    //TODO : unlock event ring buffer
+    //TODO : unlock head
+}
