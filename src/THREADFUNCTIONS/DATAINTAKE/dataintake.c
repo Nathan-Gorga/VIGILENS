@@ -3,7 +3,7 @@
 
 
 
-void cleanupDataIntake(void * arg){//BUG : this gets called randomly on cancel it seems
+static void cleanupHandler(void * arg){//BUG : this gets called randomly on cancel it seems
     
     (void)printf("Cancel signal received\n");    
 
@@ -25,7 +25,7 @@ void * launchDataIntake(void * arg){
 
 
 static void dataIntake(void){
-    pthread_cleanup_push(cleanupDataIntake, NULL);
+    pthread_cleanup_push(cleanupHandler, NULL);
 
     (void)printf("Thread launched succesfully\n");
 

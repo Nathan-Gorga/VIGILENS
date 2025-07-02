@@ -1,6 +1,6 @@
 #include "dataprocessing.h"
 
-void cleanupDataProcessing(void * arg){
+static void cleanupHandler(void * arg){
     
     (void)printf("Cancel signal received\n");    
 
@@ -21,7 +21,7 @@ void * launchDataProcessing(void * arg){
 }
 
 static void dataProcessing(void){
-    pthread_cleanup_push(cleanupDataProcessing, NULL);
+    pthread_cleanup_push(cleanupHandler, NULL);
 
     (void)printf("Thread launched succesfully\n");
 
