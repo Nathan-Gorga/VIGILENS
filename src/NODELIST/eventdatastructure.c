@@ -1,6 +1,6 @@
 #include "eventdatastructure.h"
 
-static node * initNode(const size_t start, const size_t stop){
+static node * initNode(const size_t start, const size_t stop){//TESTME
 
     node * n = (node *)malloc(sizeof(node));
 
@@ -15,7 +15,7 @@ static node * initNode(const size_t start, const size_t stop){
     return n;
 }
 
-static void freeNode(node * n){
+static void freeNode(node * n){//TESTME
     
     assert(n != NULL);
 
@@ -23,7 +23,7 @@ static void freeNode(node * n){
 }
 
 
-static void initList(void){
+static void initList(void){//TESTME
 
     head = (head_node *)malloc(sizeof(head_node));
 
@@ -33,7 +33,7 @@ static void initList(void){
 }
 
 
-static void freeList(void){
+static void freeList(void){//TESTME
 
     assert(head != NULL);
 
@@ -51,7 +51,7 @@ static void freeList(void){
     free(head);
 }
 
-static void initEventRingBuffer(const size_t size_buffer){
+static void initEventRingBuffer(const size_t size_buffer){//TESTME
 
     assert(size_buffer > 0);
 
@@ -62,7 +62,7 @@ static void initEventRingBuffer(const size_t size_buffer){
 }
 
 
-static void freeEventRingBuffer(void){
+static void freeEventRingBuffer(void){//TESTME
 
     assert(event_ring_buffer != NULL);
 
@@ -70,7 +70,7 @@ static void freeEventRingBuffer(void){
 }
 
 
-static void _addNodeToList(node * n){
+static void _addNodeToList(node * n){//TESTME
 
     assert(head != NULL);
 
@@ -92,7 +92,7 @@ static void _addNodeToList(node * n){
 }
 
 
-static void _popNodeFromList(void){
+static void _popNodeFromList(void){//TESTME
 
     assert(head != NULL);
 
@@ -104,3 +104,33 @@ static void _popNodeFromList(void){
 
     freeNode(curr);
 }
+
+//TODO : add in function comment : it is your responsability to free the data buffer
+static size_t _getEventFromList(float * data){//TESTME
+
+    assert(head != NULL);
+
+    if(head->next == NULL) return 0; // list is empty
+
+    node * event = head->next;//TODO : make a mutex function to get elements from head
+
+    const size_t start = event->start;
+
+    const size_t stop = event->stop;
+
+    const size_t size = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);
+
+    data = (float *)calloc(size, sizeof(float));
+
+    if(data == NULL) return -1; //something went wrong
+
+    extractBufferFromRingBuffer(event_ring_buffer, data, size, start, stop);
+
+    popNodeFromList();
+
+    return size;
+}
+
+
+static _addEventToEventRingBuffer(const float * data, const size_t size_data);
+
