@@ -51,7 +51,7 @@ static void freeList(void){
     free(head);
 }
 
-static void initEventRingBuffer(const size_t size_buffer){//TESTME
+static void initEventRingBuffer(const size_t size_buffer){
 
     assert(size_buffer > 0);
 
@@ -62,7 +62,7 @@ static void initEventRingBuffer(const size_t size_buffer){//TESTME
 }
 
 
-static void freeEventRingBuffer(void){//TESTME
+static void freeEventRingBuffer(void){
 
     assert(event_ring_buffer != NULL);
 
@@ -210,9 +210,12 @@ void addEvent(const float * data, const size_t size_data){
 
 
 void test(void){
-    initList();
+    initEventRingBuffer(10);
 
-    printf("head : %p, next : %p\n", head, head->next);
+    printf("%d\n", event_ring_buffer->type);
+    printf("%d\n", event_ring_buffer->size);
+    printf("%d\n", event_ring_buffer->write);
 
-    freeList();
+
+    freeEventRingBuffer();
 }
