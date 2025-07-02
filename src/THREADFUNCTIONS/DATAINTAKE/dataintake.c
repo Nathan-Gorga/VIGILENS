@@ -5,9 +5,13 @@
 
 void cleanupDataIntake(void * arg){//BUG : this gets called randomly on cancel it seems
     
-    (void)write(STDOUT_FILENO, "Cancel signal received\nCleaned up DATA INTAKE thread\n", 53);    
-    
+    (void)printf("Cancel signal received\n");    
+
+
     //TODO : implement
+
+
+    (void)printf("Cleaned up thread\n");    
    
 }
 
