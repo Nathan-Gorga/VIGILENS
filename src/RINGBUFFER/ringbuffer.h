@@ -80,7 +80,7 @@ struct ring_buffer{
  *
  * @pre buffer is not NULL, data is not NULL, and size_data is equal to the size of the data
  *      that should be extracted.
- */void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop);//TESTME : this function absolutely needs testing
+ */void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop);
 
 
 
