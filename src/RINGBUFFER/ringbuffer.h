@@ -84,7 +84,20 @@ struct ring_buffer{
 
 
 
-size_t sizeBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop);
+/**
+ * @brief Calculates the number of elements between two indices in a circular buffer.
+ *
+ * @param buffer_size The total size of the buffer.
+ * @param start The starting index in the buffer.
+ * @param stop The stopping index in the buffer.
+ *
+ * @return The number of elements between the start and stop indices, inclusive.
+ *
+ * @details This function computes the number of elements between two indices in a ring buffer.
+ *
+ * @pre buffer_size must be greater than 0, and start and stop must be valid indices
+ *      within the buffer size.
+ */size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop);
 
 
 

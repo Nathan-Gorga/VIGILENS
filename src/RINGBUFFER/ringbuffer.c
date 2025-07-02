@@ -48,7 +48,8 @@ static inline void writeIndexIncrement(struct ring_buffer * buffer){
 
 
 
-size_t sizeBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){
+
+size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){
     assert(buffer_size > 0);
 
     assert(start >= 0 && stop >= 0);
