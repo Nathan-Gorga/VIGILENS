@@ -134,7 +134,11 @@ static size_t _getEvent(float ** data){
 
     if(*data == NULL) return -1; //something went wrong
 
-    extractBufferFromRingBuffer(event_ring_buffer, *data, size, start, stop);
+    pthread_mutex_lock(&event_ring_buffer_mutex);//TODO : make these mutexes more "portable" (in function or wrapper function)
+
+        extractBufferFromRingBuffer(event_ring_buffer, *data, size, start, stop);
+
+    pthread_mutex_unlock(&event_ring_buffer_mutex);
 
     popNodeFromList();
 
@@ -150,15 +154,18 @@ static void _addEvent(const float * data, const size_t size_data){
 
     assert(head != NULL);
 
+    pthread_mutex_lock(&event_ring_buffer_mutex);//TODO : make these mutexes more "portable" (in function or wrapper function)
     
-    const size_t start = event_ring_buffer->write;
+        const size_t start = event_ring_buffer->write;
+        
+        addBufferToRingBuffer(event_ring_buffer,data, size_data);
 
-    addBufferToRingBuffer(event_ring_buffer,data, size_data);
+        const size_t test_stop = event_ring_buffer->write - 1;
+        
+        const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
 
-    const size_t test_stop = event_ring_buffer->write - 1;
-
-    const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
-
+    pthread_mutex_unlock(&event_ring_buffer_mutex);
+    
     node * n = initNode(start, stop);
 
     addNodeToList(n);
@@ -184,39 +191,46 @@ void freeEventDatastructure(void){
 
 
 void addNodeToList(node * n){
-    //TODO : lock head
-    _addNodeToList(n);
-    //TODO : unlock head
+    
+    pthread_mutex_lock(&head_mutex);
+
+        _addNodeToList(n);
+
+    pthread_mutex_unlock(&head_mutex);
+    
 }
 
 
 void popNodeFromList(void){
-    //TODO : lock head
-    _popNodeFromList();
-    //TODO : unlock head
+    
+    pthread_mutex_lock(&head_mutex);
+    
+        _popNodeFromList();
+
+    pthread_mutex_unlock(&head_mutex);
 }
 
 
 
 size_t getEvent(float ** data){
-    //TODO : lock head
-    //TODO : lock event ring buffer
+    
+    pthread_mutex_lock(&head_mutex);
 
-    const size_t size = _getEvent(data);
-    //TODO : unlock event ring buffer
-    //TODO : unlock head
+        const size_t size = _getEvent(data);
 
+    pthread_mutex_unlock(&head_mutex);
+    
     return size;
 }
 
 
 void addEvent(const float * data, const size_t size_data){
 
-    //TODO : lock head
-    //TODO : lock event ring buffer
-    _addEvent(data, size_data);
-    //TODO : unlock event ring buffer
-    //TODO : unlock head
+    pthread_mutex_lock(&head_mutex);
+    
+        _addEvent(data, size_data);
+    
+    pthread_mutex_unlock(&head_mutex);
 }
 
 int createMutexes(void){
