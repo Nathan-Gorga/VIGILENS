@@ -1,6 +1,6 @@
 #include "dataprocessing.h"
 
-void cleanupDataProcessing(void * arg){
+void cleanupDataProcessing(void * arg){//BUG : this gets called randomly on cancel it seems
     
     (void)write(STDOUT_FILENO, "Cancel signal received\nCleaned up DATA PROCESSING thread\n", 57);    
 

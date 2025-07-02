@@ -29,15 +29,16 @@ int main(void){
         (void)printf("Error creating data processing thread\n"); goto end;
     }
     
-
-    //TODO : wait for ready signal from data intake
-    
     
     while(!keyboard_interrupt);
-
-    printf("Canceling slave threads\n");
+    
+    printf("Cancelling slave threads\n");
+    
     pthread_cancel(data_intake_thread);
     pthread_cancel(data_processing_thread);
+
+    pthread_join(data_intake_thread, NULL);
+    pthread_join(data_processing_thread, NULL);
 
 end:
     freeEventDatastructure();

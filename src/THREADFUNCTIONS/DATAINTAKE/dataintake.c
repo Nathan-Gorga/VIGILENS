@@ -1,10 +1,12 @@
 #include "dataintake.h"
 
 
-void cleanupDataIntake(void * arg){
+
+
+void cleanupDataIntake(void * arg){//BUG : this gets called randomly on cancel it seems
     
     (void)write(STDOUT_FILENO, "Cancel signal received\nCleaned up DATA INTAKE thread\n", 53);    
-
+    
     //TODO : implement
    
 }
@@ -25,7 +27,8 @@ static void dataIntake(void){
 
 
     while(1){
-        
+
+                
         pthread_testcancel();
     }
 
