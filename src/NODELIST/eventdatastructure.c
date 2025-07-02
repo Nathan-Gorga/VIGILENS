@@ -34,3 +34,29 @@ static head_node * initList(void){
     return head;
 
 }
+
+
+static void freeList(head_node * head){
+
+    assert(head != NULL);
+
+    node * curr = head->next;
+
+    while(curr != NULL){
+
+        node * next = curr->next;
+
+        freeNode(curr);
+
+        curr = next;
+    }
+
+    free(head);
+}
+
+static void initEventRingBuffer(const size_t size_buffer){
+
+    assert(size_buffer > 0);
+
+    event_ring_buffer = initRingBuffer(size_buffer, EVENT_RING_BUFFER);
+}

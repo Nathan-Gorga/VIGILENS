@@ -2,8 +2,9 @@
 #define NODELIST_H
 
 #include "../globaldefinition.h"
+#include "../RINGBUFFER/ringbuffer.h"
 
-static struct ring_buffer event_ring_buffer;
+static struct ring_buffer * event_ring_buffer;
 
 typedef struct node{
     struct node * next;
@@ -22,7 +23,7 @@ static node * initNode(const size_t start, const size_t stop);
 
 static void freeNode(node * n);
 
-static head_node * initList(void);//returns head of list
+static head_node * initList(void);
 
 static void freeList(head_node * head);
 

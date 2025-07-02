@@ -7,7 +7,14 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
 
     struct ring_buffer * buffer = (struct ring_buffer *)malloc(sizeof(struct ring_buffer));
 
+    if(buffer == NULL) return NULL;
+
     buffer->memory = (float*)calloc(size, sizeof(float));
+
+    if(buffer->memory == NULL) {
+        free(buffer);
+        return NULL;
+    }
 
     buffer->size = size;
 
