@@ -122,7 +122,7 @@ static size_t _getEvent(float ** data){
     
     if(head->next == NULL) return 0; // list is empty
 
-    node * event = head->next;//TODO : make a mutex function to get elements from head
+    node * event = head->next;
 
     const size_t start = event->start;
 
@@ -238,6 +238,8 @@ int createMutexes(void){
     if(pthread_mutex_init(&head_mutex, NULL) == -1) return -1;
 
     if(pthread_mutex_init(&event_ring_buffer_mutex, NULL) == -1) return -1;
+
+    if(pthread_mutex_init(&write_index_mutex, NULL) == -1) return -1;
     
     return 0;
 }
@@ -247,6 +249,8 @@ int destroyMutexes(void){
     if(pthread_mutex_destroy(&head_mutex) == -1) return -1;
 
     if(pthread_mutex_destroy(&event_ring_buffer_mutex) == -1) return -1;
+
+    if(pthread_mutex_destroy(&write_index_mutex) == -1) return -1;
     
     return 0;
 }

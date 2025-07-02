@@ -2,6 +2,7 @@
 #define RINGBUFFER_H
 
 #include "../globaldefinition.h"
+#include "../EVENTDATASTRUCTURES/eventdatastructure.h"
 
 enum RING_BUFFER_TYPE{
     INTERNAL_RING_BUFFER,

@@ -59,11 +59,12 @@ static void writeIndexIncrement(struct ring_buffer * buffer){//TESTME
 
     if(buffer->type == EVENT_RING_BUFFER){
 
-        //TODO : lock event ring buffer
+        pthread_mutex_lock(&write_index_mutex);
 
-        _writeIndexIncrement(buffer);
+            _writeIndexIncrement(buffer);
 
-        //TODO : unlock event ring buffer
+        pthread_mutex_unlock(&write_index_mutex);
+        
 
     } else _writeIndexIncrement(buffer);
 }
@@ -140,7 +141,7 @@ void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
 
     assert(buffer->type == INTERNAL_RING_BUFFER);
 
-    buffer->memory[buffer->write] = data;// don't need getIndex since it is internal
+    buffer->memory[buffer->write] = data;// no need for mutex (internal)
 
     writeIndexIncrement(buffer);
 }
