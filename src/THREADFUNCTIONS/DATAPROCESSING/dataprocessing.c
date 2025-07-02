@@ -25,10 +25,15 @@ static void dataProcessing(void){
 
     (void)printf("Thread launched succesfully\n");
 
-
+    float ** eventBuffer;
     while(1){
         
-        pthread_testcancel();
+        if(getEvent(eventBuffer) > 0){//there is an event
+
+            //TODO : implement
+
+            free(eventBuffer);
+        }
     }
 
 
