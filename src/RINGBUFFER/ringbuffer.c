@@ -55,11 +55,11 @@ static inline void _writeIndexIncrement(struct ring_buffer * buffer){
 }
 
 
-static void writeIndexIncrement(struct ring_buffer * buffer){//TESTME
+static void writeIndexIncrement(struct ring_buffer * buffer){
 
     if(buffer->type == EVENT_RING_BUFFER){
 
-        //TESTME
+        
         pthread_mutex_lock(&write_index_mutex);
 
             _writeIndexIncrement(buffer);

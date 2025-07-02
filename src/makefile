@@ -3,7 +3,7 @@ CC = clang
 CFLAGS = -Wall -Wextra
 
 # Target executable
-TARGET = main
+TARGET = VIGILENCE
 
 # Source files
 SRCS = main.c \

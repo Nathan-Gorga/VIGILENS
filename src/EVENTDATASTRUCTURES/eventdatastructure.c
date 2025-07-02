@@ -140,7 +140,7 @@ static size_t _getEvent(float ** data){
 
     if(*data == NULL) return -1; //something went wrong
 
-    //TESTME
+    
     pthread_mutex_lock(&event_ring_buffer_mutex);//TODO : make these mutexes more "portable" (in function or wrapper function)
 
         extractBufferFromRingBuffer(event_ring_buffer, *data, size, start, stop);
@@ -161,7 +161,7 @@ static void _addEvent(const float * data, const size_t size_data){
 
     assert(head != NULL);
 
-    //TESTME
+    
     pthread_mutex_lock(&event_ring_buffer_mutex);//TODO : make these mutexes more "portable" (in function or wrapper function)
     
         const size_t start = event_ring_buffer->write;
@@ -199,7 +199,7 @@ void freeEventDatastructure(void){
 
 
 void addNodeToList(node * n){
-    //TESTME
+    
     pthread_mutex_lock(&head_mutex);
 
         _addNodeToList(n);
@@ -210,7 +210,7 @@ void addNodeToList(node * n){
 
 
 void popNodeFromList(void){
-    //TESTME
+    
     pthread_mutex_lock(&head_mutex);
     
         _popNodeFromList();
@@ -221,7 +221,7 @@ void popNodeFromList(void){
 
 
 size_t getEvent(float ** data){
-    //TESTME
+    
     pthread_mutex_lock(&head_mutex);
 
         const size_t size = _getEvent(data);
@@ -233,7 +233,7 @@ size_t getEvent(float ** data){
 
 
 void addEvent(const float * data, const size_t size_data){
-    //TESTME
+    
     pthread_mutex_lock(&head_mutex);
     
         _addEvent(data, size_data);
@@ -241,7 +241,7 @@ void addEvent(const float * data, const size_t size_data){
     pthread_mutex_unlock(&head_mutex);
 }
 
-int createMutexes(void){//TESTME
+int createMutexes(void){
     
     if(pthread_mutex_init(&head_mutex, NULL) == -1) return -1;
 
@@ -252,7 +252,7 @@ int createMutexes(void){//TESTME
     return 0;
 }
 
-int destroyMutexes(void){//TESTME
+int destroyMutexes(void){
 
     if(pthread_mutex_destroy(&head_mutex) == -1) return -1;
 
