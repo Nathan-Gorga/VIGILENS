@@ -92,7 +92,7 @@ static void _addNodeToList(node * n){
 }
 
 
-static void _popNodeFromList(void){//TESTME
+static void _popNodeFromList(void){
 
     assert(head != NULL);
 
@@ -219,14 +219,30 @@ void test(void){
     _addNodeToList(n);
     _addNodeToList(m);
     _addNodeToList(p);
-
+    
+    _popNodeFromList();
     node * curr = head->next;
 
     while(curr != NULL){
         printf("%d, %d\n", curr->start, curr->stop);
         curr = curr->next;
-    }
+    }printf("\n\n");
 
+
+    _popNodeFromList();
+    curr = head->next;
+    while(curr != NULL){
+        printf("%d, %d\n", curr->start, curr->stop);
+        curr = curr->next;
+    }printf("\n\n");
+
+
+    _popNodeFromList();
+    _popNodeFromList();
+    _popNodeFromList();
+    _popNodeFromList();
+    _popNodeFromList();
+    _popNodeFromList();
 
     freeList();
 }
