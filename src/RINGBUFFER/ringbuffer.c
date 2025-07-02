@@ -37,7 +37,7 @@ static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
 }
 
 
-static void writeIndexIncrement(struct ring_buffer * buffer){//FIXME : make this inline
+static inline void writeIndexIncrement(struct ring_buffer * buffer){
     assert(buffer != NULL);
     
     buffer->write++;

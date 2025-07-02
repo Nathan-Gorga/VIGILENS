@@ -39,8 +39,7 @@ struct ring_buffer{
  *
  * @param buffer The ring buffer to be freed.
  *
- * @details This function first checks if the ring buffer is not NULL, and if so, it frees the memory allocated for it.
- *          It then checks if the memory of the ring buffer is not NULL, and if so, it frees that memory as well.
+ * @details Frees the memory allocated for the ring buffer.
  */void freeRingBuffer(struct ring_buffer * buffer);
 
 
@@ -53,7 +52,7 @@ struct ring_buffer{
  * @details This function increments the write index of the given ring buffer. 
  *          If the write index reaches the buffer's size, it wraps around to 0.
  *          
- */static void writeIndexIncrement(struct ring_buffer * buffer);
+ */static inline void writeIndexIncrement(struct ring_buffer * buffer);
 
 
 /**
