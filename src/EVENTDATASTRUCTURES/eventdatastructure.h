@@ -1,5 +1,5 @@
-#ifndef NODELIST_H
-#define NODELIST_H
+#ifndef EVENTDATASTRUCTURE_H
+#define EVENTDATASTRUCTURE_H
 
 #include "../globaldefinition.h"
 #include "../RINGBUFFER/ringbuffer.h"
@@ -15,9 +15,13 @@ typedef struct head_node{
     struct node * next;
 }head_node;
 
-static struct ring_buffer * event_ring_buffer;
+volatile static struct ring_buffer * event_ring_buffer;
 
-static head_node * head;
+volatile static head_node * head;
+
+volatile pthread_mutex_t event_ring_buffer_mutex;
+
+volatile pthread_mutex_t head_mutex;
 
 //STATIC INITS AND FREES
 
