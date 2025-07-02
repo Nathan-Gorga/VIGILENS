@@ -1,5 +1,6 @@
 #include "eventdatastructure.h"
 
+
 static node * initNode(const size_t start, const size_t stop){
 
     node * n = (node *)malloc(sizeof(node));
@@ -15,12 +16,14 @@ static node * initNode(const size_t start, const size_t stop){
     return n;
 }
 
+
 static void freeNode(node * n){
     
     assert(n != NULL);
 
     free(n);
 }
+
 
 
 static void initList(void){
@@ -31,6 +34,7 @@ static void initList(void){
 
     head->next = NULL;
 }
+
 
 
 static void freeList(void){
@@ -51,6 +55,7 @@ static void freeList(void){
     free(head);
 }
 
+
 static void initEventRingBuffer(const size_t size_buffer){
 
     assert(size_buffer > 0);
@@ -62,12 +67,14 @@ static void initEventRingBuffer(const size_t size_buffer){
 }
 
 
+
 static void freeEventRingBuffer(void){
 
     assert(event_ring_buffer != NULL);
 
     freeRingBuffer(event_ring_buffer);
 }
+
 
 
 static void _addNodeToList(node * n){
@@ -92,6 +99,8 @@ static void _addNodeToList(node * n){
 }
 
 
+
+
 static void _popNodeFromList(void){
 
     assert(head != NULL);
@@ -105,55 +114,35 @@ static void _popNodeFromList(void){
     freeNode(curr);
 }
 
-//TODO : add in function comment : it is your responsability to free the data buffer
+
+
 static size_t _getEvent(float ** data){
 
     assert(head != NULL);
     
-    
-    PRINTF_DEBUG
-
-
     if(head->next == NULL) return 0; // list is empty
 
     node * event = head->next;//TODO : make a mutex function to get elements from head
-
-    PRINTF_DEBUG
-
 
     const size_t start = event->start;
 
     const size_t stop = event->stop;
 
-    PRINTF_DEBUG
-
-
-    const size_t size = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);
-
-    PRINTF_DEBUG
+    const size_t size = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);    
 
     *data = (float *)calloc(size, sizeof(float));
 
     if(*data == NULL) return -1; //something went wrong
 
-    PRINTF_DEBUG
-
-
     extractBufferFromRingBuffer(event_ring_buffer, *data, size, start, stop);
 
-    PRINTF_DEBUG
-
-
     popNodeFromList();
-
-    PRINTF_DEBUG
-
 
     return size;
 }
 
 
-static void _addEvent(const float * data, const size_t size_data){//TESTME
+static void _addEvent(const float * data, const size_t size_data){
 
     assert(data != NULL);
 
@@ -207,6 +196,8 @@ void popNodeFromList(void){
     //TODO : unlock head
 }
 
+
+
 size_t getEvent(float ** data){
     //TODO : lock head
     //TODO : lock event ring buffer
@@ -218,6 +209,7 @@ size_t getEvent(float ** data){
     return size;
 }
 
+
 void addEvent(const float * data, const size_t size_data){
 
     //TODO : lock head
@@ -228,43 +220,3 @@ void addEvent(const float * data, const size_t size_data){
 }
 
 
-
-
-void test(void){
-    initEventDatastructure(100);
-
-    float data[] = {1,2,3,4,5,6,7,8,9,10};
-
-    addEvent(data, 10);
-
-    float data2[] = {11,12,13,14,15,16,17,18,19,20};
-
-    addEvent(data2, 10);
-
-
-    float *data3 = NULL;
-    const size_t size3 = getEvent(&data3);
-    
-    
-    PRINTF_DEBUG
-    
-    for(int i =0; i < size3; i++){
-        printf("%f\n", data3[i]);
-    }
-    PRINTF_DEBUG
-
-    free(data3);
-
-    float *data4 = NULL;
-    const size_t size4 = getEvent(&data4);
-
-    for(int i =0; i < size4; i++){
-        printf("%f\n", data4[i]);
-    }
-
-    free(data4);
-
-    printf("%p\n",head->next);
-
-    freeEventDatastructure();
-}
