@@ -22,10 +22,14 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
 void freeRingBuffer(struct ring_buffer * buffer){
 
     if(buffer == NULL) return;
-    free(buffer);
-    
-    if(buffer->memory == NULL) return;
+
+    if(buffer->memory == NULL) goto freebuffer;
+
     free(buffer->memory);
+
+    freebuffer:
+    
+    free(buffer);
 }
 
 bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
