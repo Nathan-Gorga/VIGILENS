@@ -19,11 +19,11 @@ volatile static struct ring_buffer * event_ring_buffer;
 
 volatile static head_node * head;
 
-volatile pthread_mutex_t event_ring_buffer_mutex;
+extern pthread_mutex_t event_ring_buffer_mutex;
 
-volatile pthread_mutex_t write_index_mutex; //this one is just to prevent double lock
+extern pthread_mutex_t write_index_mutex; //this one is just to prevent double lock
 
-volatile pthread_mutex_t head_mutex;
+extern pthread_mutex_t head_mutex;
 
 //STATIC INITS AND FREES
 

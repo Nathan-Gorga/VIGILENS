@@ -1,6 +1,12 @@
 #include "eventdatastructure.h"
 
 
+pthread_mutex_t event_ring_buffer_mutex;
+
+pthread_mutex_t write_index_mutex; //this one is just to prevent double lock
+
+pthread_mutex_t head_mutex;
+
 static node * initNode(const size_t start, const size_t stop){
 
     node * n = (node *)malloc(sizeof(node));

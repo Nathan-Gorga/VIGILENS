@@ -8,7 +8,6 @@ TARGET = main
 # Source files
 SRCS = main.c \
 	RINGBUFFER/ringbuffer.c \
-	RINGBUFFER/TEST/unittestringbuffer.c \
 	EVENTDATASTRUCTURES/eventdatastructure.c \
 	THREADFUNCTIONS/DATAINTAKE/dataintake.c
 	
