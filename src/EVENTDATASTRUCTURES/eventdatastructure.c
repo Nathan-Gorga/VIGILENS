@@ -1,6 +1,6 @@
 #include "eventdatastructure.h"
 
-static node * initNode(const size_t start, const size_t stop){//TESTME
+static node * initNode(const size_t start, const size_t stop){
 
     node * n = (node *)malloc(sizeof(node));
 
@@ -15,7 +15,7 @@ static node * initNode(const size_t start, const size_t stop){//TESTME
     return n;
 }
 
-static void freeNode(node * n){//TESTME
+static void freeNode(node * n){
     
     assert(n != NULL);
 
@@ -23,7 +23,7 @@ static void freeNode(node * n){//TESTME
 }
 
 
-static void initList(void){//TESTME
+static void initList(void){
 
     head = (head_node *)malloc(sizeof(head_node));
 
@@ -33,7 +33,7 @@ static void initList(void){//TESTME
 }
 
 
-static void freeList(void){//TESTME
+static void freeList(void){
 
     assert(head != NULL);
 
@@ -210,9 +210,9 @@ void addEvent(const float * data, const size_t size_data){
 
 
 void test(void){
-    node * temp = initNode(0, 10);
+    initList();
 
-    printf("temp : %p, start : %d, stop : %d\n", temp, temp->start, temp->stop);
+    printf("head : %p, next : %p\n", head, head->next);
 
-    freeNode(temp);
+    freeList();
 }
