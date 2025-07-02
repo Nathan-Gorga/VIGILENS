@@ -1,6 +1,7 @@
 #ifndef GLOBALDEFINITION_H
 #define GLOBALDEFINITION_H
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +9,9 @@
 #include <pthread.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <signal.h>
+
+
 
 #define BLACK "\e[0;30m"
 #define RED "\e[0;31m"

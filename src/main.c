@@ -1,8 +1,16 @@
 #include "main.h"
 
+bool keyboard_interrupt = false;
+
+void handle_sigint(const int sig) {
+    printf("Keyboard interrupt received\n");
+    keyboard_interrupt = true;
+}
 
 int main(void){
    
+    signal(SIGINT, handle_sigint);
+
     pthread_t data_intake_thread;
 
     (void)printf("Starting VIGILENCE SYSTEM\n");
@@ -13,17 +21,20 @@ int main(void){
     (void)printf("Creating mutexes\n");
     createMutexes();
 
-    if(pthread_create(&data_intake_thread, NULL, launchDataIntake, NULL) != 0)
+    if(pthread_create(&data_intake_thread, NULL, launchDataIntake, NULL) != 0){
         (void)printf("Error creating data intake thread\n"); goto end;
+    }
 
-
+    
 
     //TODO : wait for ready signal from data intake
-
-    //TODO : wait for keyboard interupt to cancel data intake thread
-
-    //TODO : cancel data intake
     
+    
+    while(!keyboard_interrupt);
+
+    printf("Canceling slave threads\n");
+    pthread_cancel(data_intake_thread);
+
 end:
     freeEventDatastructure();
     destroyMutexes();

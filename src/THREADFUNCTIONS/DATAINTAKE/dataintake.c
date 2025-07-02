@@ -1,6 +1,15 @@
 #include "dataintake.h"
 
 
+void cleanupDataIntake(void * arg){
+    
+    (void)write(STDOUT_FILENO, "Cancel signal received\nCleaned up DATA INTAKE thread\n", 53);    
+
+    //TODO : implement
+   
+}
+
+
 void * launchDataIntake(void * arg){
     
     dataIntake();
@@ -10,7 +19,17 @@ void * launchDataIntake(void * arg){
 
 
 void dataIntake(void){
+    pthread_cleanup_push(cleanupDataIntake, NULL);
+
     (void)printf("Thread launched succesfully\n");
+
+
+    while(1){
+        
+        pthread_testcancel();
+    }
+
+
     //TODO : init internal ring buffer
     
     //TODO : send ready signal to master
@@ -28,4 +47,7 @@ void dataIntake(void){
     //TODO : always take into account that a cancel signal may come from master
 
     //TODO : free internal ring buffer
+
+    pthread_cleanup_pop(1);
 }
+
