@@ -74,11 +74,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
 
     const bool overflow = start > stop;
     
-    size_t size;
-
-    if(!overflow) size = stop + 1 - start;
-
-    else size = buffer->size - start + stop + 1;
+    size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
     
     assert(size == size_data);
 
@@ -86,7 +82,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
 
     assert(start >= 0 && stop >= 0);
 
-    assert(start < buffer->size && stop <buffer->size);
+    assert(start < buffer->size && stop < buffer->size);
 
     if(!overflow){
 

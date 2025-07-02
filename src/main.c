@@ -1,4 +1,5 @@
 #include "main.h"
+#include "RINGBUFFER/TEST/unittestringbuffer.h"
 
 
 
@@ -6,6 +7,8 @@ int main(void){
    
     printf("Hello world\n");
 
+
+    testIsOverflow();
 
     //TODO : init event ring buffer
 
