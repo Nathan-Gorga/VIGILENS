@@ -42,8 +42,11 @@ static void _popNodeFromList(void);
 
 static size_t _getEvent(float * data);//malloc enough to data and fills it with the event
 
-static _addEvent(const float * data, const size_t size_data);
+static void _addEvent(const float * data, const size_t size_data);
 
+static inline size_t _getWriteIndex(void);
+
+size_t getWriteIndex(void);
 
 //GLOBAL FUNCTIONS, called only once by main, don't need mutex
 

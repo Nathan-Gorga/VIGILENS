@@ -140,12 +140,13 @@ static void _addEvent(const float * data, const size_t size_data){//TESTME
 
     assert(head != NULL);
 
+    const size_t writeIndex = getWriteIndex();
     
-    const size_t start = event_ring_buffer->write;
+    const size_t start = writeIndex;
 
     addBufferToRingBuffer(event_ring_buffer,data, size_data);
 
-    const test_stop = event_ring_buffer->write - 1;
+    const test_stop = writeIndex - 1;
 
     const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
 
@@ -153,4 +154,19 @@ static void _addEvent(const float * data, const size_t size_data){//TESTME
 
     addNodeToList(n);
 }
+
+static inline size_t _getWriteIndex(void){
+    return event_ring_buffer->write;
+}
+
+size_t getWriteIndex(void){
+    //FIXME : lock
+
+    const size_t ret = _getWriteIndex();
+    //FIXME : unlock
+    return ret;
+}
+
+
+
 

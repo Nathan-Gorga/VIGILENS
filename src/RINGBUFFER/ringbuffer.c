@@ -44,7 +44,7 @@ static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
 }
 
 
-static inline void writeIndexIncrement(struct ring_buffer * buffer){
+static inline void writeIndexIncrement(struct ring_buffer * buffer){//FIXME : access this function using a wrapper with the same mutex as thos in eventdatastructure.c
     assert(buffer != NULL);
     
     buffer->write++;
