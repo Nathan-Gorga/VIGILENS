@@ -106,7 +106,7 @@ static void _popNodeFromList(void){//TESTME
 }
 
 //TODO : add in function comment : it is your responsability to free the data buffer
-static size_t _getEventFromList(float * data){//TESTME
+static size_t _getEvent(float * data){//TESTME
 
     assert(head != NULL);
 
@@ -132,5 +132,25 @@ static size_t _getEventFromList(float * data){//TESTME
 }
 
 
-static _addEventToEventRingBuffer(const float * data, const size_t size_data);
+static void _addEvent(const float * data, const size_t size_data){//TESTME
+
+    assert(data != NULL);
+
+    assert(size_data > 0);
+
+    assert(head != NULL);
+
+    
+    const size_t start = event_ring_buffer->write;
+
+    addBufferToRingBuffer(event_ring_buffer,data, size_data);
+
+    const test_stop = event_ring_buffer->write - 1;
+
+    const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
+
+    node * n = initNode(start, stop);
+
+    addNodeToList(n);
+}
 

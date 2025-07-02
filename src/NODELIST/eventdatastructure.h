@@ -40,9 +40,9 @@ static void _addNodeToList(node * n);
 
 static void _popNodeFromList(void);
 
-static size_t _getEventFromList(float * data);//malloc enough to data and fills it with the event
+static size_t _getEvent(float * data);//malloc enough to data and fills it with the event
 
-static _addEventToEventRingBuffer(const float * data, const size_t size_data);
+static _addEvent(const float * data, const size_t size_data);
 
 
 //GLOBAL FUNCTIONS, called only once by main, don't need mutex
@@ -58,9 +58,9 @@ void addNodeToList(node * n);
 
 void popNodeFromList(void);
 
-size_t getEventFromList(float * data);//malloc enough to data and fills it with the event
+size_t getEvent(float * data);//malloc enough to data and fills it with the event
 
-void addEventToEventRingBuffer(const float * data, const size_t size_data);
+void addEvent(const float * data, const size_t size_data);
 
 #endif
 
