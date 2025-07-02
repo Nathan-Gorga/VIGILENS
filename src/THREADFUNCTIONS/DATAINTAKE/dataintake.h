@@ -8,7 +8,7 @@
 
 void * launchDataIntake(void * arg);
 
-void dataIntake(void);
+static void dataIntake(void);
 
 
 

@@ -11,7 +11,7 @@ int main(void){
    
     signal(SIGINT, handle_sigint);
 
-    pthread_t data_intake_thread;
+    pthread_t data_intake_thread, data_processing_thread;
 
     (void)printf("Starting VIGILENCE SYSTEM\n");
 
@@ -25,6 +25,9 @@ int main(void){
         (void)printf("Error creating data intake thread\n"); goto end;
     }
 
+    if(pthread_create(&data_processing_thread, NULL, launchDataProcessing, NULL) != 0){
+        (void)printf("Error creating data processing thread\n"); goto end;
+    }
     
 
     //TODO : wait for ready signal from data intake

@@ -3,6 +3,7 @@
 
 #include "globaldefinition.h"
 #include "THREADFUNCTIONS/DATAINTAKE/dataintake.h"
+#include "THREADFUNCTIONS/DATAPROCESSING/dataprocessing.h"
 #include "RINGBUFFER/ringbuffer.h"
 #include "EVENTDATASTRUCTURES/eventdatastructure.h"
 

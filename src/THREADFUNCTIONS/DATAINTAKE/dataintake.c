@@ -18,7 +18,7 @@ void * launchDataIntake(void * arg){
 }
 
 
-void dataIntake(void){
+static void dataIntake(void){
     pthread_cleanup_push(cleanupDataIntake, NULL);
 
     (void)printf("Thread launched succesfully\n");
