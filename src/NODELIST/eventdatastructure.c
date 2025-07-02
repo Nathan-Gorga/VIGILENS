@@ -59,4 +59,7 @@ static void initEventRingBuffer(const size_t size_buffer){
     assert(size_buffer > 0);
 
     event_ring_buffer = initRingBuffer(size_buffer, EVENT_RING_BUFFER);
+
+    if(event_ring_buffer == NULL) exit(EXIT_FAILURE);
+
 }
