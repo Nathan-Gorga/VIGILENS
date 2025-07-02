@@ -5,14 +5,16 @@
 
 int main(void){
    
-    printf("Hello world\n");
-
-
-    testIsOverflow();
+    (void)printf("Hello world\n");
 
     //TODO : init event ring buffer
 
     //TODO : launch data intake
+    pthread_t data_intake_thread;
+
+    if(pthread_create(&data_intake_thread, NULL, launchDataIntake, NULL) != 0) return 1;
+
+    (void)pthread_join(data_intake_thread, NULL);
 
     //TODO : wait for ready signal from data intake
 
