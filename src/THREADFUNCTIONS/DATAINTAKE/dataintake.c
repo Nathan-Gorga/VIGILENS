@@ -10,7 +10,7 @@ void * launchDataIntake(void * arg){
 
 
 void dataIntake(void){
-    printf("DATA INTAKE THREAD LAUNCHED SUCCESSFULLY\n");
+    (void)printf("DATA INTAKE THREAD LAUNCHED SUCCESSFULLY\n");
     //TODO : init internal ring buffer
     
     //TODO : send ready signal to master
