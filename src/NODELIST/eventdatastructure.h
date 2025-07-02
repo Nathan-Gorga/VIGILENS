@@ -4,7 +4,6 @@
 #include "../globaldefinition.h"
 #include "../RINGBUFFER/ringbuffer.h"
 
-static struct ring_buffer * event_ring_buffer;
 
 typedef struct node{
     struct node * next;
@@ -16,6 +15,9 @@ typedef struct head_node{
     struct node * next;
 }head_node;
 
+static struct ring_buffer * event_ring_buffer;
+
+static head_node * head;
 
 //STATIC INITS AND FREES
 
@@ -23,9 +25,9 @@ static node * initNode(const size_t start, const size_t stop);
 
 static void freeNode(node * n);
 
-static head_node * initList(void);
+static void initList(void);
 
-static void freeList(head_node * head);
+static void freeList(void);
 
 static void initEventRingBuffer(const size_t size_buffer);
 
@@ -34,29 +36,29 @@ static void freeEventRingBuffer(void);
 
 //STATIC EVENT RING BUFFER MANIPULATION
 
-static void _addNodeToList(head_node * head, node * n);
+static void _addNodeToList(node * n);
 
-static void _popNodeFromList(head_node * head);
+static void _popNodeFromList(void);
 
-static size_t _getEventFromList(head_node * head, float * data);//malloc enough to data and fills it with the event
+static size_t _getEventFromList(float * data);//malloc enough to data and fills it with the event
 
 static _addEventToEventRingBuffer(const float * data, const size_t size_data);
 
 
 //GLOBAL FUNCTIONS, called only once by main, don't need mutex
 
-head_node * initEventDatastructure(const size_t size_buffer);
+void initEventDatastructure(const size_t size_buffer);
 
-void freeEventDatastructure(head_node * head);
+void freeEventDatastructure(void);
 
 
 //MUTEX FUNCTIONS
 
-void addNodeToList(head_node * head, node * n);
+void addNodeToList(node * n);
 
-void popNodeFromList(head_node * head);
+void popNodeFromList(void);
 
-size_t getEventFromList(head_node * head, float * data);//malloc enough to data and fills it with the event
+size_t getEventFromList(float * data);//malloc enough to data and fills it with the event
 
 void addEventToEventRingBuffer(const float * data, const size_t size_data);
 

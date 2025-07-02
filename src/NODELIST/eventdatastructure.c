@@ -23,20 +23,17 @@ static void freeNode(node * n){
 }
 
 
-static head_node * initList(void){
+static void initList(void){
 
-    head_node * head = (head_node *)malloc(sizeof(head_node));
+    head = (head_node *)malloc(sizeof(head_node));
 
-    if(head == NULL) return NULL;
+    if(head == NULL) exit(EXIT_FAILURE);
 
     head->next = NULL;
-
-    return head;
-
 }
 
 
-static void freeList(head_node * head){
+static void freeList(void){
 
     assert(head != NULL);
 
@@ -70,4 +67,15 @@ static void freeEventRingBuffer(void){
     assert(event_ring_buffer != NULL);
 
     freeRingBuffer(event_ring_buffer);
+}
+
+
+static void _addNodeToList(node * n){
+
+    assert(head != NULL);
+
+    assert(n != NULL);
+
+
+
 }
