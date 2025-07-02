@@ -8,7 +8,6 @@ TARGET = main
 # Source files
 SRCS = main.c \
 	RINGBUFFER/ringbuffer.c \
-	RINGBUFFER/TEST/unittestringbuffer.c \
 	THREADFUNCTIONS/DATAINTAKE/dataintake.c
 	
 OBJS = $(SRCS:.c=.o)

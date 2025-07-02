@@ -47,6 +47,24 @@ static inline void writeIndexIncrement(struct ring_buffer * buffer){
 }
 
 
+
+size_t sizeBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){
+    assert(buffer_size > 0);
+
+    assert(start >= 0 && stop >= 0);
+
+    assert(start < buffer_size && stop < buffer_size);
+
+
+    if(stop > start) return stop - start + 1;
+
+    return buffer_size - start + stop + 1;
+}
+
+
+
+
+
 void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop){
     
     assert(buffer != NULL);
