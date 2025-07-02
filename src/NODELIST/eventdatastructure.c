@@ -90,3 +90,17 @@ static void _addNodeToList(node * n){
 
     curr->next = n;
 }
+
+
+static void _popNodeFromList(void){
+
+    assert(head != NULL);
+
+    node * curr = head->next;
+
+    if(curr == NULL) return;
+
+    head->next = curr->next;
+
+    freeNode(curr);
+}
