@@ -76,6 +76,17 @@ static void _addNodeToList(node * n){
 
     assert(n != NULL);
 
+    if(head->next == NULL){
+        head->next = n;
+        return;
+    }
 
+    node * curr = head->next;
 
+    while(curr->next != NULL){
+
+        curr = curr->next;
+    }
+
+    curr->next = n;
 }
