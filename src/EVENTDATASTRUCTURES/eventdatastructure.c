@@ -70,7 +70,7 @@ static void freeEventRingBuffer(void){
 }
 
 
-static void _addNodeToList(node * n){//TESTME
+static void _addNodeToList(node * n){
 
     assert(head != NULL);
 
@@ -210,12 +210,23 @@ void addEvent(const float * data, const size_t size_data){
 
 
 void test(void){
-    initEventRingBuffer(10);
+    initList();
 
-    printf("%d\n", event_ring_buffer->type);
-    printf("%d\n", event_ring_buffer->size);
-    printf("%d\n", event_ring_buffer->write);
+    node * n = initNode(0, 10);
+    node * m = initNode(0, 10);
+    node * p = initNode(0, 10);
+
+    _addNodeToList(n);
+    _addNodeToList(m);
+    _addNodeToList(p);
+
+    node * curr = head->next;
+
+    while(curr != NULL){
+        printf("%d, %d\n", curr->start, curr->stop);
+        curr = curr->next;
+    }
 
 
-    freeEventRingBuffer();
+    freeList();
 }
