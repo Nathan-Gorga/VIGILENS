@@ -1,11 +1,17 @@
 #include "main.h"
 #include "RINGBUFFER/TEST/unittestringbuffer.h"
-
+#include "EVENTDATASTRUCTURES/eventdatastructure.h"
 
 
 int main(void){
    
     (void)printf("Hello world\n");
+
+    test();
+
+
+
+
 
     //TODO : init event ring buffer
 

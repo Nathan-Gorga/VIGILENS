@@ -145,7 +145,7 @@ static void _addEvent(const float * data, const size_t size_data){//TESTME
 
     addBufferToRingBuffer(event_ring_buffer,data, size_data);
 
-    const test_stop = event_ring_buffer->write - 1;
+    const size_t test_stop = event_ring_buffer->write - 1;
 
     const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
 
@@ -204,4 +204,15 @@ void addEvent(const float * data, const size_t size_data){
     _addEvent(data, size_data);
     //TODO : unlock event ring buffer
     //TODO : unlock head
+}
+
+
+
+
+void test(void){
+    node * temp = initNode(0, 10);
+
+    printf("temp : %p, start : %d, stop : %d\n", temp, temp->start, temp->stop);
+
+    freeNode(temp);
 }

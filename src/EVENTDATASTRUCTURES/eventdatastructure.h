@@ -62,5 +62,11 @@ size_t getEvent(float * data);//malloc enough to data and fills it with the even
 
 void addEvent(const float * data, const size_t size_data);
 
+//JUNK TESTING
+
+void test(void);
+
+
+
 #endif
 
