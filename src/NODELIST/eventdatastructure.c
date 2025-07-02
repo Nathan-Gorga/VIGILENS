@@ -63,3 +63,11 @@ static void initEventRingBuffer(const size_t size_buffer){
     if(event_ring_buffer == NULL) exit(EXIT_FAILURE);
 
 }
+
+
+static void freeEventRingBuffer(void){
+
+    assert(event_ring_buffer != NULL);
+
+    freeRingBuffer(event_ring_buffer);
+}
