@@ -1,12 +1,12 @@
 #include "dataprocessing.h"
 
-static void cleanupHandler(void * arg){
+static void cleanupHandler(void * eventBuffer){
     
     (void)printf("Cancel signal received\n");    
 
-
-    //TODO : implement
-
+    if(eventBuffer != NULL){
+        free((float*)eventBuffer);
+    }
 
     (void)printf("Cleaned up thread\n");    
 
@@ -21,18 +21,21 @@ void * launchDataProcessing(void * arg){
 }
 
 static void dataProcessing(void){
-    pthread_cleanup_push(cleanupHandler, NULL);
-
+    
     (void)printf("Thread launched succesfully\n");
-
-    float ** eventBuffer;
+    
+    float ** event_buffer;
+    
+    pthread_cleanup_push(cleanupHandler, event_buffer);
+    
     while(1){
         
-        if(getEvent(eventBuffer) > 0){//there is an event
+        if(getEvent(event_buffer) > 0){//there is an event
 
             //TODO : implement
 
-            free(eventBuffer);
+            free(event_buffer);
+            event_buffer = NULL;
         }
     }
 
