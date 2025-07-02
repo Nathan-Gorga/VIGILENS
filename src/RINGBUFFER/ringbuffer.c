@@ -37,7 +37,7 @@ static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
 }
 
 
-static void writeIndexIncrement(struct ring_buffer * buffer){
+static void writeIndexIncrement(struct ring_buffer * buffer){//FIXME : make this inline
     assert(buffer != NULL);
     
     buffer->write++;
@@ -47,53 +47,52 @@ static void writeIndexIncrement(struct ring_buffer * buffer){
 }
 
 
-
-size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t start, const size_t stop){//TESTME : this function absolutely needs testing
+void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop){
     
     assert(buffer != NULL);
 
     assert(data != NULL);
 
-    assert(start != stop);
-
-    bool overflow = false;
-
-    if(start > stop) overflow = true;
-
+    const bool overflow = start > stop;
+    
     size_t size;
 
-    if(!overflow) size = stop - start;
+    if(!overflow) size = stop + 1 - start;
 
-    else size = buffer->size - start + stop;
+    else size = buffer->size - start + stop + 1;
+    
+    assert(size == size_data);
 
-    assert(sizeof(data) >= (size) * sizeof(float));
+    assert(size_data <= buffer->size);
+
+    assert(start >= 0 && stop >= 0);
+
+    assert(start < buffer->size && stop <buffer->size);
 
     if(!overflow){
 
-        for(size_t i = start; i < stop; i ++){//FIXME : switch this with a memcpy
+        for(size_t i = 0; i < size; i ++){
 
-            data[i - start] = buffer->memory[i];
+            data[i] = buffer->memory[i + start];
 
         }
 
     } else {
+        
+        const size_t offset = buffer->size - start;
 
-        for(size_t i = start; i < buffer->size; i ++){//FIXME : switch this with a memcpy
+        for(size_t i = 0; i < offset; i ++){
 
-            data[i - start] = buffer->memory[i];
+            data[i] = buffer->memory[i + start];
 
         }
 
-        const size_t offset = buffer->size - start;
-
-        for(size_t i = 0; i < stop; i ++){//FIXME : switch this with a memcpy
+        for(size_t i = 0; i < stop + 1; i ++){
 
             data[i + offset] = buffer->memory[i];
 
         }
     }
-
-    return size;
 }
 
 
@@ -125,7 +124,7 @@ void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, cons
 
     if(!isOverflow(buffer, size - 1)){
         
-        for(size_t i = 0; i < size; i++){//FIXME : switch this with a memcpy
+        for(size_t i = 0; i < size; i++){
 
             buffer->memory[buffer->write] = data[i];
 
@@ -136,7 +135,7 @@ void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, cons
 
         const size_t first_part_size = buffer->size - buffer->write;
 
-        for(size_t i = 0; i < first_part_size; i++){//FIXME : switch this with a memcpy
+        for(size_t i = 0; i < first_part_size; i++){
 
             buffer->memory[buffer->write] = data[i];
 
@@ -145,7 +144,7 @@ void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, cons
 
         const size_t second_part_size = (size - first_part_size);
 
-        for(size_t i = 0; i < second_part_size; i++){//FIXME : switch this with a memcpy
+        for(size_t i = 0; i < second_part_size; i++){
 
             buffer->memory[buffer->write] = data[i + first_part_size];
 

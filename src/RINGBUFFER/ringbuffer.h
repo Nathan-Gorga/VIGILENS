@@ -71,17 +71,18 @@ struct ring_buffer{
  *
  * @param buffer The ring buffer to extract data from.
  * @param data The destination buffer where the extracted data will be stored.
- * @param start The starting index in the ring buffer to begin extraction.
- * @param stop The stopping index in the ring buffer to end extraction.
- *
- * @return The size of the data buffer.
+ * @param size_data The size of the data buffer.
+ * @param start The starting index in the ring buffer to begin extraction (inclusive).
+ * @param stop The stopping index in the ring buffer to end extraction (inclusive).
  *
  * @details This function extracts data from a ring buffer between the specified
  *          start and stop indices and stores it in the provided data buffer.
  *          It handles wrapping around the ring buffer if necessary.
  *
- * @pre buffer is not NULL, data is not NULL, and start is not equal to stop.
- */size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t start, const size_t stop);
+ * @pre buffer is not NULL, data is not NULL, and size_data is equal to the size of the data
+ *      that should be extracted.
+ */void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop);//TESTME : this function absolutely needs testing
+
 
 
 
