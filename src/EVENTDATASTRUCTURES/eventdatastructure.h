@@ -40,7 +40,7 @@ static void _addNodeToList(node * n);
 
 static void _popNodeFromList(void);
 
-static size_t _getEvent(float * data);//malloc enough to data and fills it with the event
+static size_t _getEvent(float ** data);//malloc enough to data and fills it with the event
 
 static void _addEvent(const float * data, const size_t size_data);
 
@@ -58,7 +58,7 @@ void addNodeToList(node * n);
 
 void popNodeFromList(void);
 
-size_t getEvent(float * data);//malloc enough to data and fills it with the event
+size_t getEvent(float ** data);//malloc enough to data and fills it with the event
 
 void addEvent(const float * data, const size_t size_data);
 

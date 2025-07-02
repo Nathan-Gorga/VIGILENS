@@ -106,27 +106,48 @@ static void _popNodeFromList(void){
 }
 
 //TODO : add in function comment : it is your responsability to free the data buffer
-static size_t _getEvent(float * data){//TESTME
+static size_t _getEvent(float ** data){
 
     assert(head != NULL);
+    
+    
+    PRINTF_DEBUG
+
 
     if(head->next == NULL) return 0; // list is empty
 
     node * event = head->next;//TODO : make a mutex function to get elements from head
 
+    PRINTF_DEBUG
+
+
     const size_t start = event->start;
 
     const size_t stop = event->stop;
 
+    PRINTF_DEBUG
+
+
     const size_t size = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);
 
-    data = (float *)calloc(size, sizeof(float));
+    PRINTF_DEBUG
 
-    if(data == NULL) return -1; //something went wrong
+    *data = (float *)calloc(size, sizeof(float));
 
-    extractBufferFromRingBuffer(event_ring_buffer, data, size, start, stop);
+    if(*data == NULL) return -1; //something went wrong
+
+    PRINTF_DEBUG
+
+
+    extractBufferFromRingBuffer(event_ring_buffer, *data, size, start, stop);
+
+    PRINTF_DEBUG
+
 
     popNodeFromList();
+
+    PRINTF_DEBUG
+
 
     return size;
 }
@@ -186,7 +207,7 @@ void popNodeFromList(void){
     //TODO : unlock head
 }
 
-size_t getEvent(float * data){
+size_t getEvent(float ** data){
     //TODO : lock head
     //TODO : lock event ring buffer
 
@@ -210,39 +231,40 @@ void addEvent(const float * data, const size_t size_data){
 
 
 void test(void){
-    initList();
+    initEventDatastructure(100);
 
-    node * n = initNode(0, 10);
-    node * m = initNode(0, 10);
-    node * p = initNode(0, 10);
+    float data[] = {1,2,3,4,5,6,7,8,9,10};
 
-    _addNodeToList(n);
-    _addNodeToList(m);
-    _addNodeToList(p);
+    addEvent(data, 10);
+
+    float data2[] = {11,12,13,14,15,16,17,18,19,20};
+
+    addEvent(data2, 10);
+
+
+    float *data3 = NULL;
+    const size_t size3 = getEvent(&data3);
     
-    _popNodeFromList();
-    node * curr = head->next;
+    
+    PRINTF_DEBUG
+    
+    for(int i =0; i < size3; i++){
+        printf("%f\n", data3[i]);
+    }
+    PRINTF_DEBUG
 
-    while(curr != NULL){
-        printf("%d, %d\n", curr->start, curr->stop);
-        curr = curr->next;
-    }printf("\n\n");
+    free(data3);
 
+    float *data4 = NULL;
+    const size_t size4 = getEvent(&data4);
 
-    _popNodeFromList();
-    curr = head->next;
-    while(curr != NULL){
-        printf("%d, %d\n", curr->start, curr->stop);
-        curr = curr->next;
-    }printf("\n\n");
+    for(int i =0; i < size4; i++){
+        printf("%f\n", data4[i]);
+    }
 
+    free(data4);
 
-    _popNodeFromList();
-    _popNodeFromList();
-    _popNodeFromList();
-    _popNodeFromList();
-    _popNodeFromList();
-    _popNodeFromList();
+    printf("%p\n",head->next);
 
-    freeList();
+    freeEventDatastructure();
 }

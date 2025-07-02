@@ -21,5 +21,13 @@
 #define RESET "\e[0m"
 
 
+#define DEBUG
+
+#ifdef DEBUG
+    #define PRINTF_DEBUG do{printf(PURPLE"DEBUG : %s - %s:%d\n"RESET, __FILE__, __func__,__LINE__); fflush(stdout);}while(0);
+#else
+    #define PRINTF_DEBUG
+#endif
+
 #endif
 
