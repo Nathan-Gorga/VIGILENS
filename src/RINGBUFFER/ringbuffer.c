@@ -112,7 +112,7 @@ void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
 
 
 
-size_t addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size){//TESTME : this function absolutely needs testing
+void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size){
 
     assert(buffer != NULL);
 
@@ -122,39 +122,34 @@ size_t addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, co
 
     assert(buffer->type == EVENT_RING_BUFFER);
 
-    bool overflow = false;
 
-    if(isOverflow(buffer, size)) overflow = true;
+    if(!isOverflow(buffer, size - 1)){
+        
+        for(size_t i = 0; i < size; i++){//FIXME : switch this with a memcpy
 
-    if(!overflow){
+            buffer->memory[buffer->write] = data[i];
 
-        const size_t end_of_data = buffer->write + size;
-
-        for(size_t i = buffer->write; i < end_of_data; i++){//FIXME : switch this with a memcpy
-
-            buffer->memory[i] = data[i];
+            writeIndexIncrement(buffer);
         }
-
-        buffer->write = end_of_data;
 
     } else {
 
-        const size_t first_part_size = buffer->size;
+        const size_t first_part_size = buffer->size - buffer->write;
 
-        for(size_t i = buffer->write; i < first_part_size; i++){//FIXME : switch this with a memcpy
+        for(size_t i = 0; i < first_part_size; i++){//FIXME : switch this with a memcpy
 
-            buffer->memory[i] = data[i];
+            buffer->memory[buffer->write] = data[i];
+
+            writeIndexIncrement(buffer);
         }
 
-        const size_t second_part_size = size;
+        const size_t second_part_size = (size - first_part_size);
 
         for(size_t i = 0; i < second_part_size; i++){//FIXME : switch this with a memcpy
 
-            buffer->memory[i] = data[i + first_part_size];
+            buffer->memory[buffer->write] = data[i + first_part_size];
+
+            writeIndexIncrement(buffer);
         }
-
-        buffer->write = second_part_size;
     }
-
-    return buffer->write;
 }

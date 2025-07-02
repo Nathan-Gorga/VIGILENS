@@ -112,12 +112,11 @@ struct ring_buffer{
  * @param data The buffer of floats to add.
  * @param size The size of the buffer to add.
  *
- * @return The new write index of the ring buffer.
- *
  * @details This function adds a buffer of floats to the event ring buffer.
- * 
+ *          It handles wrapping around the ring buffer if necessary.
+ *
  * @pre buffer is not NULL and buffer's type is EVENT_RING_BUFFER.
- */size_t addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size);
+ */void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size);
 
 
 
