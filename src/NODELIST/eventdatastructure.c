@@ -23,8 +23,14 @@ static void freeNode(node * n){
 }
 
 
-static head_node * initList(void){//returns head of list
+static head_node * initList(void){
 
-    return initNode(0,0);
+    head_node * head = (head_node *)malloc(sizeof(head_node));
+
+    if(head == NULL) return NULL;
+
+    head->next = NULL;
+
+    return head;
 
 }
