@@ -99,7 +99,7 @@ size_t extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, co
 
 
 
-void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){//TESTME : make sure this function works for all input parameters
+void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
     
     assert(buffer != NULL);
 
