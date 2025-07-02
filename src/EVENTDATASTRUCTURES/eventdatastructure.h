@@ -163,7 +163,12 @@ volatile pthread_mutex_t head_mutex;
  */void freeEventDatastructure(void);
 
 
-//MUTEX FUNCTIONS
+ //MUTEX FUNCTIONS
+
+int createMutexes(void);
+
+int destroyMutexes(void);
+
 
 /**
  * @brief Adds a node to the list.
