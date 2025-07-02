@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "dataintake.h": "c",
+        "globaldefinition.h": "c",
+        "unittestringbuffer.h": "c",
+        "main.h": "c"
+    }
+}

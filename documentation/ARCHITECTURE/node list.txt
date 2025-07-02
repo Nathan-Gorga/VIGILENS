@@ -1,0 +1,26 @@
+nodes are a linked list that point to events in the event ring buffer to allow for easier referencing
+
+they point using indexes start and stop (inclusive)
+
+the protocol for adding an event to the ring buffer is as follows
+
+add the linear buffer to the event ring buffer, 
+
+keep the start and stop indexes
+
+create a node
+
+put the start and stop indexes in the node
+
+push the node in the linked list
+
+to get an event from the event ring buffer: 
+
+we take the head of the linked list, (the head never changes and must never change as it is shared between threads, also we need a mutex around it to prevent race conditions)
+
+we take the next node from the head node,
+
+extract the event from the ring buffer using the start and stop indexes, 
+
+pop the node
+
