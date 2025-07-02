@@ -3,17 +3,22 @@
 
 #include "../globaldefinition.h"
 
-//TODO : static event ring buffer in global
+
+static struct ring_buffer event_ring_buffer;
 
 //TODO : node struct 
-
+typedef struct node{
+    struct node * next;
+    size_t start;
+    size_t stop;
+}node;
 
 //TODO : init node 
 
 //TODO : free node 
 
 
-//TODO : init list () which inits the ring buffer
+//TODO : init list () which inits the ring buffer and the head
 
 //TODO : add node to list (static)
 
