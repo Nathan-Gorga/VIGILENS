@@ -1,8 +1,6 @@
 #include "dataintake.h"
 
 
-
-
 static void cleanupHandler(void * arg){//BUG : this gets called randomly on cancel it seems
     
     (void)printf("Cancel signal received\n");    
@@ -29,16 +27,11 @@ static void dataIntake(void){
 
     (void)printf("Thread launched succesfully\n");
 
+    struct ring_buffer * internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
 
-    while(1){
-
-                
-        pthread_testcancel();
-    }
+    if(internal_ring_buffer == NULL) pthread_exit(NULL);
 
 
-    //TODO : init internal ring buffer
-    
     //TODO : send ready signal to master
 
     //TODO : sends go signal to data stream source
@@ -54,6 +47,8 @@ static void dataIntake(void){
     //TODO : always take into account that a cancel signal may come from master
 
     //TODO : free internal ring buffer
+
+    freeRingBuffer(internal_ring_buffer);
 
     pthread_cleanup_pop(1);
 }

@@ -29,7 +29,6 @@ int main(void){
         (void)printf("Error creating data processing thread\n"); goto end;
     }
     
-    
     while(!keyboard_interrupt);
     
     printf("Cancelling slave threads\n");

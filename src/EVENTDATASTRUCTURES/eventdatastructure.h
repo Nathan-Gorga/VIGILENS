@@ -4,11 +4,11 @@
 #include "../globaldefinition.h"
 #include "../RINGBUFFER/ringbuffer.h"
 
-#define SAMPLINGRATE 200
+#define SAMPLING_RATE 200
 #define NUM_CHANNELS 2
 #define TIME_IN_BUFFER 60
 
-#define EVENT_RING_BUFFER_SIZE (size_t)(TIME_IN_BUFFER * SAMPLINGRATE * NUM_CHANNELS)
+#define EVENT_RING_BUFFER_SIZE (size_t)(TIME_IN_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
 
 typedef struct node{
