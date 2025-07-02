@@ -9,6 +9,7 @@ TARGET = VIGILENCE
 SRCS = main.c \
 	RINGBUFFER/ringbuffer.c \
 	EVENTDATASTRUCTURES/eventdatastructure.c \
+	THREADFUNCTIONS/DATAPROCESSING/dataprocessing.c \
 	THREADFUNCTIONS/DATAINTAKE/dataintake.c
 	
 OBJS = $(SRCS:.c=.o)

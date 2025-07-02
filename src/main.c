@@ -37,6 +37,7 @@ int main(void){
 
     printf("Canceling slave threads\n");
     pthread_cancel(data_intake_thread);
+    pthread_cancel(data_processing_thread);
 
 end:
     freeEventDatastructure();
