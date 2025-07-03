@@ -59,7 +59,7 @@ int main(void){
             (void)pthread_cond_wait(&ready_cond, &ready_lock);
         }
 
-        (void)printf(GREEN"All threads are ready\n"RESET);
+        (void)printf("All threads are ready\n");
 
         if(pthread_mutex_unlock(&ready_lock) != 0){
             (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); goto end;

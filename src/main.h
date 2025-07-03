@@ -8,6 +8,6 @@
 #include "EVENTDATASTRUCTURES/eventdatastructure.h"
 
 #define MAIN_TEXT_COLOR GREEN
-#define printf(...) printf(MAIN_TEXT_COLOR"MASTER : "); printf(__VA_ARGS__); printf(RESET)
+#define printf(...) printf(MAIN_TEXT_COLOR"MASTER:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
 
 #endif

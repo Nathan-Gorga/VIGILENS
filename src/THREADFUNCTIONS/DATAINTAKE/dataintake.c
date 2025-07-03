@@ -7,7 +7,9 @@ static void cleanupHandler(void * internal_ring_buffer){
 
     freeRingBuffer((struct ring_buffer *)internal_ring_buffer);
 
-    (void)printf("Cleaned up thread\n");    
+    (void)printf("Cleaned up thread\n");   
+    
+    
    
 }
 
@@ -25,8 +27,8 @@ static void dataIntake(void){
     sigset_t set;
     int sig;
 
-    sigemptyset(&set);
-    sigaddset(&set, SIGCONT);
+    while(sigemptyset(&set));
+    while(sigaddset(&set, SIGCONT));
 
 
     struct ring_buffer * internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
@@ -35,30 +37,38 @@ static void dataIntake(void){
     
     pthread_cleanup_push(cleanupHandler, internal_ring_buffer);
 
+
      {// Send ready signal to master
-        pthread_mutex_lock(&ready_lock);
+        if(pthread_mutex_lock(&ready_lock) != 0){
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+            pthread_exit(NULL);
+        }
     
         ready_count++;
     
-        pthread_cond_signal(&ready_cond);
-        printf("Thread Ready!\n");
+        (void)pthread_cond_signal(&ready_cond);
+        
+        (void)printf("Thread Ready!\n");
     
-        pthread_mutex_unlock(&ready_lock);
+        if(pthread_mutex_unlock(&ready_lock) != 0){
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+            pthread_exit(NULL);
+        }
     }
 
     //wait for go signal
     if(sigwait(&set, &sig) == 0) {
-        printf("Received SIGCONT, continuing execution.\n");
+        (void)printf("Received SIGCONT, continuing execution.\n");
         
     }else {
-        printf("Error waiting for go signal\n");
+        (void)printf("Error waiting for go signal\n");
         pthread_exit(NULL);
     }
 
 
     //TODO : sends go signal to data stream source
 
-    printf("Entering main loop\n");
+    (void)printf("Entering main loop\n");
 
     while(1){
     //TODO : receive data 

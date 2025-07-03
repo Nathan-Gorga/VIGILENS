@@ -6,7 +6,7 @@
 #include "../../EVENTDATASTRUCTURES/eventdatastructure.h"
 
 #define DATA_INTAKE_TEXT_COLOR YELLOW
-#define printf(...) printf(DATA_INTAKE_TEXT_COLOR"DATA PROCESSING : "); printf(__VA_ARGS__); printf(RESET)
+#define printf(...) printf(DATA_INTAKE_TEXT_COLOR"DATA PROCESSING:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
 
 
 void * launchDataProcessing(void * arg);
