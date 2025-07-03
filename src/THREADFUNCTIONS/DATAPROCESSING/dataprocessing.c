@@ -25,9 +25,20 @@ static void dataProcessing(void){
     (void)printf("Thread launched succesfully\n");
     
     size_t event_buffer_size;
-    float ** event_buffer;
+    float ** event_buffer = NULL;
 
     pthread_cleanup_push(cleanupHandler, event_buffer);
+
+    {// Send ready signal to master
+        pthread_mutex_lock(&ready_lock);
+    
+        ready_count++;
+    
+        pthread_cond_signal(&ready_cond);
+        printf("Thread Ready!\n");
+    
+        pthread_mutex_unlock(&ready_lock);
+    }
     
     while(1){
         

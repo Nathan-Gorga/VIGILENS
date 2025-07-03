@@ -13,4 +13,10 @@ void * launchDataProcessing(void * arg);
 
 static void dataProcessing(void);
 
+extern pthread_mutex_t ready_lock;
+
+extern pthread_cond_t ready_cond;
+
+extern int ready_count;
+
 #endif

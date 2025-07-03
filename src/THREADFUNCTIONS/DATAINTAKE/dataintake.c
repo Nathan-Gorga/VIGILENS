@@ -28,6 +28,19 @@ static void dataIntake(void){
     
     pthread_cleanup_push(cleanupHandler, internal_ring_buffer);
 
+     {// Send ready signal to master
+        pthread_mutex_lock(&ready_lock);
+    
+        ready_count++;
+    
+        pthread_cond_signal(&ready_cond);
+        printf("Thread Ready!\n");
+    
+        pthread_mutex_unlock(&ready_lock);
+    }
+    
+
+
     //TODO : sends go signal to data stream source
 
     while(1){
