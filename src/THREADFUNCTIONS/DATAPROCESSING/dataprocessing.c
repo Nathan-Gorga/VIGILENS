@@ -28,8 +28,8 @@ static void dataProcessing(void){
     sigset_t set;
     int sig;
 
-    sigemptyset(&set);
-    sigaddset(&set, SIGCONT);
+    while(sigemptyset(&set));
+    while(sigaddset(&set, SIGCONT));
 
     size_t event_buffer_size;
     float ** event_buffer = NULL;
@@ -37,28 +37,35 @@ static void dataProcessing(void){
     pthread_cleanup_push(cleanupHandler, event_buffer);
 
     {// Send ready signal to master
-        pthread_mutex_lock(&ready_lock);
+        if(pthread_mutex_lock(&ready_lock) != 0){
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+            pthread_exit(NULL);
+        }
     
         ready_count++;
     
-        pthread_cond_signal(&ready_cond);
-        printf("Thread Ready!\n");
+        (void)pthread_cond_signal(&ready_cond);
+
+        (void)printf("Thread Ready!\n");
     
-        pthread_mutex_unlock(&ready_lock);
+        if(pthread_mutex_unlock(&ready_lock) != 0){
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+            pthread_exit(NULL);
+        }
     }
 
 
     //wait for go signal
     if(sigwait(&set, &sig) == 0) {
         
-        printf("Received SIGCONT, continuing execution.\n");
+        (void)printf("Received SIGCONT, continuing execution.\n");
         
     }else {
-        printf("Error waiting for go signal\n");
+        (void)printf("Error waiting for go signal\n");
         pthread_exit(NULL);
     }
 
-    printf("Entering main loop\n");
+    (void)printf("Entering main loop\n");
     while(1){
         
         event_buffer_size = getEvent(event_buffer);
