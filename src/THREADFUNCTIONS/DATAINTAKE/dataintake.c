@@ -22,6 +22,13 @@ static void dataIntake(void){
     
     (void)printf("Thread launched succesfully\n");
     
+    sigset_t set;
+    int sig;
+
+    sigemptyset(&set);
+    sigaddset(&set, SIGCONT);
+
+
     struct ring_buffer * internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
     
     if(internal_ring_buffer == NULL) exit(EXIT_FAILURE);
@@ -38,10 +45,20 @@ static void dataIntake(void){
     
         pthread_mutex_unlock(&ready_lock);
     }
-    
+
+    //wait for go signal
+    if(sigwait(&set, &sig) == 0) {
+        printf("Received SIGCONT, continuing execution.\n");
+        
+    }else {
+        printf("Error waiting for go signal\n");
+        pthread_exit(NULL);
+    }
 
 
     //TODO : sends go signal to data stream source
+
+    printf("Entering main loop\n");
 
     while(1){
     //TODO : receive data 

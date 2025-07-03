@@ -10,6 +10,9 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <bits/types/sigset_t.h>
+#include <bits/sigaction.h>
+
 
 
 

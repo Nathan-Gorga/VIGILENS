@@ -20,10 +20,17 @@ void * launchDataProcessing(void * arg){
     pthread_exit(NULL);
 }
 
+
 static void dataProcessing(void){
     
     (void)printf("Thread launched succesfully\n");
     
+    sigset_t set;
+    int sig;
+
+    sigemptyset(&set);
+    sigaddset(&set, SIGCONT);
+
     size_t event_buffer_size;
     float ** event_buffer = NULL;
 
@@ -39,7 +46,19 @@ static void dataProcessing(void){
     
         pthread_mutex_unlock(&ready_lock);
     }
-    
+
+
+    //wait for go signal
+    if(sigwait(&set, &sig) == 0) {
+        
+        printf("Received SIGCONT, continuing execution.\n");
+        
+    }else {
+        printf("Error waiting for go signal\n");
+        pthread_exit(NULL);
+    }
+
+    printf("Entering main loop\n");
     while(1){
         
         event_buffer_size = getEvent(event_buffer);

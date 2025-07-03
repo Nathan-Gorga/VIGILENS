@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -D_POSIX_C_SOURCE=200809L -pthread
 
 # Target executable
 TARGET = VIGILENCE
@@ -21,7 +21,7 @@ all: $(TARGET)
 
 # Linking the final binary
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -lpthread -o $@ $^
+	$(CC) $(CFLAGS) -D_POSIX_C_SOURCE=200809L -o $@ $^
 
 # Compiling .c to .o
 %.o: %.c %.h

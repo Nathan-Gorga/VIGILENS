@@ -1,5 +1,6 @@
 #include "main.h"
 
+
 bool keyboard_interrupt = false;
 
 pthread_mutex_t ready_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -20,8 +21,14 @@ int main(void){
    
     signal(SIGINT, handle_sigint);
 
-    pthread_t data_intake_thread, data_processing_thread;
+    sigset_t set;
+    sigemptyset(&set);
+    sigaddset(&set, SIGCONT);
+    
+    // Block SIGCONT in all threads, necessary for sigwait to work properly
+    pthread_sigmask(SIG_BLOCK, &set, NULL);
 
+    pthread_t data_intake_thread, data_processing_thread;
     (void)printf("Starting VIGILENCE SYSTEM\n");
 
     (void)printf("Initializing event data structure\n");
@@ -48,13 +55,13 @@ int main(void){
         pthread_mutex_unlock(&ready_lock); 
     }
 
-
-    //TODO : send go signal to both threads
+    printf("Sending go signal to slave threads\n");
+    pthread_kill(data_intake_thread, SIGCONT);
+    pthread_kill(data_processing_thread, SIGCONT);
 
     while(!keyboard_interrupt);
     
     printf("Cancelling slave threads\n");
-    
     pthread_cancel(data_intake_thread);
     pthread_cancel(data_processing_thread);
 
@@ -62,8 +69,10 @@ int main(void){
     pthread_join(data_processing_thread, NULL);
 
 end:
+
     freeEventDatastructure();
     destroyMutexes();
+
     pthread_mutex_destroy(&ready_lock);
     pthread_cond_destroy(&ready_cond);
 
