@@ -60,12 +60,17 @@ static void writeIndexIncrement(struct ring_buffer * buffer){
     if(buffer->type == EVENT_RING_BUFFER){
 
         
-        pthread_mutex_lock(&write_index_mutex);
+        if(pthread_mutex_lock(&write_index_mutex) != 0){
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+            pthread_exit(NULL);
+        }
 
             _writeIndexIncrement(buffer);
 
-        pthread_mutex_unlock(&write_index_mutex);
-        
+        if(pthread_mutex_unlock(&write_index_mutex) != 0){
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+            pthread_exit(NULL);
+        }        
 
     } else _writeIndexIncrement(buffer);
 }
