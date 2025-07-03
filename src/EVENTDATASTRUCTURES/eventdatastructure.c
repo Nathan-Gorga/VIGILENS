@@ -140,7 +140,6 @@ static float * _getEvent(size_t * size_ptr){//FIXME : send as argument an int po
     PRINTF_DEBUG
 
     *size_ptr = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);    
-    printf("size : %d\n", *size_ptr);
     PRINTF_DEBUG
     float * data = (float *)calloc(*size_ptr, sizeof(float));//FIXME : dangerous and inefficient, find a better way
     PRINTF_DEBUG

@@ -18,7 +18,9 @@ void handle_sigint(const int sig) {
 }
 
 int main(void){
-   
+    
+    srand(time(NULL));
+
     (void)signal(SIGINT, handle_sigint);
 
     sigset_t set;

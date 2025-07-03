@@ -67,12 +67,12 @@ static void dataProcessing(void){
         if(event_buffer_size > 0){//there is an event
             PRINTF_DEBUG
 
-            printf("got event\n");
+            printf("Got event of size %d\n", event_buffer_size);
             PRINTF_DEBUG
 
-            for(int i = 0; i < event_buffer_size; i++){
-                printf("%f\n", event_buffer[i]);
-            }
+            // for(int i = 0; i < event_buffer_size; i++){
+            //     printf("%f\n", event_buffer[i]);
+            // }
             PRINTF_DEBUG
 
             //TODO : implement
