@@ -76,7 +76,7 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 
     assert(start >= 0 && stop >= 0);
 
-    assert(start < buffer_size && stop < buffer_size);
+    assert(start < buffer_size && stop < buffer_size); 
 
 
     if(stop > start) return stop - start + 1;

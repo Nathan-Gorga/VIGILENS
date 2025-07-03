@@ -36,7 +36,7 @@ int main(void){
     (void)printf("Starting VIGILENCE SYSTEM\n");
 
     (void)printf("Initializing event data structure\n");
-    initEventDatastructure(EVENT_RING_BUFFER_SIZE);
+    initEventDatastructure(12);
 
     (void)printf("Creating mutexes\n");
     if(createMutexes() != 0){

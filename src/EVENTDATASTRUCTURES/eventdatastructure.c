@@ -158,7 +158,10 @@ static float * _getEvent(size_t * size_ptr){//FIXME : send as argument an int po
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
     PRINTF_DEBUG
 
+    testEventDatastructure();
+
     popNodeFromList();
+    testEventDatastructure();
     PRINTF_DEBUG
 
     return data;
@@ -182,9 +185,9 @@ static void _addEvent(const float * data, const size_t size_data){
         
         addBufferToRingBuffer(event_ring_buffer,data, size_data);
 
-        const size_t test_stop = event_ring_buffer->write - 1;
+        const int test_stop = event_ring_buffer->write - 1;
         
-        const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
+        const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size - 1;//TODO : make a function to get the write index IN MUTEX
         PRINTF_DEBUG
 
     MUTEX_UNLOCK(&event_ring_buffer_mutex);

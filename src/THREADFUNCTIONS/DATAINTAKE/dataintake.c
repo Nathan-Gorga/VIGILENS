@@ -68,15 +68,16 @@ static void dataIntake(void){
     float mockEvent[5];
 
     
+    for(int i = 0; i < 5; i++){
+       mockEvent[i] = i; 
+    }
+    
     while(1){
-        for(int i = 0; i < 5; i++){
-           mockEvent[i] = (rand() % 10) - 5; 
-        }
-        
     sleep(1);
     //TODO : receive data 
     printf("Adding event of size %d\n", 5);
     addEvent(mockEvent, 5);
+    testEventDatastructure();
 
     //TODO : put data in internal ring buffer
 
