@@ -24,19 +24,24 @@ static void dataProcessing(void){
     
     (void)printf("Thread launched succesfully\n");
     
+    size_t event_buffer_size;
     float ** event_buffer;
-    
+
     pthread_cleanup_push(cleanupHandler, event_buffer);
     
     while(1){
         
-        if(getEvent(event_buffer) > 0){//there is an event
+        event_buffer_size = getEvent(event_buffer);
+
+        if(event_buffer_size > 0){//there is an event
+
 
             //TODO : implement
 
             free(event_buffer);
             event_buffer = NULL;
         }
+        pthread_testcancel();
     }
 
 

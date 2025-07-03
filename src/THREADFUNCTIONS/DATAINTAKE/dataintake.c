@@ -1,11 +1,11 @@
 #include "dataintake.h"
 
 
-static void cleanupHandler(void * arg){
+static void cleanupHandler(void * internal_ring_buffer){
     
     (void)printf("Cancel signal received\n");    
 
-    freeRingBuffer((struct ring_buffer *)arg);
+    freeRingBuffer((struct ring_buffer *)internal_ring_buffer);
 
     (void)printf("Cleaned up thread\n");    
    
@@ -24,21 +24,20 @@ static void dataIntake(void){
     
     struct ring_buffer * internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
     
-    if(internal_ring_buffer == NULL) pthread_exit(NULL);
+    if(internal_ring_buffer == NULL) exit(EXIT_FAILURE);
     
     pthread_cleanup_push(cleanupHandler, internal_ring_buffer);
 
     //TODO : sends go signal to data stream source
 
-    //TODO : receive data 
     while(1){
+    //TODO : receive data 
         
     //TODO : put data in internal ring buffer
 
     //TODO : check if there is a leave from baseline in the ring buffer(how big should be the buffer that's checked and shoudl we send the whole buffer or bytes at a time?)
 
     //TODO : return to data intake
-
     
         pthread_testcancel();
     }

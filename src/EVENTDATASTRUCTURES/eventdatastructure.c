@@ -136,7 +136,7 @@ static size_t _getEvent(float ** data){
 
     const size_t size = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);    
 
-    *data = (float *)calloc(size, sizeof(float));
+    *data = (float *)calloc(size, sizeof(float));//FIXME : dangerous and inefficient, find a better way
 
     if(*data == NULL) return -1; //something went wrong
 
