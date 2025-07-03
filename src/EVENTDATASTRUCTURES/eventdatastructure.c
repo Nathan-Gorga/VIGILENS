@@ -104,6 +104,7 @@ static void freeEventRingBuffer(void){
 
 
 
+
 static void addNodeToList(node * n){
     PRINTF_DEBUG
 
@@ -243,7 +244,6 @@ void freeEventDatastructure(void){
     PRINTF_DEBUG
     freeList();
 }
-
 
 
 

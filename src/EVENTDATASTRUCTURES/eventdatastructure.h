@@ -104,14 +104,14 @@ extern pthread_cond_t ready_cond;
 //STATIC EVENT RING BUFFER MANIPULATION
 
 /**
- * @brief Adds a node to the list.
+ * @brief Adds a node to the linked list.
  *
  * @param n The node to add to the list.
  *
- * @details This function adds a node to the end of the list.
+ * @details This function adds a node to the linked list.
  *
- * @pre head must not be NULL, and n must not be NULL.
- */static void addNodeToList(node * n);//TODO : new function comment
+ * @pre n must not be NULL and head must not be NULL.
+ */static void addNodeToList(node * n);
 
 
 
@@ -124,10 +124,11 @@ extern pthread_cond_t ready_cond;
  * @return The size of the event in floats, or 0 if the event list is empty, or -1 if a memory allocation failure occurs.
  *
  * @details This function retrieves the next event from the event list and stores it in the provided buffer.
- *          IT IS YOUR RESPONSABILITY TO FREE DATA AFTER USE
  *
- * @pre head must not be NULL.
- */static size_t _getEvent(float * data);//TODO : New function comment
+ * @pre head must not be NULL, and data must not be NULL.
+ *
+ * @post head->next points to the next node in the list, or NULL if the list is empty.
+ */static size_t _getEvent(float * data);
 
 
 
@@ -175,20 +176,18 @@ int createMutexes(void);
 
 int destroyMutexes(void);
 
-
-
-
 /**
- * @brief Pops the next node from the list.
+ * @brief Returns the size of an event in the event ring buffer.
  *
- * @details This function removes the node immediately following the head
- *          in a thread-safe manner by using a mutex.
+ * @return The size of an event in the event ring buffer, or 0 if the list is empty.
  *
- * @pre The head node must not be NULL.
- *
- * @post The list's head now points to the second node, and the memory of
- *       the removed node is freed.
- */static void popNodeFromList(void);//TODO : new function comment
+ * @details This function pops the first node from the linked list.
+ *          It then extracts the event from the ring buffer using the start and stop indexes in the node.
+ *          It then frees the node.
+ *          If the list is empty, it returns 0.
+ */static void popNodeFromList(void);
+
+
 
 
 /**
@@ -199,10 +198,12 @@ int destroyMutexes(void);
  * @return The size of the event in floats, or 0 if the event list is empty, or -1 if a memory allocation failure occurs.
  *
  * @details This function retrieves the next event from the event list and stores it in the provided buffer.
- *          IT IS YOUR RESPONSABILITY TO FREE DATA AFTER USE
+ *          Safe for multithreading
  *
- * @pre head must not be NULL.
- */size_t getEvent(float * data);//TODO : New function comment
+ * @pre data must not be NULL.
+ *
+ * @post head->next points to the next node in the list, or NULL if the list is empty.
+ */size_t getEvent(float * data);
 
 
 /**
