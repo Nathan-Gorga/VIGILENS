@@ -77,7 +77,7 @@ static void dataIntake(void){
 
         pthread_testcancel();
 
-        usleep(1000*1000);
+        usleep(10);
 
         //TODO : receive data 
         PRINTF_DEBUG

@@ -33,7 +33,7 @@ int main(void){
     while(pthread_sigmask(SIG_BLOCK, &set, NULL));
 
     pthread_t data_intake_thread, data_processing_thread;
-    
+
     (void)printf("Starting VIGILENCE SYSTEM\n");
 
     (void)printf("Initializing event data structure\n");
@@ -82,7 +82,7 @@ int main(void){
     (void)printf("Cancelling slave threads\n");
 
     
-    (void)pthread_cancel(data_intake_thread);//BUG : cancel not working when threads are running loops too fast
+    (void)pthread_cancel(data_intake_thread);
     (void)pthread_cancel(data_processing_thread);
 
     (void)pthread_join(data_intake_thread, NULL);
