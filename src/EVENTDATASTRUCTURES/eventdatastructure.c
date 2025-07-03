@@ -141,11 +141,16 @@ static size_t _getEvent(float ** data){
     if(*data == NULL) return -1; //something went wrong
 
     
-    pthread_mutex_lock(&event_ring_buffer_mutex);//TODO : make these mutexes more "portable" (in function or wrapper function)
-
+    if(pthread_mutex_lock(&event_ring_buffer_mutex) != 0){//TODO : make these mutexes more "portable" (in function or wrapper function)
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
         extractBufferFromRingBuffer(event_ring_buffer, *data, size, start, stop);
 
-    pthread_mutex_unlock(&event_ring_buffer_mutex);
+    if(pthread_mutex_unlock(&event_ring_buffer_mutex) != 0){//TODO : make these mutexes more "portable" (in function or wrapper function)
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
 
     popNodeFromList();
 
@@ -162,8 +167,10 @@ static void _addEvent(const float * data, const size_t size_data){
     assert(head != NULL);
 
     
-    pthread_mutex_lock(&event_ring_buffer_mutex);//TODO : make these mutexes more "portable" (in function or wrapper function)
-    
+    if(pthread_mutex_lock(&event_ring_buffer_mutex) != 0){//TODO : make these mutexes more "portable" (in function or wrapper function)
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }    
         const size_t start = event_ring_buffer->write;
         
         addBufferToRingBuffer(event_ring_buffer,data, size_data);
@@ -172,8 +179,11 @@ static void _addEvent(const float * data, const size_t size_data){
         
         const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
 
-    pthread_mutex_unlock(&event_ring_buffer_mutex);
-    
+
+    if(pthread_mutex_unlock(&event_ring_buffer_mutex) != 0){//TODO : make these mutexes more "portable" (in function or wrapper function)
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }    
     node * n = initNode(start, stop);
 
     addNodeToList(n);
@@ -200,33 +210,51 @@ void freeEventDatastructure(void){
 
 void addNodeToList(node * n){
     
-    pthread_mutex_lock(&head_mutex);
+    if(pthread_mutex_lock(&head_mutex) != 0){
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
 
         _addNodeToList(n);
 
-    pthread_mutex_unlock(&head_mutex);
+    if(pthread_mutex_unlock(&head_mutex) != 0){
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
     
 }
 
 
 void popNodeFromList(void){
     
-    pthread_mutex_lock(&head_mutex);
+    if(pthread_mutex_lock(&head_mutex) != 0){
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
     
         _popNodeFromList();
 
-    pthread_mutex_unlock(&head_mutex);
+    if(pthread_mutex_unlock(&head_mutex) != 0){
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
 }
 
 
 
 size_t getEvent(float ** data){
     
-    pthread_mutex_lock(&head_mutex);
+    if(pthread_mutex_lock(&head_mutex) != 0){
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
 
         const size_t size = _getEvent(data);
 
-    pthread_mutex_unlock(&head_mutex);
+    if(pthread_mutex_unlock(&head_mutex) != 0){
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
     
     return size;
 }
@@ -234,11 +262,17 @@ size_t getEvent(float ** data){
 
 void addEvent(const float * data, const size_t size_data){
     
-    pthread_mutex_lock(&head_mutex);
+    if(pthread_mutex_lock(&head_mutex) != 0){
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
     
         _addEvent(data, size_data);
     
-    pthread_mutex_unlock(&head_mutex);
+    if(pthread_mutex_unlock(&head_mutex) != 0){
+        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
+        pthread_exit(NULL);
+    }
 }
 
 int createMutexes(void){
