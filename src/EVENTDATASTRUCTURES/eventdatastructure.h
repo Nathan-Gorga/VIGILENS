@@ -110,16 +110,9 @@ extern pthread_cond_t ready_cond;
  * @details This function adds a node to the end of the list.
  *
  * @pre head must not be NULL, and n must not be NULL.
- */static void _addNodeToList(node * n);
+ */static void addNodeToList(node * n);//TODO : new function comment
 
 
-/**
- * @brief Pops a node from the list.
- *
- * @details This function frees the head's next node and moves the head's next pointer to the next node.
- *
- * @pre head must not be NULL.
- */static void _popNodeFromList(void);
 
 
 /**
@@ -182,18 +175,6 @@ int createMutexes(void);
 int destroyMutexes(void);
 
 
-/**
- * @brief Adds a node to the list.
- *
- * @param n The node to add to the list.
- *
- * @details This function adds a node to the end of the list.
- *          Safe for multithreading.
- *
- * @pre n must not be NULL.
- *
- * @post head->next is set to n, and n->next is set to NULL.
- */void addNodeToList(node * n);
 
 
 /**
@@ -206,7 +187,7 @@ int destroyMutexes(void);
  *
  * @post The list's head now points to the second node, and the memory of
  *       the removed node is freed.
- */void popNodeFromList(void);
+ */void popNodeFromList(void);//TODO : new function comment
 
 
 /**

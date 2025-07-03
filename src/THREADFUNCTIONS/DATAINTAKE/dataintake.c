@@ -74,24 +74,28 @@ static void dataIntake(void){
 
     
     while(1){
-    usleep(1000*1000);
-    //TODO : receive data 
-    PRINTF_DEBUG
-    printf("Adding event of size %d\n", 5);
-    addEvent(mockEvent, 5);
-    PRINTF_DEBUG
 
-    printf("testing event\n");
-    // testEventDatastructure();
-    PRINTF_DEBUG
-
-    //TODO : put data in internal ring buffer
-
-    //TODO : check if there is a leave from baseline in the ring buffer(how big should be the buffer that's checked and shoudl we send the whole buffer or bytes at a time?)
-
-    //TODO : return to data intake
-    
         pthread_testcancel();
+
+        usleep(1000*1000);
+
+        //TODO : receive data 
+        PRINTF_DEBUG
+
+        printf("Adding event of size %d\n", 5);
+
+        addEvent(mockEvent, 5);
+
+        PRINTF_DEBUG
+
+        PRINTF_DEBUG
+
+        //TODO : put data in internal ring buffer
+
+        //TODO : check if there is a leave from baseline in the ring buffer(how big should be the buffer that's checked and shoudl we send the whole buffer or bytes at a time?)
+
+        //TODO : return to data intake
+        
     }
 
     pthread_cleanup_pop(1);

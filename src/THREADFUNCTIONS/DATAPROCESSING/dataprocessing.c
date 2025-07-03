@@ -61,6 +61,7 @@ static void dataProcessing(void){
 
     (void)printf("Entering main loop\n");
     while(1){
+        pthread_testcancel();
         
         event_buffer = getEvent(&event_buffer_size);
 
@@ -84,7 +85,6 @@ static void dataProcessing(void){
             PRINTF_DEBUG
         }
 
-        pthread_testcancel();
     }
 
 

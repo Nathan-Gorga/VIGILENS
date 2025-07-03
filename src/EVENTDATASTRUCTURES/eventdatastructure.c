@@ -104,7 +104,7 @@ static void freeEventRingBuffer(void){
 
 
 
-static void _addNodeToList(node * n){
+static void addNodeToList(node * n){
     PRINTF_DEBUG
 
     assert(head != NULL);
@@ -134,7 +134,7 @@ static void _addNodeToList(node * n){
 
 
 
-static void _popNodeFromList(void){
+static void popNodeFromList(void){
     PRINTF_DEBUG
 
     assert(head != NULL);
@@ -154,7 +154,7 @@ static void _popNodeFromList(void){
 
 
 
-static float * _getEvent(size_t * size_ptr){//FIXME : send as argument an int pointer for size and malloc the relevant size directly inside this function, needs to be freed after, still not great but a bit better
+static float * _getEvent(size_t * size_ptr){
     PRINTF_DEBUG
 
     assert(head != NULL);
@@ -225,7 +225,7 @@ static void _addEvent(const float * data, const size_t size_data){
 
         const int test_stop = event_ring_buffer->write - 1;
         
-        const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size - 1;//TODO : make a function to get the write index IN MUTEX
+        const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size - 1;
         PRINTF_DEBUG
 
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
@@ -262,29 +262,6 @@ void freeEventDatastructure(void){
 }
 
 
-void addNodeToList(node * n){
-    PRINTF_DEBUG
-    
-    // MUTEX_LOCK(&head_mutex); //FIXME : mutexes here may not be useful
-    PRINTF_DEBUG
-
-        _addNodeToList(n);
-        PRINTF_DEBUG
-
-    // MUTEX_UNLOCK(&head_mutex);
-    PRINTF_DEBUG
-    
-}
-
-
-void popNodeFromList(void){
-    
-    //MUTEX_LOCK(&head_mutex);//FIXME : mutexes here may not be useful
-    
-        _popNodeFromList();
-
-    //MUTEX_UNLOCK(&head_mutex);
-}
 
 
 
