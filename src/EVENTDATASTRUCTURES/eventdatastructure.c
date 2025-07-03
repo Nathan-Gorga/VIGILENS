@@ -122,39 +122,47 @@ static void _popNodeFromList(void){
 
 
 
-static size_t _getEvent(float ** data){
+static float * _getEvent(size_t * size_ptr){//FIXME : send as argument an int pointer for size and malloc the relevant size directly inside this function, needs to be freed after, still not great but a bit better
 
     assert(head != NULL);
     
-    if(head->next == NULL) return 0; // list is empty
-
+    if(head->next == NULL){// list is empty
+        *size_ptr = 0; 
+        return NULL; 
+    } 
+    PRINTF_DEBUG
     node * event = head->next;
+    PRINTF_DEBUG
 
     const size_t start = event->start;
 
     const size_t stop = event->stop;
+    PRINTF_DEBUG
 
-    const size_t size = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);    
+    *size_ptr = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);    
+    printf("size : %d\n", *size_ptr);
+    PRINTF_DEBUG
+    float * data = (float *)calloc(*size_ptr, sizeof(float));//FIXME : dangerous and inefficient, find a better way
+    PRINTF_DEBUG
 
-    *data = (float *)calloc(size, sizeof(float));//FIXME : dangerous and inefficient, find a better way
-
-    if(*data == NULL) return -1; //something went wrong
+    if(data == NULL){
+        *size_ptr = 0;
+        return NULL; //something went wrong
+    } 
+    PRINTF_DEBUG
 
     
-    if(pthread_mutex_lock(&event_ring_buffer_mutex) != 0){//TODO : make these mutexes more "portable" (in function or wrapper function)
-        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
-        pthread_exit(NULL);
-    }
-        extractBufferFromRingBuffer(event_ring_buffer, *data, size, start, stop);
+    MUTEX_LOCK(&event_ring_buffer_mutex);
+        
+        extractBufferFromRingBuffer(event_ring_buffer, data, *size_ptr, start, stop);
 
-    if(pthread_mutex_unlock(&event_ring_buffer_mutex) != 0){//TODO : make these mutexes more "portable" (in function or wrapper function)
-        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
-        pthread_exit(NULL);
-    }
+    MUTEX_UNLOCK(&event_ring_buffer_mutex);
+    PRINTF_DEBUG
 
     popNodeFromList();
+    PRINTF_DEBUG
 
-    return size;
+    return data;
 }
 
 
@@ -165,12 +173,12 @@ static void _addEvent(const float * data, const size_t size_data){
     assert(size_data > 0);
 
     assert(head != NULL);
+    PRINTF_DEBUG
 
     
-    if(pthread_mutex_lock(&event_ring_buffer_mutex) != 0){//TODO : make these mutexes more "portable" (in function or wrapper function)
-        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
-        pthread_exit(NULL);
-    }    
+    MUTEX_LOCK(&event_ring_buffer_mutex);
+    PRINTF_DEBUG
+
         const size_t start = event_ring_buffer->write;
         
         addBufferToRingBuffer(event_ring_buffer,data, size_data);
@@ -178,15 +186,17 @@ static void _addEvent(const float * data, const size_t size_data){
         const size_t test_stop = event_ring_buffer->write - 1;
         
         const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size;//TODO : make a function to get the write index IN MUTEX
+        PRINTF_DEBUG
 
+    MUTEX_UNLOCK(&event_ring_buffer_mutex);
+    PRINTF_DEBUG
 
-    if(pthread_mutex_unlock(&event_ring_buffer_mutex) != 0){//TODO : make these mutexes more "portable" (in function or wrapper function)
-        (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
-        pthread_exit(NULL);
-    }    
     node * n = initNode(start, stop);
+    PRINTF_DEBUG
 
     addNodeToList(n);
+    PRINTF_DEBUG
+
 }
 
 
@@ -209,46 +219,52 @@ void freeEventDatastructure(void){
 
 
 void addNodeToList(node * n){
+    PRINTF_DEBUG
     
-    MUTEX_LOCK(&head_mutex);
+    // MUTEX_LOCK(&head_mutex); //FIXME : mutexes here may not be useful
+    PRINTF_DEBUG
 
         _addNodeToList(n);
+        PRINTF_DEBUG
 
-    MUTEX_UNLOCK(&head_mutex);
+    // MUTEX_UNLOCK(&head_mutex);
+    PRINTF_DEBUG
     
 }
 
 
 void popNodeFromList(void){
     
-    MUTEX_LOCK(&head_mutex);
+    //MUTEX_LOCK(&head_mutex);//FIXME : mutexes here may not be useful
     
         _popNodeFromList();
 
-    MUTEX_UNLOCK(&head_mutex);
+    //MUTEX_UNLOCK(&head_mutex);
 }
 
 
 
-size_t getEvent(float ** data){
+float * getEvent(size_t * size_ptr){
     
     MUTEX_LOCK(&head_mutex);
 
-        const size_t size = _getEvent(data);
+        float * event = _getEvent(size_ptr);
 
     MUTEX_UNLOCK(&head_mutex);
     
-    return size;
+    return event;
 }
 
 
 void addEvent(const float * data, const size_t size_data){
     
     MUTEX_LOCK(&head_mutex);
-    
+        PRINTF_DEBUG
         _addEvent(data, size_data);
     
     MUTEX_UNLOCK(&head_mutex);
+    PRINTF_DEBUG
+    
 }
 
 int createMutexes(void){
@@ -275,4 +291,22 @@ int destroyMutexes(void){
     if(pthread_mutex_destroy(&ready_cond) == -1) return -1;
   
     return 0;
+}
+
+
+void printNodeList(void){
+    node * curr = head->next;
+
+    while(curr != NULL){
+        printf("start : %zu, stop : %zu\n", curr->start, curr->stop);
+        curr = curr->next;
+    }
+}
+
+void testEventDatastructure(void){
+    printNodeList();
+
+    for(int i = 0; i < event_ring_buffer->size; i++){
+        printf("%f\n", event_ring_buffer->memory[i]);
+    }
 }

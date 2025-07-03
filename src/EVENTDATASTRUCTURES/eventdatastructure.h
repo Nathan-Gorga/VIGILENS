@@ -133,7 +133,7 @@ extern pthread_cond_t ready_cond;
  *          IT IS YOUR RESPONSABILITY TO FREE DATA AFTER USE
  *
  * @pre head must not be NULL.
- */static size_t _getEvent(float ** data);//malloc enough to data and fills it with the event
+ */static float * _getEvent(size_t * size_ptr);//TODO : New function comment
 
 
 
@@ -220,7 +220,7 @@ int destroyMutexes(void);
  *          IT IS YOUR RESPONSABILITY TO FREE DATA AFTER USE
  *
  * @pre head must not be NULL.
- */size_t getEvent(float ** data);//malloc enough to data and fills it with the event
+ */float * getEvent(size_t * size_ptr);//TODO : New function comment
 
 
 /**
@@ -239,6 +239,8 @@ int destroyMutexes(void);
  */void addEvent(const float * data, const size_t size_data);
 
 
+
+void testEventDatastructure(void);
 
 #endif
 

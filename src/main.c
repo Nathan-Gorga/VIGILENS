@@ -73,11 +73,12 @@ int main(void){
     while(pthread_kill(data_intake_thread, SIGCONT));
     while(pthread_kill(data_processing_thread, SIGCONT));
 
+   
     while(!keyboard_interrupt);
     
     (void)printf("Cancelling slave threads\n");
 
-    (void)pthread_cancel(data_intake_thread);
+    (void)pthread_cancel(data_intake_thread);//BUG : cancel not working when threads workings
     (void)pthread_cancel(data_processing_thread);
 
     (void)pthread_join(data_intake_thread, NULL);

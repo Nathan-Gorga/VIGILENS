@@ -32,7 +32,7 @@ static void dataProcessing(void){
     while(sigaddset(&set, SIGCONT));
 
     size_t event_buffer_size;
-    float ** event_buffer = NULL;
+    float * event_buffer = NULL;
 
     pthread_cleanup_push(cleanupHandler, event_buffer);
 
@@ -62,16 +62,28 @@ static void dataProcessing(void){
     (void)printf("Entering main loop\n");
     while(1){
         
-        event_buffer_size = getEvent(event_buffer);
+        event_buffer = getEvent(&event_buffer_size);
 
         if(event_buffer_size > 0){//there is an event
+            PRINTF_DEBUG
 
+            printf("got event\n");
+            PRINTF_DEBUG
+
+            for(int i = 0; i < event_buffer_size; i++){
+                printf("%f\n", event_buffer[i]);
+            }
+            PRINTF_DEBUG
 
             //TODO : implement
 
             free(event_buffer);
+            PRINTF_DEBUG
             event_buffer = NULL;
+            event_buffer_size = 0;
+            PRINTF_DEBUG
         }
+
         pthread_testcancel();
     }
 
