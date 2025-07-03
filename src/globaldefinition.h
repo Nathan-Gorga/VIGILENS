@@ -36,5 +36,16 @@
     #define PRINTF_DEBUG
 #endif
 
+
+#define MUTEX_LOCK(mutex) if(pthread_mutex_lock(mutex) != 0){ \
+                                (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);\
+                                pthread_exit(NULL);\
+                           }
+
+#define MUTEX_UNLOCK(mutex) if(pthread_mutex_unlock(mutex) != 0){ \
+                                (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);\
+                                pthread_exit(NULL);\
+                            }
+
 #endif
 

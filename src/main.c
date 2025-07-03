@@ -52,7 +52,8 @@ int main(void){
     
     {//wait for ready signal from both threads
         if(pthread_mutex_lock(&ready_lock) != 0){
-            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); goto end;
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); 
+            goto end;
         }
 
         while (ready_count < THREADS_TO_WAIT) {
@@ -62,7 +63,8 @@ int main(void){
         (void)printf("All threads are ready\n");
 
         if(pthread_mutex_unlock(&ready_lock) != 0){
-            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); goto end;
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); 
+            goto end;
         } 
     }
 

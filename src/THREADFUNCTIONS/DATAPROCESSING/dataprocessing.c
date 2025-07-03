@@ -37,10 +37,7 @@ static void dataProcessing(void){
     pthread_cleanup_push(cleanupHandler, event_buffer);
 
     {// Send ready signal to master
-        if(pthread_mutex_lock(&ready_lock) != 0){
-            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
-            pthread_exit(NULL);
-        }
+        MUTEX_LOCK(&ready_lock);
     
         ready_count++;
     
@@ -48,10 +45,7 @@ static void dataProcessing(void){
 
         (void)printf("Thread Ready!\n");
     
-        if(pthread_mutex_unlock(&ready_lock) != 0){
-            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);
-            pthread_exit(NULL);
-        }
+        MUTEX_UNLOCK(&ready_lock);
     }
 
 
