@@ -154,16 +154,14 @@ static void popNodeFromList(void){
 
 
 
-static float * _getEvent(size_t * size_ptr){
+static size_t _getEvent(float * data){
     PRINTF_DEBUG
 
     assert(head != NULL);
     PRINTF_DEBUG
     
-    if(head->next == NULL){// list is empty
-        *size_ptr = 0; 
-        return NULL; 
-    } 
+    if(head->next == NULL) return 0;//list is empty
+
     PRINTF_DEBUG
     node * event = head->next;
     PRINTF_DEBUG
@@ -173,36 +171,21 @@ static float * _getEvent(size_t * size_ptr){
     const size_t stop = event->stop;
     PRINTF_DEBUG
 
-    *size_ptr = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);    
+    const size_t size_data = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);    
     PRINTF_DEBUG
-    float * data = (float *)calloc(*size_ptr, sizeof(float));//FIXME : dangerous and inefficient, find a better way
-    PRINTF_DEBUG
-
-    if(data == NULL){
-        *size_ptr = 0;
-        return NULL; //something went wrong
-    } 
-    PRINTF_DEBUG
-
     
     MUTEX_LOCK(&event_ring_buffer_mutex);
         
-        extractBufferFromRingBuffer(event_ring_buffer, data, *size_ptr, start, stop);
+        extractBufferFromRingBuffer(event_ring_buffer, data, size_data, start, stop);
 
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
     PRINTF_DEBUG
 
-    // printf("testing event before pop\n");
-
-    // testEventDatastructure();
-
     popNodeFromList();
-    // printf("testing event after pop\n");
-
-    // testEventDatastructure();
+    
     PRINTF_DEBUG
 
-    return data;
+    return size_data;
 }
 
 
@@ -265,15 +248,15 @@ void freeEventDatastructure(void){
 
 
 
-float * getEvent(size_t * size_ptr){
+size_t getEvent(float * data){
     
     MUTEX_LOCK(&head_mutex);
 
-        float * event = _getEvent(size_ptr);
+        size_t ret = _getEvent(data);
 
     MUTEX_UNLOCK(&head_mutex);
     
-    return event;
+    return ret;
 }
 
 

@@ -1,11 +1,11 @@
 #include "dataprocessing.h"
 
-static void cleanupHandler(void * eventBuffer){
+static void cleanupHandler(void * event_buffer){
     
     (void)printf("Cancel signal received\n");    
 
-    if(eventBuffer != NULL){
-        free((float*)eventBuffer);
+    if(event_buffer != NULL){
+        free((float*)event_buffer);
     }
 
     (void)printf("Cleaned up thread\n");    
@@ -31,8 +31,8 @@ static void dataProcessing(void){
     while(sigemptyset(&set));
     while(sigaddset(&set, SIGCONT));
 
-    size_t event_buffer_size;
-    float * event_buffer = NULL;
+    size_t event_buffer_size = 0;
+    float * event_buffer = calloc(MAX_EVENT_SIZE, sizeof(float));
 
     pthread_cleanup_push(cleanupHandler, event_buffer);
 
@@ -63,7 +63,7 @@ static void dataProcessing(void){
     while(1){
         pthread_testcancel();
         
-        event_buffer = getEvent(&event_buffer_size);
+        event_buffer_size = getEvent(event_buffer);
 
         if(event_buffer_size > 0){//there is an event
             PRINTF_DEBUG
@@ -71,22 +71,19 @@ static void dataProcessing(void){
             printf("Got event of size %d\n", event_buffer_size);
             PRINTF_DEBUG
 
-            // for(int i = 0; i < event_buffer_size; i++){
-            //     printf("%f\n", event_buffer[i]);
-            // }
+            for(int i = 0; i < event_buffer_size; i++){
+                printf("%f\n", event_buffer[i]);
+            }
             PRINTF_DEBUG
 
             //TODO : implement
 
-            free(event_buffer);
             PRINTF_DEBUG
-            event_buffer = NULL;
             event_buffer_size = 0;
             PRINTF_DEBUG
         }
-
+        
     }
-
-
+    
     pthread_cleanup_pop(1);
 }

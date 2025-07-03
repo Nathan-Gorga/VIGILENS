@@ -10,6 +10,7 @@
 
 #define EVENT_RING_BUFFER_SIZE (size_t)(TIME_IN_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
+#define MAX_EVENT_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * 2/*seconds*/)
 
 typedef struct node{
     struct node * next;
@@ -126,7 +127,7 @@ extern pthread_cond_t ready_cond;
  *          IT IS YOUR RESPONSABILITY TO FREE DATA AFTER USE
  *
  * @pre head must not be NULL.
- */static float * _getEvent(size_t * size_ptr);//TODO : New function comment
+ */static size_t _getEvent(float * data);//TODO : New function comment
 
 
 
@@ -187,7 +188,7 @@ int destroyMutexes(void);
  *
  * @post The list's head now points to the second node, and the memory of
  *       the removed node is freed.
- */void popNodeFromList(void);//TODO : new function comment
+ */static void popNodeFromList(void);//TODO : new function comment
 
 
 /**
@@ -201,7 +202,7 @@ int destroyMutexes(void);
  *          IT IS YOUR RESPONSABILITY TO FREE DATA AFTER USE
  *
  * @pre head must not be NULL.
- */float * getEvent(size_t * size_ptr);//TODO : New function comment
+ */size_t getEvent(float * data);//TODO : New function comment
 
 
 /**

@@ -33,6 +33,7 @@ int main(void){
     while(pthread_sigmask(SIG_BLOCK, &set, NULL));
 
     pthread_t data_intake_thread, data_processing_thread;
+    
     (void)printf("Starting VIGILENCE SYSTEM\n");
 
     (void)printf("Initializing event data structure\n");
