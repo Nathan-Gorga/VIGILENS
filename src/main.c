@@ -13,20 +13,22 @@ const int THREADS_TO_WAIT = 2;
 
 
 void handle_sigint(const int sig) {
-    printf("Keyboard interrupt received\n");
+    (void)printf("Keyboard interrupt received\n");
     keyboard_interrupt = true;
 }
 
 int main(void){
    
-    signal(SIGINT, handle_sigint);
+    (void)signal(SIGINT, handle_sigint);
 
     sigset_t set;
-    sigemptyset(&set);
-    sigaddset(&set, SIGCONT);
+
+    while(sigemptyset(&set));
+
+    while(sigaddset(&set, SIGCONT));
     
     // Block SIGCONT in all threads, necessary for sigwait to work properly
-    pthread_sigmask(SIG_BLOCK, &set, NULL);
+    while(pthread_sigmask(SIG_BLOCK, &set, NULL));
 
     pthread_t data_intake_thread, data_processing_thread;
     (void)printf("Starting VIGILENCE SYSTEM\n");
@@ -35,7 +37,9 @@ int main(void){
     initEventDatastructure(EVENT_RING_BUFFER_SIZE);
 
     (void)printf("Creating mutexes\n");
-    createMutexes();
+    if(createMutexes() != 0){
+        (void)printf("Error creating mutexes\n"); goto end;
+    }
 
     if(pthread_create(&data_intake_thread, NULL, launchDataIntake, NULL) != 0){
         (void)printf("Error creating data intake thread\n"); goto end;
@@ -47,34 +51,40 @@ int main(void){
 
     
     {//wait for ready signal from both threads
-        pthread_mutex_lock(&ready_lock);
-        while (ready_count < THREADS_TO_WAIT) {
-            pthread_cond_wait(&ready_cond, &ready_lock);
+        if(pthread_mutex_lock(&ready_lock) == 0){
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); goto end;
         }
-        printf(GREEN"All threads are ready\n"RESET);
-        pthread_mutex_unlock(&ready_lock); 
+
+        while (ready_count < THREADS_TO_WAIT) {
+            (void)pthread_cond_wait(&ready_cond, &ready_lock);
+        }
+
+        (void)printf(GREEN"All threads are ready\n"RESET);
+
+        if(pthread_mutex_unlock(&ready_lock) == 0){
+            (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); goto end;
+        } 
     }
 
-    printf("Sending go signal to slave threads\n");
-    pthread_kill(data_intake_thread, SIGCONT);
-    pthread_kill(data_processing_thread, SIGCONT);
+    (void)printf("Sending go signal to slave threads\n");
+    
+    while(pthread_kill(data_intake_thread, SIGCONT));
+    while(pthread_kill(data_processing_thread, SIGCONT));
 
     while(!keyboard_interrupt);
     
-    printf("Cancelling slave threads\n");
-    pthread_cancel(data_intake_thread);
-    pthread_cancel(data_processing_thread);
+    (void)printf("Cancelling slave threads\n");
 
-    pthread_join(data_intake_thread, NULL);
-    pthread_join(data_processing_thread, NULL);
+    (void)pthread_cancel(data_intake_thread);
+    (void)pthread_cancel(data_processing_thread);
+
+    (void)pthread_join(data_intake_thread, NULL);
+    (void)pthread_join(data_processing_thread, NULL);
 
 end:
 
     freeEventDatastructure();
-    destroyMutexes();
-
-    pthread_mutex_destroy(&ready_lock);
-    pthread_cond_destroy(&ready_cond);
+    (void)destroyMutexes();
 
     return 0;
 }

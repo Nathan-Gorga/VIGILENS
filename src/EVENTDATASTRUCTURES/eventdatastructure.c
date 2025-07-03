@@ -259,6 +259,10 @@ int destroyMutexes(void){
     if(pthread_mutex_destroy(&event_ring_buffer_mutex) == -1) return -1;
 
     if(pthread_mutex_destroy(&write_index_mutex) == -1) return -1;
-    
+
+    if(pthread_mutex_destroy(&ready_lock) == -1) return -1;
+
+    if(pthread_mutex_destroy(&ready_cond) == -1) return -1;
+  
     return 0;
 }

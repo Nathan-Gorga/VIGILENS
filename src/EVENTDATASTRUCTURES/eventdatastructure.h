@@ -31,6 +31,10 @@ extern pthread_mutex_t write_index_mutex; //this one is just to prevent double l
 
 extern pthread_mutex_t head_mutex;
 
+extern pthread_mutex_t ready_lock;
+
+extern pthread_cond_t ready_cond;
+
 //STATIC INITS AND FREES
 
 /**
