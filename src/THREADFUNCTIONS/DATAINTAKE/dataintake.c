@@ -69,15 +69,21 @@ static void dataIntake(void){
 
     
     for(int i = 0; i < 5; i++){
-       mockEvent[i] = i; 
-    }
+       mockEvent[i] = i + 1; 
+    }   
+
     
     while(1){
-    sleep(1);
+    usleep(1000*1000);
     //TODO : receive data 
+    PRINTF_DEBUG
     printf("Adding event of size %d\n", 5);
     addEvent(mockEvent, 5);
-    testEventDatastructure();
+    PRINTF_DEBUG
+
+    printf("testing event\n");
+    // testEventDatastructure();
+    PRINTF_DEBUG
 
     //TODO : put data in internal ring buffer
 

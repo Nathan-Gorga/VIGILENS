@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra -D_POSIX_C_SOURCE=200809L -pthread
+CFLAGS = -Wall -Wextra -D_POSIX_C_SOURCE=200809L -pthread -pedantic
 
 # Target executable
 TARGET = VIGILENCE

@@ -1,6 +1,7 @@
 #ifndef GLOBALDEFINITION_H
 #define GLOBALDEFINITION_H
 
+#define _BSD_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +13,7 @@
 #include <signal.h>
 #include <bits/types/sigset_t.h>
 #include <bits/sigaction.h>
+#include <time.h>
 
 
 

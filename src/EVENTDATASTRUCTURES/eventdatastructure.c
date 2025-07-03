@@ -8,16 +8,21 @@ pthread_mutex_t write_index_mutex; //this one is just to prevent double lock
 pthread_mutex_t head_mutex;
 
 static node * initNode(const size_t start, const size_t stop){
+    PRINTF_DEBUG
 
     node * n = (node *)malloc(sizeof(node));
+    PRINTF_DEBUG
 
     if(n == NULL) return NULL;
+    PRINTF_DEBUG
 
     n->next = NULL;
+    PRINTF_DEBUG
 
     n->start = start;
 
     n->stop = stop;
+    PRINTF_DEBUG
 
     return n;
 }
@@ -26,6 +31,7 @@ static node * initNode(const size_t start, const size_t stop){
 static void freeNode(node * n){
     
     assert(n != NULL);
+    PRINTF_DEBUG
 
     free(n);
 }
@@ -33,10 +39,13 @@ static void freeNode(node * n){
 
 
 static void initList(void){
+    PRINTF_DEBUG
 
     head = (head_node *)malloc(sizeof(head_node));
+    PRINTF_DEBUG
 
     if(head == NULL) exit(EXIT_FAILURE);
+    PRINTF_DEBUG
 
     head->next = NULL;
 }
@@ -44,29 +53,39 @@ static void initList(void){
 
 
 static void freeList(void){
+    PRINTF_DEBUG
 
     assert(head != NULL);
+    PRINTF_DEBUG
 
     node * curr = head->next;
+    PRINTF_DEBUG
 
     while(curr != NULL){
+        PRINTF_DEBUG
 
         node * next = curr->next;
+        PRINTF_DEBUG
 
         freeNode(curr);
+        PRINTF_DEBUG
 
         curr = next;
     }
+    PRINTF_DEBUG
 
     free(head);
 }
 
 
 static void initEventRingBuffer(const size_t size_buffer){
+    PRINTF_DEBUG
 
     assert(size_buffer > 0);
+    PRINTF_DEBUG
 
     event_ring_buffer = initRingBuffer(size_buffer, EVENT_RING_BUFFER);
+    PRINTF_DEBUG
 
     if(event_ring_buffer == NULL) exit(EXIT_FAILURE);
 
@@ -75,8 +94,10 @@ static void initEventRingBuffer(const size_t size_buffer){
 
 
 static void freeEventRingBuffer(void){
+    PRINTF_DEBUG
 
     assert(event_ring_buffer != NULL);
+    PRINTF_DEBUG
 
     freeRingBuffer(event_ring_buffer);
 }
@@ -84,22 +105,28 @@ static void freeEventRingBuffer(void){
 
 
 static void _addNodeToList(node * n){
+    PRINTF_DEBUG
 
     assert(head != NULL);
+    PRINTF_DEBUG
 
     assert(n != NULL);
+    PRINTF_DEBUG
 
     if(head->next == NULL){
         head->next = n;
         return;
     }
+    PRINTF_DEBUG
 
     node * curr = head->next;
+    PRINTF_DEBUG
 
     while(curr->next != NULL){
 
         curr = curr->next;
     }
+    PRINTF_DEBUG
 
     curr->next = n;
 }
@@ -108,14 +135,19 @@ static void _addNodeToList(node * n){
 
 
 static void _popNodeFromList(void){
+    PRINTF_DEBUG
 
     assert(head != NULL);
+    PRINTF_DEBUG
 
     node * curr = head->next;
+    PRINTF_DEBUG
 
     if(curr == NULL) return;
+    PRINTF_DEBUG
 
     head->next = curr->next;
+    PRINTF_DEBUG
 
     freeNode(curr);
 }
@@ -123,8 +155,10 @@ static void _popNodeFromList(void){
 
 
 static float * _getEvent(size_t * size_ptr){//FIXME : send as argument an int pointer for size and malloc the relevant size directly inside this function, needs to be freed after, still not great but a bit better
+    PRINTF_DEBUG
 
     assert(head != NULL);
+    PRINTF_DEBUG
     
     if(head->next == NULL){// list is empty
         *size_ptr = 0; 
@@ -158,10 +192,14 @@ static float * _getEvent(size_t * size_ptr){//FIXME : send as argument an int po
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
     PRINTF_DEBUG
 
-    testEventDatastructure();
+    // printf("testing event before pop\n");
+
+    // testEventDatastructure();
 
     popNodeFromList();
-    testEventDatastructure();
+    // printf("testing event after pop\n");
+
+    // testEventDatastructure();
     PRINTF_DEBUG
 
     return data;
@@ -205,17 +243,21 @@ static void _addEvent(const float * data, const size_t size_data){
 void initEventDatastructure(const size_t size_buffer){
 
     assert(size_buffer > 0);
+    PRINTF_DEBUG
 
     initEventRingBuffer(size_buffer);
+    PRINTF_DEBUG
 
     initList();
 }
 
 
 void freeEventDatastructure(void){
+    PRINTF_DEBUG
 
     freeEventRingBuffer();
 
+    PRINTF_DEBUG
     freeList();
 }
 
@@ -298,17 +340,23 @@ int destroyMutexes(void){
 
 void printNodeList(void){
     node * curr = head->next;
-
+    int i = 1;
     while(curr != NULL){
         printf("start : %zu, stop : %zu\n", curr->start, curr->stop);
+        i++;
         curr = curr->next;
     }
+    printf("%d nodes (including the head)\n",i);
+
 }
 
 void testEventDatastructure(void){
-    printNodeList();
+    PRINTF_DEBUG
 
-    for(int i = 0; i < event_ring_buffer->size; i++){
-        printf("%f\n", event_ring_buffer->memory[i]);
-    }
+    printNodeList();
+    PRINTF_DEBUG
+
+    // for(int i = 0; i < event_ring_buffer->size; i++){
+    //     printf("%f\n", event_ring_buffer->memory[i]);
+    // }
 }

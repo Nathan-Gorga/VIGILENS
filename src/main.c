@@ -1,7 +1,7 @@
 #include "main.h"
 
 
-bool keyboard_interrupt = false;
+volatile bool keyboard_interrupt = false;
 
 pthread_mutex_t ready_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -19,7 +19,7 @@ void handle_sigint(const int sig) {
 
 int main(void){
     
-    srand(time(NULL));
+    // srand(time(NULL));
 
     (void)signal(SIGINT, handle_sigint);
 
@@ -76,11 +76,12 @@ int main(void){
     while(pthread_kill(data_processing_thread, SIGCONT));
 
    
-    while(!keyboard_interrupt);
+    while(!keyboard_interrupt) usleep(100);
     
     (void)printf("Cancelling slave threads\n");
 
-    (void)pthread_cancel(data_intake_thread);//BUG : cancel not working when threads workings
+    
+    (void)pthread_cancel(data_intake_thread);//BUG : cancel not working when threads are running loops too fast
     (void)pthread_cancel(data_processing_thread);
 
     (void)pthread_join(data_intake_thread, NULL);
