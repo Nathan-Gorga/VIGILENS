@@ -10,7 +10,8 @@ SRCS = main.c \
 	RINGBUFFER/ringbuffer.c \
 	EVENTDATASTRUCTURES/eventdatastructure.c \
 	THREADFUNCTIONS/DATAPROCESSING/dataprocessing.c \
-	THREADFUNCTIONS/DATAINTAKE/dataintake.c
+	THREADFUNCTIONS/DATAINTAKE/dataintake.c \
+	UART/uart.c
 	
 OBJS = $(SRCS:.c=.o)
 
