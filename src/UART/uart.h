@@ -18,6 +18,8 @@ courtesy to https://github.com/ultramcu
 #define SERIAL_DEVICE "/dev/ttyACM0" //FIXME : check this is in fact the case on our raspberry pi
 #define UART_BAUDRATE 115200
 
+#define UART_BUFFER_SIZE (size_t)(sizeof(openbci_packet) * SAMPLING_RATE / 2)
+
 #define GAIN 24 //default
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
 
@@ -62,7 +64,6 @@ typedef union{
 static_assert(sizeof(openbci_packet) == 33, "openbci_packet size is not 33 bytes");
 
 static_assert(sizeof(((openbci_packet*)0)->fields) == 33, "fields size is not 33 bytes");
-
 
 enum TX_SIGNAL_TYPE{
     START_STREAM = 'b',//TESTME 

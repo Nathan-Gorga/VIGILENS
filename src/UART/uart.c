@@ -111,7 +111,30 @@ void endUART(void){
 
 }
 
-bool getUartData(float data_point[NUM_CHANNELS]){}
+bool getUartData(float data_point[NUM_CHANNELS]){
+
+    fd_set reset;
+    
+    int32_t count = 0;
+    
+    size_t index = 0;
+    
+    byte receive_buffer[UART_BUFFER_SIZE] = {0};
+
+    while(1){
+
+        FD_ZERO(&reset);
+        FD_SET(UART_fd, &reset);
+
+        count = select(UART_fd + 1, &reset, NULL, NULL, &(struct timeval){30, 0}/*TRY : 0, 0 immediatly returns, useful for polling*//*TRY : NULL waits indefinitely*/);//FIXME : may be deprecated, use poll(2) or epoll(7)
+
+        if(count > 0){
+
+            index = read(UART_fd, (void*)receive_buffer, UART_BUFFER_SIZE);
+
+        }        
+    }
+}
 
 bool sendUartSignal(const enum TX_SIGNAL_TYPE signal_type){
 
@@ -164,21 +187,7 @@ int32_t uart_begin(st_uart *s_uart,char *device,int32_t baudrate,int32_t (*callb
 int32_t convert_baudrate(int32_t baudrate);
 int32_t th_serial_recv(void *arg);
 
-#endif // APP_STACK_UART_H*/
-
-/*
-
-int32_t serial_send(st_uart *s_uart,char *data)
-{
-    if(strlen(data) < _UART_BUFFER_SIZE_)
-    {
-        memset(s_uart->send_buff,0,sizeof(s_uart->send_buff));
-        sprintf(s_uart->send_buff,"<%s>",data);
-        return write(s_uart->serial_fd, s_uart->send_buff, strlen(s_uart->send_buff));
-    }
-
-    return -1;
-}
+#endif // APP_STACK_UART_H
 
 int32_t th_serial_recv(void *arg)
 {
@@ -257,20 +266,5 @@ int32_t th_serial_recv(void *arg)
     }
 }
 
-int32_t convert_baudrate(int32_t baudrate)
-{
-    switch(baudrate)
-    {
-        case 1200: return B1200;
-        case 2400: return B2400;
-        case 4800: return B4800;
-        case 9600: return B9600;
-        case 19200: return B19200;
-        case 38400: return B38400;
-        case 57600: return B57600;
-        case 115200: return B115200;
-        case 230400: return B230400;
-    }
 
-    return B9600;
 }*/
