@@ -1,7 +1,7 @@
 #include "uart.h"
 
 
-int32_t interpret24BitToInt(const byte data[3]){//TESTME : test this function thoroughly
+static int32_t interpret24BitToInt(const byte data[3]){//TESTME : test this function thoroughly
     
     int32_t Int = (  
      ((0xFF & data[0]) << 16) |  //TESTME : there might be a problem here regarding MSB
@@ -18,6 +18,11 @@ int32_t interpret24BitToInt(const byte data[3]){//TESTME : test this function th
     return Int;
 }
 
-inline float convertToFloat(const int32_t value){
+static inline float convertToFloat(const int32_t value){
     return (float)(value * SCALE_FACTOR);
+}
+
+
+static inline float channelDataToFloat(const byte data[3]){
+    return convertToFloat(interpret24BitToInt(data));
 }

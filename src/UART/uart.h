@@ -53,11 +53,11 @@ typedef union openbci_packet{
 }openbci_packet;
 
 
-int32_t interpret24BitToInt(const byte data[3]);//TODO : write function comment
+static int32_t interpret24BitToInt(const byte data[3]);//TODO : write function comment
 
-inline float convertToFloat(const int32_t value);//TODO : write function comment
+static inline float convertToFloat(const int32_t value);//TODO : write function comment
 
-float channelDataToFloat(const byte data[3]);//TODO : write function comment
+static inline float channelDataToFloat(const byte data[3]);//TODO : write function comment
 
 //TODO : open serial port
 
