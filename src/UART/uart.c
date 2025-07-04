@@ -35,8 +35,8 @@ static void getChannelDataFromPacket(const openbci_packet packet, float data_poi
 
     for(int i = 0; i < NUM_CHANNELS; i++){
 
-        data_point[i] = channelDataToFloat(packet.channel_data[i]);
-
+        data_point[i] = channelDataToFloat(packet.fields.channel_data[i]);
+        
     }
 }
 
