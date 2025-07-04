@@ -50,6 +50,11 @@ typedef union openbci_packet{
 
 }openbci_packet;
 
+static_assert(sizeof(openbci_packet) == 33, "openbci_packet size is not 33 bytes");
+
+static_assert(sizeof(((openbci_packet*)0)->fields) == 33, "fields size is not 33 bytes");
+
+
 enum TX_SIGNAL_TYPE{
     START_STREAM, // FIXME : assign them the value necessary for communicating with openBCI
     STOP_STREAM,
