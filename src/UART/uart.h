@@ -53,11 +53,9 @@ typedef union openbci_packet{
 }openbci_packet;
 
 
-//TODO : function to interpret 24 bit ints to 32bit ints
-int32_t interpretToInt(const byte data[3]);
+int32_t interpret24BitToInt(const byte data[3]);//TODO : write function comment
 
-//TODO : function to convert 32 bit ints to 32 bit floats(something to do with the scale factor : 4.5 Volts / gain / (2^23 - 1);)
-float convertToFloat(const int32_t value);
+inline float convertToFloat(const int32_t value);//TODO : write function comment
 
 //TODO : open serial port
 
