@@ -9,8 +9,6 @@ static void cleanupHandler(void * internal_ring_buffer){
 
     (void)printf("Cleaned up thread\n");   
     
-    
-   
 }
 
 void * launchDataIntake(void * arg){
@@ -60,8 +58,7 @@ static void dataIntake(void){
         pthread_exit(NULL);
     }
 
-
-    //TODO : sends go signal to data stream source
+    sendUARTSignal(START_STREAM);
 
     (void)printf("Entering main loop\n");
     
@@ -78,46 +75,54 @@ static void dataIntake(void){
     const float arbitrary_max = 10.0f;
     const float arbitrary_min = -10.0f;
 
-    float channel1_data_point, channel2_data_point;//FIXME : make this work for any number of channels
+    float channel_data_point[NUM_CHANNELS] = {0.0f};
     
     //TESTME : this whole loop logic needs THOROUGH testing
-    while(1){//TODO : get Uart data (polling)
+    while(1){
 
         pthread_testcancel();
 
-        const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
+        if(getUARTData(channel_data_point)){
 
-        if(tail == writePlusOne){
+            const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
 
-            extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
+            if(tail == writePlusOne){
 
-            //TODO : get events from extracted buffer (returns number of potential events, potential_events is filled with that number of events as well as the size of each events in the above array)
+                extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
 
-            for(int i = 0; i < num_potential_events; i++){
+                //TODO : get events from extracted buffer (returns number of potential events, potential_events is filled with that number of events as well as the size of each events in the above array)
 
-                addEvent(potential_events[i], size_of_potential_events[i]);
+                for(int i = 0; i < num_potential_events; i++){
 
+                    addEvent(potential_events[i], size_of_potential_events[i]);
+
+                }
+
+                //TODO : add UART data to internal ring buffer (write++)
+
+                freeze_tail = false;
+
+            } else {
+
+                //TODO : add UART data to internal ring buffer (write++)
+
+                bool is_not_baseline = false;
+
+                for(int i = 0; i < NUM_CHANNELS; i++){ 
+
+                    is_not_baseline |= !isBaseline(channel_data_point[i], arbitrary_max, arbitrary_min); //TESTME
+                    
+                }
+
+                if(is_not_baseline){
+                    
+                    freeze_tail = true;
+
+                }
             }
-
-            //TODO : add UART data to internal ring buffer (write++)
-
-            freeze_tail = false;
-
-        } else {
-
-            //TODO : add UART data to internal ring buffer (write++)
-
-            const bool is_not_baseline = !(isBaseline(channel1_data_point, arbitrary_max, arbitrary_min) && 
-                                           isBaseline(channel2_data_point, arbitrary_max, arbitrary_min));//FIXME : make this work for any number of channels
-
-            if(is_not_baseline){
-                 
-                freeze_tail = true;
-
-            }
+        
+            tail = !freeze_tail ? internal_ring_buffer->write : tail;
         }
-       
-        tail = !freeze_tail ? internal_ring_buffer->write : tail;
     }
 
     pthread_cleanup_pop(1);

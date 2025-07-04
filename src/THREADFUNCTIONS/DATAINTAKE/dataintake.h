@@ -5,6 +5,7 @@
 #include "../../RINGBUFFER/ringbuffer.h"
 #include "../../EVENTDATASTRUCTURES/eventdatastructure.h"
 #include "../../ALGOS/algos.h"
+#include "../../UART/uart.h"
 
 #define TIME_IN_INTERNAL_RING_BUFFER 10
 #define INTERNAL_RING_BUFFER_SIZE (size_t)(TIME_IN_INTERNAL_RING_BUFFER * SAMPLING_RATE * NUM_CHANNELS)

@@ -133,7 +133,9 @@ static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_re
     return count;
 }
 
-bool getUARTData(float data_point[NUM_CHANNELS]){//TESTME : test this function thoroughly
+bool getUARTData(float data_point[NUM_CHANNELS]){//FIXME : this function needs to return the number of channel data points it found as well as handle possibly multiple points 
+    
+    //TESTME : test this function thoroughly
     //CLEANME
     
     openbci_packet packets[UART_BUFFER_SIZE / sizeof(openbci_packet)];
@@ -160,12 +162,11 @@ bool getUARTData(float data_point[NUM_CHANNELS]){//TESTME : test this function t
 
             for(int i = 0; i < num_packets; i++){
 
-                getChannelDataFromPacket(packets[i], data_point);
+                getChannelDataFromPacket(packets[i], data_point);//BUG : this keeps only the last packet value
                                 
             }
+            return true;
         }
-
-        return true;
     }
 
     return false;
