@@ -19,10 +19,13 @@ void handle_sigint(const int sig) {
 
 
 int main(void){
+    //CLEANME
     
     // srand(time(NULL));
 
     (void)signal(SIGINT, handle_sigint);
+
+    beginUART();
 
     sigset_t set;
 
@@ -93,6 +96,7 @@ end:
 
     freeEventDatastructure();
     (void)destroyMutexes();
+    endUART();
 
     return 0;
 }

@@ -19,6 +19,7 @@ void * launchDataIntake(void * arg){
 }
 
 static void dataIntake(void){
+    //CLEANME
     
     (void)printf("Thread launched succesfully\n");
     
@@ -111,7 +112,7 @@ static void dataIntake(void){
                 for(int i = 0; i < NUM_CHANNELS; i++){ 
 
                     is_not_baseline |= !isBaseline(channel_data_point[i], arbitrary_max, arbitrary_min); //TESTME
-                    
+
                 }
 
                 if(is_not_baseline){
