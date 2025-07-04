@@ -97,7 +97,7 @@ bool beginUART(void);//TODO : write function comment
 
 void endUART(void);//TODO : write function comment
 
-bool getUARTData(float data_point[NUM_CHANNELS]);//TODO : write function comment
+size_t getUARTData(float data_points[UART_BUFFER_SIZE / sizeof(openbci_packet)]); //TODO : write function comment
 
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
 
