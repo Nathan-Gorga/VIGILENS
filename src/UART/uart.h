@@ -1,3 +1,9 @@
+/*
+HEAVY INSPIRATION FROM : https://gist.github.com/ultramcu/cbdc598bbc1fcd0e5f8a
+
+courtesy to https://github.com/ultramcu
+*/
+
 #ifndef UART_H
 #define UART_H
 
@@ -9,6 +15,9 @@
 #define RASPBERRY_TX_PIN 14
 #define RASPBERRY_RX_PIN 15
 
+#define SERIAL_DEVICE "/dev/ttyACM0" //FIXME : check this is in fact the case on our raspberry pi
+#define UART_BAUDRATE 115200
+
 #define GAIN 24 //default
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
 
@@ -16,7 +25,7 @@
 #define byte unsigned char//FIXME: may be signed
 
 //https://docs.openbci.com/Cyton/CytonDataFormat/
-typedef union openbci_packet{
+typedef union{
 
     byte packet[33];
 
@@ -67,18 +76,24 @@ static inline float convertToFloat(const int32_t value);//TODO : write function 
 
 static inline float channelDataToFloat(const byte data[3]);//TODO : write function comment
 
-static openSerialPort(void);//TODO : write function comment
+static bool openSerialFileDescriptor(void);//TODO : write function comment
 
-static closeSerialPort(void);//TODO : write function comment
+static bool setTermiosOptions(void);//TODO : write function comment
 
 static void getChannelDataFromPacket(const openbci_packet packet, float data_point[NUM_CHANNELS]);//TODO : write function comment
 
+static int32_t convertBaudrate(const int32_t baudrate);
 
-void initUart(void);//TODO : write function comment
 
-void closeUart(void);//TODO : write function comment
+bool beginUART(void);//TODO : write function comment
+
+void endUART(void);//TODO : write function comment
 
 bool getUartData(float data_point[NUM_CHANNELS]);//TODO : write function comment
 
-void sendUartSignal(enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
+void sendUartSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
+
+static u_int32_t UART_fd;
+
 #endif
+
