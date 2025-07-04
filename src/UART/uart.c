@@ -129,11 +129,11 @@ static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_re
         }
 
     }
-    
+
     return count;
 }
 
-
+//CLEANME
 bool getUARTData(float data_point[NUM_CHANNELS]){//TESTME : test this function thoroughly
 
     openbci_packet packets[UART_BUFFER_SIZE / sizeof(openbci_packet)];
@@ -151,20 +151,24 @@ bool getUARTData(float data_point[NUM_CHANNELS]){//TESTME : test this function t
     const int ready = select(UART_fd + 1, &read_UART_fd, NULL, NULL, &timeout);
 
     if(ready > 0 && FD_ISSET(UART_fd, &read_UART_fd)){
-        //TODO : read 
+
         const size_t size_read = read(UART_fd, receiver_buffer, UART_BUFFER_SIZE);
 
         if(size_read > 0){
-            //TODO : separate packets if there are mutliple
-            
-            //TODO : parse every packet
-            
-            //TODO : convert to usable data
-            
-            //TODO : send back usable data
+
+            const size_t num_packets = getPacketsFromUARTBuffer(receiver_buffer,size_read,packets);
+
+            for(int i = 0; i < num_packets; i++){
+
+                getChannelDataFromPacket(packets[i], data_point);
+                                
+            }
         }
+
+        return true;
     }
 
+    return false;
 }
 
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){
