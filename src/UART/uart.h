@@ -2,6 +2,7 @@
 #define UART_H
 
 #include "../globaldefinition.h"
+#include "../EVENTDATASTRUCTURES/eventdatastructure.h"
 #include <fcntl.h>
 #include <termios.h>
 
@@ -52,6 +53,11 @@ typedef union openbci_packet{
 
 }openbci_packet;
 
+enum TX_SIGNAL_TYPE{
+    START_STREAM, // FIXME : assign them the value necessary for communicating with openBCI
+    STOP_STREAM,
+    NUM_SIGNAL_TYPES
+};
 
 static int32_t interpret24BitToInt(const byte data[3]);//TODO : write function comment
 
@@ -59,16 +65,18 @@ static inline float convertToFloat(const int32_t value);//TODO : write function 
 
 static inline float channelDataToFloat(const byte data[3]);//TODO : write function comment
 
-//TODO : open serial port
+static openSerialPort(void);//TODO : write function comment
 
-//TODO : INIT uart
+void initUart(void);//TODO : write function comment
 
-//TODO : close serial port
+static closeSerialPort(void);//TODO : write function comment
 
-//TODO : get uart data (takes in as many float pointers as there are channels, and returns a true if there is data else false )
+void closeUart(void);//TODO : write function comment
 
-//TODO : unpack openbci packet
+bool getUartData(float data_point[NUM_CHANNELS]);//TODO : write function comment
 
-//TODO : send uart signal
+static void getChannelDataFromPacket(const openbci_packet packet, float data_point[NUM_CHANNELS]);//TODO : write function comment
+
+void sendUartSignal(enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
 
 #endif
