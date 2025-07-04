@@ -113,12 +113,36 @@ void endUART(void){
 
 }
 
+static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]){//TESTME
 
-bool getUARTData(float data_point[NUM_CHANNELS]){
+    const size_t packet_size = sizeof(openbci_packet);
+
+    size_t count = 0;
+
+    for(int i = 0; i < size_read; i++){
+
+        if(buffer[i] == START_BYTE){
+
+            memcpy(&packets[count++], &buffer[i], packet_size);
+
+            i += packet_size - 1;
+        }
+
+    }
+    
+    return count;
+}
+
+
+bool getUARTData(float data_point[NUM_CHANNELS]){//TESTME : test this function thoroughly
+
+    openbci_packet packets[UART_BUFFER_SIZE / sizeof(openbci_packet)];
 
     fd_set read_UART_fd;
     FD_ZERO(&read_UART_fd);
     FD_SET(UART_fd, &read_UART_fd);
+
+    byte receiver_buffer[UART_BUFFER_SIZE] = {0.0f};
 
     const short impatience = 2;
 
@@ -127,11 +151,18 @@ bool getUARTData(float data_point[NUM_CHANNELS]){
     const int ready = select(UART_fd + 1, &read_UART_fd, NULL, NULL, &timeout);
 
     if(ready > 0 && FD_ISSET(UART_fd, &read_UART_fd)){
-        //TODO : fill buffer
-        //TODO : separate packets if there are mutliple
-        //TODO : parse every packet
-        //TODO : convert to usable data
-        //TODO : send back usable data
+        //TODO : read 
+        const size_t size_read = read(UART_fd, receiver_buffer, UART_BUFFER_SIZE);
+
+        if(size_read > 0){
+            //TODO : separate packets if there are mutliple
+            
+            //TODO : parse every packet
+            
+            //TODO : convert to usable data
+            
+            //TODO : send back usable data
+        }
     }
 
 }

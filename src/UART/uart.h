@@ -28,6 +28,10 @@ courtesy to https://github.com/ultramcu
 //makes it more understandable
 #define byte unsigned char//FIXME: may be signed
 
+#define START_BYTE (byte)0x0A//TODO : also define stop byte, depending on the openBCI configuration
+
+
+
 //https://docs.openbci.com/Cyton/CytonDataFormat/
 typedef union{
 
@@ -87,6 +91,7 @@ static void getChannelDataFromPacket(const openbci_packet packet, float data_poi
 
 static int32_t convertBaudrate(const int32_t baudrate);
 
+static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]);//TODO : write function comment
 
 bool beginUART(void);//TODO : write function comment
 
