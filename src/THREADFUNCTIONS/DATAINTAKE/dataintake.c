@@ -75,13 +75,17 @@ static void dataIntake(void){
     size_t size_of_potential_events[(size_t)(INTERNAL_RING_BUFFER_SIZE / MAX_EVENT_SIZE)] = {0};
     float potential_events[(size_t)(INTERNAL_RING_BUFFER_SIZE / MAX_EVENT_SIZE)][MAX_EVENT_SIZE] = {0.0f};
 
-    while(1){
+    const float arbitrary_max = 10.0f;
+    const float arbitrary_min = -10.0f;
+
+    float channel1_data_point, channel2_data_point;//FIXME : make this work for any number of channels
+    
+    while(1){//TODO : get Uart data (polling)
+
         pthread_testcancel();
 
-        //TODO : get Uart data (interupt, polling ...?)
-
-        
         const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
+
         if(tail == writePlusOne){
 
             extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
@@ -89,18 +93,21 @@ static void dataIntake(void){
             //TODO : get events from extracted buffer (returns number of potential events, potential_events is filled with that number of events as well as the size of each events in the above array)
 
             for(int i = 0; i < num_potential_events; i++){
+
                 addEvent(potential_events[i], size_of_potential_events[i]);
+
             }
 
             //TODO : add UART data to internal ring buffer (write++)
 
             freeze_tail = false;
-            
+
         } else {
 
             //TODO : add UART data to internal ring buffer (write++)
 
-            const bool is_not_baseline = !(isBaseline(/*UART_data_channel1*/, /*max*/, /*min*/) && isBaseline(/*UART_data_channel2*/, /*max*/, /*min*/));
+            const bool is_not_baseline = !(isBaseline(channel1_data_point, arbitrary_max, arbitrary_min) && 
+                                           isBaseline(channel2_data_point, arbitrary_max, arbitrary_min));//FIXME : make this work for any number of channels
 
             if(is_not_baseline){
                  
@@ -108,12 +115,8 @@ static void dataIntake(void){
 
             }
         }
-
-        if(!freeze_tail){
-
-            tail = internal_ring_buffer->write;
-
-        }       
+       
+        tail = !freeze_tail ? internal_ring_buffer->write : tail;
     }
 
     pthread_cleanup_pop(1);
