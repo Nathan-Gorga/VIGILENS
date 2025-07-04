@@ -65,41 +65,55 @@ static void dataIntake(void){
 
     (void)printf("Entering main loop\n");
     
+    size_t tail = 0;
+    bool freeze_tail = false;
+
+    float linear_buffer[INTERNAL_RING_BUFFER_SIZE] = {0.0f};
+
+
+    size_t num_potential_events = 0;
+    size_t size_of_potential_events[(size_t)(INTERNAL_RING_BUFFER_SIZE / MAX_EVENT_SIZE)] = {0};
+    float potential_events[(size_t)(INTERNAL_RING_BUFFER_SIZE / MAX_EVENT_SIZE)][MAX_EVENT_SIZE] = {0.0f};
+
     while(1){
         pthread_testcancel();
 
-        //TODO : get Uart data
+        //TODO : get Uart data (interupt, polling ...?)
 
-        //TODO : if(tail == write + 1) * modulo
+        
+        const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
+        if(tail == writePlusOne){
 
-        //TODO : true :
+            extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
 
-            //TODO : extract full buffer starting from tail
+            //TODO : get events from extracted buffer (returns number of potential events, potential_events is filled with that number of events as well as the size of each events in the above array)
 
-            //TODO : get events from extracted buffer
+            for(int i = 0; i < num_potential_events; i++){
+                addEvent(potential_events[i], size_of_potential_events[i]);
+            }
 
-            //TODO : add events to event ring buffer
+            //TODO : add UART data to internal ring buffer (write++)
 
-            //TODO : add data to internal ring buffer (write++)
-
-            //TODO : freeze_tail = false
-
-        //TODO : false :
-
-            //TODO : add data to internal ring buffer (write++)
-
-            //TODO : if(leavingBaseline())
-
-            //TODO : true : 
-
-                //TODO : freeze_tail = true
+            freeze_tail = false;
             
-        //TODO : if(!freeze_tail)
+        } else {
 
-        //TODO : true :
+            //TODO : add UART data to internal ring buffer (write++)
 
-            //TODO : tail = write
-                
+            const bool is_not_baseline = !(isBaseline(/*UART_data_channel1*/, /*max*/, /*min*/) && isBaseline(/*UART_data_channel2*/, /*max*/, /*min*/));
+
+            if(is_not_baseline){
+                 
+                freeze_tail = true;
+
+            }
+        }
+
+        if(!freeze_tail){
+
+            tail = internal_ring_buffer->write;
+
+        }       
     }
 
     pthread_cleanup_pop(1);

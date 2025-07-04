@@ -51,7 +51,9 @@ static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
     return (buffer->write + size_to_add) > buffer->size;
 }
 
-
+inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer){ //TODO : do the same for decrement
+    return (buffer->write + 1) % buffer->size;
+}
 
 static inline void _writeIndexIncrement(struct ring_buffer * buffer){
     assert(buffer != NULL);

@@ -44,6 +44,9 @@ struct ring_buffer{
  */void freeRingBuffer(struct ring_buffer * buffer);
 
 
+inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer);//TODO : write function comment
+
+
 
 /**
  * @brief Increments the write index of a ring buffer.

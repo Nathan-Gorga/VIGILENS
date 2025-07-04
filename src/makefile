@@ -11,7 +11,8 @@ SRCS = main.c \
 	EVENTDATASTRUCTURES/eventdatastructure.c \
 	THREADFUNCTIONS/DATAPROCESSING/dataprocessing.c \
 	THREADFUNCTIONS/DATAINTAKE/dataintake.c \
-	UART/uart.c
+	UART/uart.c \
+	ALGOS/algos.c
 	
 OBJS = $(SRCS:.c=.o)
 
