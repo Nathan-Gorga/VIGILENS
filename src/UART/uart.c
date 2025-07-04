@@ -26,3 +26,25 @@ static inline float convertToFloat(const int32_t value){
 static inline float channelDataToFloat(const byte data[3]){//TESTME
     return convertToFloat(interpret24BitToInt(data));
 }
+
+static openSerialPort(void){}
+
+static closeSerialPort(void){}
+
+static void getChannelDataFromPacket(const openbci_packet packet, float data_point[NUM_CHANNELS]){
+
+    for(int i = 0; i < NUM_CHANNELS; i++){
+
+        data_point[i] = channelDataToFloat(packet.channel_data[i]);
+
+    }
+}
+
+
+void initUart(void){}
+
+void closeUart(void){}
+
+bool getUartData(float data_point[NUM_CHANNELS]){}
+
+void sendUartSignal(enum TX_SIGNAL_TYPE signal_type){}
