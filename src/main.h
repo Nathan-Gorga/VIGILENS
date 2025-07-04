@@ -11,4 +11,7 @@
 #define MAIN_TEXT_COLOR GREEN
 #define printf(...) printf(MAIN_TEXT_COLOR"MASTER:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
 
+//TODO : write better documentation
+//TODO : write better README.md
+
 #endif

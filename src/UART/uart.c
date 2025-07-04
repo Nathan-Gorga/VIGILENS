@@ -180,6 +180,6 @@ bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){
 
     if(write(UART_fd, (byte)signal_type, sizeof(byte)) != size_written) return false;
     
-    return false;
+    return true;
 }
 
