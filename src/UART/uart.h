@@ -65,8 +65,8 @@ static_assert(sizeof(((openbci_packet*)0)->fields) == 33, "fields size is not 33
 
 
 enum TX_SIGNAL_TYPE{
-    START_STREAM, // FIXME : assign them the value necessary for communicating with openBCI
-    STOP_STREAM,
+    START_STREAM = 'b',//TESTME 
+    STOP_STREAM = 's',//TESTME 
     NUM_SIGNAL_TYPES
 };
 
@@ -91,7 +91,7 @@ void endUART(void);//TODO : write function comment
 
 bool getUartData(float data_point[NUM_CHANNELS]);//TODO : write function comment
 
-void sendUartSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
+bool sendUartSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
 
 static u_int32_t UART_fd;
 

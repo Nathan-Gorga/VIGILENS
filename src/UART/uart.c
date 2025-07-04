@@ -113,7 +113,16 @@ void endUART(void){
 
 bool getUartData(float data_point[NUM_CHANNELS]){}
 
-void sendUartSignal(const enum TX_SIGNAL_TYPE signal_type){}
+bool sendUartSignal(const enum TX_SIGNAL_TYPE signal_type){
+
+    //TODO : is there a specific format to send to openBCI?
+    
+    const size_t size_written = sizeof(byte);
+
+    if(write(UART_fd, (byte)signal_type, sizeof(byte)) != size_written) return false;
+    
+    return false;
+}
 
 
 /*
@@ -158,58 +167,6 @@ int32_t th_serial_recv(void *arg);
 #endif // APP_STACK_UART_H*/
 
 /*
-int32_t uart_begin(st_uart *s_uart,char *device,int32_t baudrate,int32_t (*callback)(void *))
-{
-    struct termios termOptions;
-    struct termios options;
-    int32_t br = 0;
-
-    if(callback != NULL)
-    {
-        s_uart->callback_function = callback;
-    }
-
-    if(baudrate >= 1200 && baudrate <= 230400)
-    {
-        br = convert_baudrate(baudrate);
-    }
-    else
-    {
-        printf ("Error : baudrate must be 1200 - 230400\r\n");
-        return _FALSE_;
-    }
-
-    s_uart->serial_fd = -1;
-    s_uart->serial_fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
-    if (s_uart->serial_fd == -1)
-    {
-        printf ("Error : open serial device: %s\r\n",device);
-        perror("OPEN");
-        return _FALSE_;
-    }
-
-    tcgetattr(s_uart->serial_fd, &options);
-    options.c_cflag = br | CS8 | CLOCAL | CREAD;		//<Set baud rate
-    options.c_iflag = IGNPAR;
-    options.c_oflag = 0;
-    options.c_lflag = 0;
-    tcflush(s_uart->serial_fd, TCIFLUSH);
-
-    if( tcsetattr(s_uart->serial_fd, TCSANOW, &options) < 0)
-    {
-        printf("ERROR :  Setup serial failed\r\n");
-        return _FALSE_;
-    }
-
-    if (pthread_create(&s_uart->th_recv, NULL, (void *)th_serial_recv, (void *)(s_uart)) != _TRUE_)
-    {
-        printf("ERROR : initial thread receive serial failed\r\n");
-        return _FALSE_;
-    }
-
-    return _TRUE_;
-
-}
 
 int32_t serial_send(st_uart *s_uart,char *data)
 {
