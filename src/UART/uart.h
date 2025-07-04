@@ -5,11 +5,8 @@
 #include <fcntl.h>
 #include <termios.h>
 
-
 #define RASPBERRY_TX_PIN 14
 #define RASPBERRY_RX_PIN 15
-
-
 
 #define GAIN 24 //default
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
@@ -56,10 +53,11 @@ typedef union openbci_packet{
 }openbci_packet;
 
 
-
 //TODO : function to interpret 24 bit ints to 32bit ints
+int32_t interpretToInt(const byte data[3]);
 
 //TODO : function to convert 32 bit ints to 32 bit floats(something to do with the scale factor : 4.5 Volts / gain / (2^23 - 1);)
+float convertToFloat(const int32_t value);
 
 //TODO : open serial port
 
