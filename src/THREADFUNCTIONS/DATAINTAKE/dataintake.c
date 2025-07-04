@@ -73,7 +73,9 @@ static void dataIntake(void){
     
     const float arbitrary_max = 10.0f, arbitrary_min = -10.0f;
     
-    float channel_data_point[NUM_CHANNELS] = {0.0f};
+
+    size_t num_data_points = 0;
+    float channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
 
 
     (void)printf("Entering main loop\n");
@@ -89,13 +91,16 @@ static void dataIntake(void){
     }
     
 
-
     //TESTME : this whole loop logic needs THOROUGH testing
     while(1){
 
         pthread_testcancel();
 
-        if(getUARTData(channel_data_point)){
+        num_data_points = getUARTData(channel_data_point);
+
+        assert(num_data_points % NUM_CHANNELS == 0);
+
+        if(num_data_points > 0){
 
             const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
 
@@ -111,14 +116,22 @@ static void dataIntake(void){
 
                 }
 
-                //TODO : add UART data to internal ring buffer (write++)
+                for(int i = 0; i < num_data_points; i++){
+                    
+                    addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
+
+                }
 
                 freeze_tail = false;
 
             } else {
 
-                //TODO : add UART data to internal ring buffer (write++)
+                for(int i = 0; i < num_data_points; i++){
+                    
+                    addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
 
+                }
+                
                 bool is_not_baseline = false;
 
                 for(int i = 0; i < NUM_CHANNELS; i++){ 
