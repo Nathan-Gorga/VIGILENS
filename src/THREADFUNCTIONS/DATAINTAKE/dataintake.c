@@ -80,6 +80,7 @@ static void dataIntake(void){
 
     float channel1_data_point, channel2_data_point;//FIXME : make this work for any number of channels
     
+    //TESTME : this whole loop logic needs THOROUGH testing
     while(1){//TODO : get Uart data (polling)
 
         pthread_testcancel();
