@@ -12,13 +12,13 @@
 
 #define MAX_EVENT_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * 2/*seconds*/)
 
-typedef struct node{
+typedef struct{
     struct node * next;
     size_t start;
     size_t stop;
 }node;
 
-typedef struct head_node{
+typedef struct{
     struct node * next;
 }head_node;
 
