@@ -173,7 +173,7 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]){
     return 0;
 }
 
-bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){
+bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){//TESTME
 
     //TODO : is there a specific format to SEND to openBCI?
     

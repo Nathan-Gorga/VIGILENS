@@ -47,7 +47,7 @@ void * launchDataIntake(void * arg){
     pthread_exit(NULL);
 }
 
-static void dataIntake(void){
+static void dataIntake(void){//TESTME : test everything
     //CLEANME
     
     (void)printf("Thread launched succesfully\n");
