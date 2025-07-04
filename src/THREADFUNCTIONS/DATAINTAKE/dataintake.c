@@ -66,10 +66,39 @@ static void dataIntake(void){
     (void)printf("Entering main loop\n");
     
     while(1){
-
         pthread_testcancel();
 
-      
+        //TODO : get Uart data
+
+        //TODO : if(tail == write + 1) * modulo
+
+        //TODO : true :
+
+            //TODO : extract full buffer starting from tail
+
+            //TODO : get events from extracted buffer
+
+            //TODO : add events to event ring buffer
+
+            //TODO : add data to internal ring buffer (write++)
+
+            //TODO : freeze_tail = false
+
+        //TODO : false :
+
+            //TODO : add data to internal ring buffer (write++)
+
+            //TODO : if(leavingBaseline())
+
+            //TODO : true : 
+
+                //TODO : freeze_tail = true
+            
+        //TODO : if(!freeze_tail)
+
+        //TODO : true :
+
+            //TODO : tail = write
                 
     }
 
