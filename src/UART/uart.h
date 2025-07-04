@@ -23,6 +23,8 @@ courtesy to https://github.com/ultramcu
 #define GAIN 24 //default
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
 
+#define SAMPLE_TIME_uS (double)(1000000.0f / SAMPLING_RATE)
+
 //makes it more understandable
 #define byte unsigned char//FIXME: may be signed
 
@@ -90,9 +92,9 @@ bool beginUART(void);//TODO : write function comment
 
 void endUART(void);//TODO : write function comment
 
-bool getUartData(float data_point[NUM_CHANNELS]);//TODO : write function comment
+bool getUARTData(float data_point[NUM_CHANNELS]);//TODO : write function comment
 
-bool sendUartSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
+bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
 
 static u_int32_t UART_fd;
 

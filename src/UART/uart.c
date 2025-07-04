@@ -96,6 +96,8 @@ bool beginUART(void){
 
     if(!setTermiosOptions()) return false;
 
+    // TRY : without another thread, keep it simple, I think the OS can do the heavy lifting and I just handle polling
+
     // if (pthread_create(&s_uart->th_recv, NULL, (void *)th_serial_recv, (void *)(s_uart)) != _TRUE_)
     // {
     //     printf("ERROR : initial thread receive serial failed\r\n");
@@ -111,34 +113,32 @@ void endUART(void){
 
 }
 
-bool getUartData(float data_point[NUM_CHANNELS]){
 
-    fd_set reset;
-    
-    int32_t count = 0;
-    
-    size_t index = 0;
-    
-    byte receive_buffer[UART_BUFFER_SIZE] = {0};
+bool getUARTData(float data_point[NUM_CHANNELS]){
 
-    while(1){
+    fd_set read_UART_fd;
+    FD_ZERO(&read_UART_fd);
+    FD_SET(UART_fd, &read_UART_fd);
 
-        FD_ZERO(&reset);
-        FD_SET(UART_fd, &reset);
+    const short impatience = 2;
 
-        count = select(UART_fd + 1, &reset, NULL, NULL, &(struct timeval){30, 0}/*TRY : 0, 0 immediatly returns, useful for polling*//*TRY : NULL waits indefinitely*/);//FIXME : may be deprecated, use poll(2) or epoll(7)
+    struct timeval timeout = {0, (__suseconds_t)( SAMPLE_TIME_uS / impatience )};
 
-        if(count > 0){
+    const int ready = select(UART_fd + 1, &read_UART_fd, NULL, NULL, &timeout);
 
-            index = read(UART_fd, (void*)receive_buffer, UART_BUFFER_SIZE);
-
-        }        
+    if(ready > 0 && FD_ISSET(UART_fd, &read_UART_fd)){
+        //TODO : fill buffer
+        //TODO : separate packets if there are mutliple
+        //TODO : parse every packet
+        //TODO : convert to usable data
+        //TODO : send back usable data
     }
+
 }
 
-bool sendUartSignal(const enum TX_SIGNAL_TYPE signal_type){
+bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){
 
-    //TODO : is there a specific format to send to openBCI?
+    //TODO : is there a specific format to SEND to openBCI?
     
     const size_t size_written = sizeof(byte);
 
@@ -147,124 +147,3 @@ bool sendUartSignal(const enum TX_SIGNAL_TYPE signal_type){
     return false;
 }
 
-
-/*
-#define _UART_BUFFER_SIZE_ 255
-#define _UART_PROTO_HEADER_ '<'
-#define _UART_PROTO_FOOTER_ '>'
-
-#define _TRUE_ 0
-#define _FALSE_ -1
-
-
-typedef struct
-{
-    uint32_t count;
-    char data[_UART_BUFFER_SIZE_];
-}st_uart_data;
-
-
-typedef struct
-{
-    uint32_t serial_fd;
-    pthread_t th_recv;
-
-    int32_t recv_temp_cnt;
-    int32_t recv_buff_cnt;
-    char recv_temp[_UART_BUFFER_SIZE_];
-    char recv_buff[_UART_BUFFER_SIZE_];
-    char send_buff[_UART_BUFFER_SIZE_ + 2];
-    int32_t (*callback_function)(void *);
-
-    st_uart_data data;
-
-}st_uart;
-
-
-
-int32_t serial_send(st_uart *s_uart,char *data);
-int32_t uart_begin(st_uart *s_uart,char *device,int32_t baudrate,int32_t (*callback)(void *));
-int32_t convert_baudrate(int32_t baudrate);
-int32_t th_serial_recv(void *arg);
-
-#endif // APP_STACK_UART_H
-
-int32_t th_serial_recv(void *arg)
-{
-    st_uart *s_uart = (st_uart *)arg;
-    fd_set rset;
-    struct timeval tv;
-    int32_t count = 0;
-    uint8_t state = 0;
-    uint8_t i = 0;
-
-
-    while(1)
-    {
-        FD_ZERO(&rset);
-        FD_SET(s_uart->serial_fd, &rset);
-        tv.tv_sec = 30;
-        tv.tv_usec = 0;
-
-        count = select(s_uart->serial_fd + 1, &rset, NULL, NULL, &tv);
-
-        if(count > 0)
-        {
-            memset(s_uart->recv_temp,0,_UART_BUFFER_SIZE_);
-            s_uart->recv_temp_cnt = read(s_uart->serial_fd, (void*)s_uart->recv_temp, _UART_BUFFER_SIZE_);
-
-
-            for(i = 0; i < s_uart->recv_temp_cnt; i++)
-            {
-                switch(state)
-                {
-                    case 0: //check header <
-                        if(s_uart->recv_temp[i] == _UART_PROTO_HEADER_)
-                        {
-                            state = 1;
-                            s_uart->recv_buff_cnt = 0;
-                        }
-                        break;
-                    case 1: //copy data to buffer
-                        if(s_uart->recv_temp[i] == _UART_PROTO_HEADER_)
-                        {
-                            s_uart->recv_buff_cnt = 0;
-                        }
-                        else if(s_uart->recv_temp[i] == _UART_PROTO_FOOTER_)
-                        {
-                            memset(s_uart->data.data,0,_UART_BUFFER_SIZE_);
-                            memcpy(s_uart->data.data,s_uart->recv_buff,s_uart->recv_buff_cnt);
-                            s_uart->data.count = s_uart->recv_buff_cnt;
-
-
-                            state = 0;
-                            memset(s_uart->recv_buff,0,_UART_BUFFER_SIZE_);
-
-                            if(s_uart->callback_function != NULL)
-                            {
-                                (*s_uart->callback_function)(&s_uart->data);
-                            }
-                        }
-                        else
-                        {
-                            s_uart->recv_buff[s_uart->recv_buff_cnt++] = s_uart->recv_temp[i];
-                        }
-                        break;
-
-                }
-                //printf("Out  State = %d, char = %c\r\n",state,s_uart->recv_temp[i]);
-            }
-        }
-        else
-        {
-            if(s_uart->serial_fd < 0)
-            {
-                //close serial
-                close(s_uart->serial_fd);
-            }
-        }
-    }
-}
-
-
-}*/
