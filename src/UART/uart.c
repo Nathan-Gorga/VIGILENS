@@ -23,6 +23,6 @@ static inline float convertToFloat(const int32_t value){
 }
 
 
-static inline float channelDataToFloat(const byte data[3]){
+static inline float channelDataToFloat(const byte data[3]){//TESTME
     return convertToFloat(interpret24BitToInt(data));
 }
