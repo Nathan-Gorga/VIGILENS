@@ -4,7 +4,7 @@
 #include "../globaldefinition.h"
 #include "../RINGBUFFER/ringbuffer.h"
 
-#define SAMPLING_RATE 200
+#define SAMPLING_RATE 250
 #define NUM_CHANNELS 2
 #define TIME_IN_BUFFER 60
 
@@ -221,9 +221,6 @@ int destroyMutexes(void);
  *      structure must be initialized.
  */void addEvent(const float * data, const size_t size_data);
 
-
-
-void testEventDatastructure(void);
 
 #endif
 
