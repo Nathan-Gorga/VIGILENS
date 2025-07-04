@@ -20,6 +20,8 @@ courtesy to https://github.com/ultramcu
 
 #define UART_BUFFER_SIZE (size_t)(sizeof(openbci_packet) * SAMPLING_RATE / 2)
 
+#define PACKET_BUFFER_SIZE (size_t)(UART_BUFFER_SIZE / sizeof(openbci_packet))
+
 #define GAIN 24 //default
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
 

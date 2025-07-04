@@ -133,12 +133,12 @@ static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_re
     return count;
 }
 
-size_t getUARTData(float data_points[UART_BUFFER_SIZE / sizeof(openbci_packet)]){
+size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]){
     
     //TESTME : test this function thoroughly
     //CLEANME
     
-    openbci_packet packets[UART_BUFFER_SIZE / sizeof(openbci_packet)];
+    openbci_packet packets[PACKET_BUFFER_SIZE];
     
     fd_set read_UART_fd;
     FD_ZERO(&read_UART_fd);
