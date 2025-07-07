@@ -1,10 +1,11 @@
 #include "uart.h"
 
 
-static int32_t interpret24BitToInt(const byte data[3]){//TESTME : test this function thoroughly
+
+static int32_t interpret24BitToInt(const byte data[3]){
     
     int32_t Int = (  
-     ((0xFF & data[0]) << 16) |  //TESTME : there might be a problem here regarding MSB
+     ((0xFF & data[0]) << 16) |
      ((0xFF & data[1]) << 8) |   
      (0xFF & data[2])  
     );  
@@ -18,12 +19,14 @@ static int32_t interpret24BitToInt(const byte data[3]){//TESTME : test this func
     return Int;
 }
 
+
 static inline float convertToFloat(const int32_t value){
     return (float)(value * SCALE_FACTOR);
 }
 
 
-static inline float channelDataToFloat(const byte data[3]){//TESTME
+
+static inline float channelDataToFloat(const byte data[3]){
     return convertToFloat(interpret24BitToInt(data));
 }
 
@@ -113,21 +116,23 @@ void endUART(void){
 
 }
 
-static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]){//TESTME
+
+static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]){
 
     const size_t packet_size = sizeof(openbci_packet);
 
     size_t count = 0;
 
     for(int i = 0; i < size_read; i++){
-
+        
         if(buffer[i] == START_BYTE){
-
+            
             memcpy(&packets[count++], &buffer[i], packet_size);
-
+            
+            printf("count : %d\n", count);
+            
             i += packet_size - 1;
         }
-
     }
 
     return count;
@@ -183,4 +188,3 @@ bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){//TESTME
     
     return true;
 }
-

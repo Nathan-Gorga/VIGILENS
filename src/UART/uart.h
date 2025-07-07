@@ -22,7 +22,7 @@ courtesy to https://github.com/ultramcu
 
 #define PACKET_BUFFER_SIZE (size_t)(UART_BUFFER_SIZE / sizeof(openbci_packet))
 
-#define GAIN 24 //default
+#define GAIN 1 //TRY : different value for best results (1 - 24)
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
 
 #define SAMPLE_TIME_uS (double)(1000000.0f / SAMPLING_RATE)
@@ -79,21 +79,65 @@ enum TX_SIGNAL_TYPE{
     NUM_SIGNAL_TYPES
 };
 
-static int32_t interpret24BitToInt(const byte data[3]);//TODO : write function comment
+/**
+ * @brief Interpret 3 bytes as a signed 24-bit integer. (-8,388,608 to +8,388,607)
+ *
+ * @param data An array of 3 bytes to be interpreted as a signed 24-bit integer.
+ *
+ * @return The signed 24-bit integer represented by the 3 bytes.
+ *
+ * @details This function takes in 3 bytes and interprets them as a signed 24-bit integer.
+ *          The bytes are arranged in MSB first.
+ */static int32_t interpret24BitToInt(const byte data[3]);
 
-static inline float convertToFloat(const int32_t value);//TODO : write function comment
 
-static inline float channelDataToFloat(const byte data[3]);//TODO : write function comment
+static inline float convertToFloat(const int32_t value);
+
+
+/**
+ * @brief Converts 3 bytes of raw channel data to a usable float.
+ *
+ * @param data An array of 3 bytes to be interpreted as a signed 24-bit integer.
+ *
+ * @return The float represented by the 3 bytes.
+ *
+ * @details This function takes in 3 bytes and interprets them as a signed 24-bit integer.
+ *          The bytes are arranged in MSB first.
+ */static inline float channelDataToFloat(const byte data[3]);
 
 static bool openSerialFileDescriptor(void);//TODO : write function comment
 
 static bool setTermiosOptions(void);//TODO : write function comment
 
-static void getChannelDataFromPacket(const openbci_packet packet, float data_point[NUM_CHANNELS]);//TODO : write function comment
+
+/**
+ * @brief Extracts channel data from an OpenBCI packet and converts it to floats.
+ *
+ * @param packet The OpenBCI packet containing channel data.
+ * @param data_point An array to store the converted float values for each channel.
+ *
+ * @details This function iterates over the channel data in the provided OpenBCI packet,
+ *          converts each 3-byte channel data to a float using channelDataToFloat,
+ *          and stores the result in the provided data_point array.
+ */static void getChannelDataFromPacket(const openbci_packet packet, float data_point[NUM_CHANNELS]);
 
 static int32_t convertBaudrate(const int32_t baudrate);
 
-static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]);//TODO : write function comment
+
+/**
+ * @brief Extracts OpenBCI packets from a UART buffer.
+ *
+ * @param buffer The buffer containing raw byte data from the UART.
+ * @param size_read The number of bytes read into the buffer.
+ * @param packets An array to store the extracted OpenBCI packets.
+ *
+ * @return The number of packets successfully extracted from the buffer.
+ *
+ * @details This function iterates over the provided buffer, identifying packet start bytes,
+ *          and copies complete packets into the provided packets array. The function returns
+ *          the number of packets extracted. It assumes that each packet starts with a predefined
+ *          START_BYTE and has a fixed size defined by the openbci_packet structure.
+ */static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]);
 
 bool beginUART(void);//TODO : write function comment
 
@@ -104,6 +148,8 @@ size_t getUARTData(float data_points[UART_BUFFER_SIZE / sizeof(openbci_packet)])
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
 
 static u_int32_t UART_fd;
+
+
 
 #endif
 
