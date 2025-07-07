@@ -1,0 +1,33 @@
+THIS FILE IS FOR THE MEANING OF EACH TAGS YOU MAY FIND IN THE CODE 
+
+
+TODO : 
+
+This tag's purpose is as a reminder to implement a feature, come back to an incomplete function or get more information on a specific subject
+
+I use it mostly to remember about a past note I made to myself
+
+
+FIXME : 
+
+This tag's purpose is to recode something that is either subpar, dangerous can be done in a much cleaner way, not to be confused with BUG
+
+
+BUG :    
+
+This tag's purpose is to signal an error or bug in the code, whereas the previous FIXME tag indicates something that works but should absolutely be changed, this one just means something is not working at absolutely
+
+
+TRY :
+
+This tag's purpose has very low urgency or importance, mostly for jotting down ideas about an alternative I may have had.
+
+
+
+CLEANME :
+
+This tag's purpose is to signal that a function or block of code needs to be cleaned. What I mean by that is the following : 
+
+- naming conventions enforced
+- clean coding behaviour (locality of behaviour, checking all function returns, maintaining readability...)
+- and just improving general code comprehesion
