@@ -2,7 +2,7 @@
 
 
 
-static int32_t interpret24BitToInt(const byte data[3]){
+static int32_t interpret24BitToInt(const byte data[3]){//DONTTOUCH
     
     int32_t Int = (  
      ((0xFF & data[0]) << 16) |
@@ -20,18 +20,18 @@ static int32_t interpret24BitToInt(const byte data[3]){
 }
 
 
-static inline float convertToFloat(const int32_t value){
+static inline float convertToFloat(const int32_t value){//DONTTOUCH
     return (float)(value * SCALE_FACTOR);
 }
 
 
 
-static inline float channelDataToFloat(const byte data[3]){
+static inline float channelDataToFloat(const byte data[3]){//DONTTOUCH
     return convertToFloat(interpret24BitToInt(data));
 }
 
 
-static void getChannelDataFromPacket(const openbci_packet packet, float data_point[NUM_CHANNELS]){
+static void getChannelDataFromPacket(const openbci_packet packet, float data_point[NUM_CHANNELS]){//DONTTOUCH
     
     for(int i = 0; i < NUM_CHANNELS; i++){
         
@@ -117,7 +117,7 @@ void endUART(void){
 }
 
 
-static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]){
+static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]){//DONTTOUCH
 
     const size_t packet_size = sizeof(openbci_packet);
 
