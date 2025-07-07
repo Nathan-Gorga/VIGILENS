@@ -1,7 +1,7 @@
 #include "ringbuffer.h"
 
 
-struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){
+struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){//DONTTOUCH
     PRINTF_DEBUG
     
     if(size == 0) return NULL; //size cannot be negative (size_t is unsigned)
@@ -31,7 +31,7 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
 }
 
 
-void freeRingBuffer(struct ring_buffer * buffer){
+void freeRingBuffer(struct ring_buffer * buffer){//DONTTOUCH
 
     if(buffer == NULL) return;
     PRINTF_DEBUG
@@ -47,15 +47,16 @@ void freeRingBuffer(struct ring_buffer * buffer){
     free(buffer);
 }
 
-static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
+static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){//DONTTOUCH
     return (buffer->write + size_to_add) > buffer->size;
 }
 
-inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer){ //TODO : do the same for decrement
+//TODO : do the same for decrement
+inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer){//DONTTOUCH
     return (buffer->write + 1) % buffer->size;
 }
 
-static inline void _writeIndexIncrement(struct ring_buffer * buffer){
+static inline void _writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
     assert(buffer != NULL);
     PRINTF_DEBUG
     
@@ -66,7 +67,7 @@ static inline void _writeIndexIncrement(struct ring_buffer * buffer){
 }
 
 
-static void writeIndexIncrement(struct ring_buffer * buffer){
+static void writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
     PRINTF_DEBUG
 
     if(buffer->type == EVENT_RING_BUFFER){
@@ -86,7 +87,7 @@ static void writeIndexIncrement(struct ring_buffer * buffer){
 
 
 
-size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){
+size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){//DONTTOUCH
     assert(buffer_size > 0);
     PRINTF_DEBUG
 
@@ -107,7 +108,7 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 
 
 
-void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop){
+void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop){//DONTTOUCH
     PRINTF_DEBUG
     
     assert(buffer != NULL);
@@ -170,7 +171,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
 
 
 
-void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
+void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){//DONTTOUCH
     
     assert(buffer != NULL);
 
@@ -185,7 +186,7 @@ void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){
 
 
 
-void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size){
+void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size){//DONTTOUCH
 
     assert(buffer != NULL);
 

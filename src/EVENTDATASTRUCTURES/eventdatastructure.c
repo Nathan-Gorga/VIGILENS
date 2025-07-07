@@ -7,7 +7,7 @@ pthread_mutex_t write_index_mutex; //this one is just to prevent double lock
 
 pthread_mutex_t head_mutex;
 
-static node * initNode(const size_t start, const size_t stop){
+static node * initNode(const size_t start, const size_t stop){//DONTTOUCH
     PRINTF_DEBUG
 
     node * n = (node *)malloc(sizeof(node));
@@ -28,7 +28,7 @@ static node * initNode(const size_t start, const size_t stop){
 }
 
 
-static void freeNode(node * n){
+static void freeNode(node * n){//DONTTOUCH
     
     assert(n != NULL);
     PRINTF_DEBUG
@@ -38,7 +38,7 @@ static void freeNode(node * n){
 
 
 
-static void initList(void){
+static void initList(void){//DONTTOUCH
     PRINTF_DEBUG
 
     head = (head_node *)malloc(sizeof(head_node));
@@ -52,7 +52,7 @@ static void initList(void){
 
 
 
-static void freeList(void){
+static void freeList(void){//DONTTOUCH
     PRINTF_DEBUG
 
     assert(head != NULL);
@@ -78,7 +78,7 @@ static void freeList(void){
 }
 
 
-static void initEventRingBuffer(const size_t size_buffer){
+static void initEventRingBuffer(const size_t size_buffer){//DONTTOUCH
     PRINTF_DEBUG
 
     assert(size_buffer > 0);
@@ -93,7 +93,7 @@ static void initEventRingBuffer(const size_t size_buffer){
 
 
 
-static void freeEventRingBuffer(void){
+static void freeEventRingBuffer(void){//DONTTOUCH
     PRINTF_DEBUG
 
     assert(event_ring_buffer != NULL);
@@ -105,7 +105,7 @@ static void freeEventRingBuffer(void){
 
 
 
-static void addNodeToList(node * n){
+static void addNodeToList(node * n){//DONTTOUCH
     PRINTF_DEBUG
 
     assert(head != NULL);
@@ -134,8 +134,7 @@ static void addNodeToList(node * n){
 
 
 
-
-static void popNodeFromList(void){
+static void popNodeFromList(void){//DONTTOUCH
     PRINTF_DEBUG
 
     assert(head != NULL);
@@ -155,7 +154,7 @@ static void popNodeFromList(void){
 
 
 
-static size_t _getEvent(float * data){
+static size_t _getEvent(float * data){//DONTTOUCH
     PRINTF_DEBUG
 
     assert(head != NULL);
@@ -190,7 +189,7 @@ static size_t _getEvent(float * data){
 }
 
 
-static void _addEvent(const float * data, const size_t size_data){
+static void _addEvent(const float * data, const size_t size_data){//DONTTOUCH
 
     assert(data != NULL);
 
@@ -224,7 +223,7 @@ static void _addEvent(const float * data, const size_t size_data){
 }
 
 
-void initEventDatastructure(const size_t size_buffer){
+void initEventDatastructure(const size_t size_buffer){//DONTTOUCH
 
     assert(size_buffer > 0);
     PRINTF_DEBUG
@@ -236,7 +235,7 @@ void initEventDatastructure(const size_t size_buffer){
 }
 
 
-void freeEventDatastructure(void){
+void freeEventDatastructure(void){//DONTTOUCH
     PRINTF_DEBUG
 
     freeEventRingBuffer();
@@ -248,7 +247,7 @@ void freeEventDatastructure(void){
 
 
 
-size_t getEvent(float * data){
+size_t getEvent(float * data){//DONTTOUCH
     
     MUTEX_LOCK(&head_mutex);
 
@@ -260,7 +259,7 @@ size_t getEvent(float * data){
 }
 
 
-void addEvent(const float * data, const size_t size_data){
+void addEvent(const float * data, const size_t size_data){//DONTTOUCH
     
     MUTEX_LOCK(&head_mutex);
         PRINTF_DEBUG
@@ -271,7 +270,7 @@ void addEvent(const float * data, const size_t size_data){
     
 }
 
-int createMutexes(void){
+int createMutexes(void){//DONTTOUCH
     
     if(pthread_mutex_init(&head_mutex, NULL) == -1) return -1;
 
@@ -282,7 +281,7 @@ int createMutexes(void){
     return 0;
 }
 
-int destroyMutexes(void){
+int destroyMutexes(void){//DONTTOUCH
 
     if(pthread_mutex_destroy(&head_mutex) == -1) return -1;
 

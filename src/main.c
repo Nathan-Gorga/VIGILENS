@@ -79,7 +79,7 @@ static bool startupFunction(pthread_t data_intake_thread, pthread_t data_process
 }
 
 
-void handle_sigint(const int sig) {
+void handle_sigint(const int sig) {//DONTTOUCH
     (void)printf("Keyboard interrupt received\n");
     keyboard_interrupt = true;
 }
