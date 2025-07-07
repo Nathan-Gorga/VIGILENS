@@ -44,7 +44,10 @@ struct ring_buffer{
  */void freeRingBuffer(struct ring_buffer * buffer);
 
 
+
+//FIXME : these two may need mutexes
 inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer);//TODO : write function comment
+inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer);
 
 
 
@@ -70,6 +73,9 @@ inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer);//TODO : wri
  *
  * @pre buffer is not NULL.
  */static void writeIndexIncrement(struct ring_buffer * buffer);
+
+
+
 
 
 /**
