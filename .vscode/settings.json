@@ -3,6 +3,20 @@
         "dataintake.h": "c",
         "globaldefinition.h": "c",
         "unittestringbuffer.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "ringbuffer.h": "c",
+        "eventdatastructure.h": "c",
+        "signal.h": "c",
+        "dataprocessing.h": "c",
+        "signum-arch.h": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "string": "c",
+        "bit": "c",
+        "cmath": "c",
+        "random": "c",
+        "termios-baud.h": "c",
+        "cstdint": "c"
     }
 }

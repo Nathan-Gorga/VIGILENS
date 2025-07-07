@@ -71,16 +71,17 @@ static bool openSerialFileDescriptor(void){
 }
 
 static bool setTermiosOptions(void){//TESTME
-    //CLEANME
+    
     struct termios term_options;
 
     int32_t baudrate = convertBaudrate(UART_BAUDRATE);
 
-    tcgetattr(UART_fd, &term_options);
+    if(tcgetattr(UART_fd, &term_options)) return false;
 
-    cfsetispeed(&term_options, baudrate);
-    cfsetospeed(&term_options, baudrate);
+    if(cfsetispeed(&term_options, baudrate) || cfsetospeed(&term_options, baudrate)) return false;
     
+
+    //FIXME  : sync openBCI UART settings with RPi
     term_options.c_cflag &= ~PARENB; // No parity
     term_options.c_cflag &= ~CSTOPB; // 1 stop bit
     term_options.c_cflag &= ~CSIZE;  // Clear size bits
@@ -91,13 +92,9 @@ static bool setTermiosOptions(void){//TESTME
     term_options.c_oflag = 0;
     term_options.c_lflag = 0;
 
-    tcflush(UART_fd, TCIFLUSH);
+    if(tcflush(UART_fd, TCIFLUSH)) return false;
 
-    if( tcsetattr(UART_fd, TCSANOW, &term_options) < 0)
-    {
-        printf("ERROR :  Setup serial failed\r\n");
-        return false;
-    }
+    if( tcsetattr(UART_fd, TCSANOW, &term_options) < 0) return false;
 
     return true;
 }
