@@ -3,12 +3,35 @@
 
 #include "../globaldefinition.h"
 
+/**
+ * @brief Check if a data point is above a certain threshold.
+ *
+ * @param data_point The data point to be compared.
+ * @param threshold The threshold to compare against.
+ *
+ * @return true if the data point is above the threshold, false otherwise.
+ */inline bool aboveThreshold(const float data_point, const float threshold);
 
-inline bool aboveThreshold(const float data_point, const float threshold);//TODO : write function comment
 
-inline bool belowThreshold(const float data_point, const float threshold);//TODO : write function comment
+/**
+ * @brief Check if a data point is below or equal to a certain threshold.
+ *
+ * @param data_point The data point to be compared.
+ * @param threshold The threshold to compare against.
+ *
+ * @return true if the data point is below or equal to the threshold, false otherwise.
+ */inline bool belowThreshold(const float data_point, const float threshold);
 
-inline bool isBaseline(const float data_point, const float max, const float min);//TODO : write function comment
+
+/**
+ * @brief Checks if a data point is within a given range.
+ *
+ * @param data_point The data point to be compared.
+ * @param max The upper bound of the range.
+ * @param min The lower bound of the range.
+ *
+ * @return true if the data point is within the range, false otherwise.
+ */inline bool isBaseline(const float data_point, const float max, const float min);
 
 
 #endif

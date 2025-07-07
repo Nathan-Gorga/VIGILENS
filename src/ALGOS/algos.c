@@ -1,14 +1,17 @@
 #include "algos.h"
 
-inline bool aboveThreshold(const float data_point, const float threshold){
-    return data_point > threshold;
+
+inline bool aboveThreshold(const float data_point, const float threshold){//DONTTOUCH
+    return data_point >= threshold;
 }
 
-inline bool belowThreshold(const float data_point, const float threshold){
-    return data_point < threshold;
+
+inline bool belowThreshold(const float data_point, const float threshold){//DONTTOUCH
+    return data_point <= threshold;
 }
 
-inline bool isBaseline(const float data_point, const float max, const float min){
+
+inline bool isBaseline(const float data_point, const float max, const float min){//DONTTOUCH
     /*
     NOT ( TRUE OR TRUE) = FALSE 
     NOT (TRUE OR FALSE) = FALSE
