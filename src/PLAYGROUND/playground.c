@@ -1,18 +1,22 @@
 #include "../main.h"
-
+#include "../RINGBUFFER/ringbuffer.h"
 
 int main(void){
     printf("Hello world\n");
 
-    bool is_not_baseline = true;
-    for(int i = 0; i < 10; i++){ 
 
-        is_not_baseline |= !true;//isBaseline(channel_data_point[i], arbitrary_max, arbitrary_min); //TESTME
 
-    }
+    struct ring_buffer * buffer = initRingBuffer(5, EVENT_RING_BUFFER);
 
-    printf("%s\n", is_not_baseline ? "true" : "false");
+    buffer->write = 0;
 
+    printf("%d\n",writeIndexAfterDecrement(buffer));
+    buffer->write = 1;
+    printf("%d\n",writeIndexAfterDecrement(buffer));
+
+    buffer->write = buffer->size - 1;
+    printf("%d\n",writeIndexAfterDecrement(buffer));
+    
 
     return 0;
 }

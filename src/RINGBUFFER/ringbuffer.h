@@ -46,8 +46,8 @@ struct ring_buffer{
 
 
 //FIXME : these two may need mutexes
-inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer);//TODO : write function comment
-inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer);
+extern inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer);//TODO : write function comment
+extern inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer);
 
 
 

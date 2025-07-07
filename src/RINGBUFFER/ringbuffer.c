@@ -61,9 +61,10 @@ inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer){//DONTTOUCH
     return (buffer->write + 1) % buffer->size;
 }
 
-inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer){//TESTME
+inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer){//DONTTOUCH
     return (buffer->write - 1) % buffer->size;
 }
+
 
 static inline void _writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
     assert(buffer != NULL);
