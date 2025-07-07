@@ -36,3 +36,8 @@ This tag's purpose is to signal that a function or block of code needs to be cle
 \TESTME : 
 
 This tag's purpose is to signal that a function or block of code's logic has not been tested yet and therefore requires unit testing
+
+
+\DONTTOUCH : 
+
+This tag's purpose is to signal that everything works fine, has been tested thoroughly, cleaned, fixed and should not be tampered with unless there needs to be a feature added... pls...
