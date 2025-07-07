@@ -1,4 +1,8 @@
+
+
+
 #include "ringbuffer.h"
+
 
 
 struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){//DONTTOUCH
@@ -10,6 +14,7 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
     PRINTF_DEBUG
 
     if(buffer == NULL) return NULL;
+
     PRINTF_DEBUG
 
     buffer->memory = (float*)calloc(size, sizeof(float));
