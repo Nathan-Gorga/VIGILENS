@@ -67,18 +67,26 @@ static bool openSerialFileDescriptor(void){
         perror("OPEN");
         return false;
     }
-    
+    return true;
 }
 
-static bool setTermiosOptions(void){
-
+static bool setTermiosOptions(void){//TESTME
+    //CLEANME
     struct termios term_options;
 
     int32_t baudrate = convertBaudrate(UART_BAUDRATE);
 
     tcgetattr(UART_fd, &term_options);
 
-    term_options.c_cflag = baudrate | CS8 | CLOCAL | CREAD;		//<Set baud rate
+    cfsetispeed(&term_options, baudrate);
+    cfsetospeed(&term_options, baudrate);
+    
+    term_options.c_cflag &= ~PARENB; // No parity
+    term_options.c_cflag &= ~CSTOPB; // 1 stop bit
+    term_options.c_cflag &= ~CSIZE;  // Clear size bits
+    term_options.c_cflag |= CS8;     // 8 data bits
+    term_options.c_cflag |= CLOCAL | CREAD;
+
     term_options.c_iflag = IGNPAR;
     term_options.c_oflag = 0;
     term_options.c_lflag = 0;
@@ -90,6 +98,8 @@ static bool setTermiosOptions(void){
         printf("ERROR :  Setup serial failed\r\n");
         return false;
     }
+
+    return true;
 }
 
 
@@ -99,16 +109,9 @@ bool beginUART(void){//TESTME
 
     if(!setTermiosOptions()) return false;
 
-    // TRY : without another thread, keep it simple, I think the OS can do the heavy lifting and I just handle polling
-
-    // if (pthread_create(&s_uart->th_recv, NULL, (void *)th_serial_recv, (void *)(s_uart)) != _TRUE_)
-    // {
-    //     printf("ERROR : initial thread receive serial failed\r\n");
-    //     return _FALSE_;
-    // }
-
     return true;
 }
+
 
 void endUART(void){
 
@@ -180,7 +183,7 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]){
 
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){//TESTME
 
-    //TODO : is there a specific format to SEND to openBCI?
+    // TODO : openBCI sends $$$ when ready (before any signal), add this to the function
     
     const size_t size_written = sizeof(byte);
 

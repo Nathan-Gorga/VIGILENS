@@ -28,9 +28,17 @@ courtesy to https://github.com/ultramcu
 #define SAMPLE_TIME_uS (double)(1000000.0f / SAMPLING_RATE)
 
 //makes it more understandable
-#define byte unsigned char//FIXME: may be signed
+#define byte unsigned char
 
-#define START_BYTE (byte)0x0A//TODO : also define stop byte, depending on the openBCI configuration
+#define START_BYTE (byte)0x0A
+
+#define STOP_BYTE_0 (byte)0xC0
+#define STOP_BYTE_1 (byte)0xC1
+#define STOP_BYTE_2 (byte)0xC2
+#define STOP_BYTE_3 (byte)0xC3
+#define STOP_BYTE_4 (byte)0xC4
+#define STOP_BYTE_5 (byte)0xC5
+#define STOP_BYTE_6 (byte)0xC6
 
 
 
@@ -74,8 +82,8 @@ static_assert(sizeof(openbci_packet) == 33, "openbci_packet size is not 33 bytes
 static_assert(sizeof(((openbci_packet*)0)->fields) == 33, "fields size is not 33 bytes");
 
 enum TX_SIGNAL_TYPE{
-    START_STREAM = 'b',//TESTME 
-    STOP_STREAM = 's',//TESTME 
+    START_STREAM = 'b',
+    STOP_STREAM = 's', 
     NUM_SIGNAL_TYPES
 };
 
@@ -105,7 +113,7 @@ static inline float convertToFloat(const int32_t value);
  *          The bytes are arranged in MSB first.
  */static inline float channelDataToFloat(const byte data[3]);
 
-static bool openSerialFileDescriptor(void);//TODO : write function comment
+static bool openSerialFileDescriptor(void);
 
 static bool setTermiosOptions(void);//TODO : write function comment
 
@@ -139,11 +147,17 @@ static int32_t convertBaudrate(const int32_t baudrate);
  *          START_BYTE and has a fixed size defined by the openbci_packet structure.
  */static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]);
 
+
+
+
 bool beginUART(void);//TODO : write function comment
 
-void endUART(void);//TODO : write function comment
+/**
+ * @brief Close the serial file descriptor.
+ */void endUART(void);
 
-size_t getUARTData(float data_points[UART_BUFFER_SIZE / sizeof(openbci_packet)]); //TODO : write function comment
+
+size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]); //TODO : write function comment
 
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
 

@@ -83,7 +83,7 @@ static void dataIntake(void){//TESTME : test everything
     {
         short maximum_tries = 10;
 
-        while(!sendUARTSignal(START_STREAM) && maximum_tries-- ) usleep(10 * 1000);
+        while(!sendUARTSignal(START_STREAM) && maximum_tries-- ) usleep(10 * 1000); 
 
         if(maximum_tries <= 0) {
             (void)printf("Failed to send start stream signal\n");
