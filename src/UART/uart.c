@@ -141,7 +141,6 @@ static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_re
 size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]){
     
     //TESTME : test this function thoroughly
-    //CLEANME
     
     openbci_packet packets[PACKET_BUFFER_SIZE];
     
@@ -166,8 +165,7 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]){
             const size_t num_packets = getPacketsFromUARTBuffer(receiver_buffer,size_read,packets);
 
             for(int i = 0; i < num_packets; i++){
-                
-                //                                              \/ this is to send the array pointer shifted, as to not overwrite previous data
+                                                            //  \/ this is to send the array pointer shifted, as to not overwrite previous data
                 getChannelDataFromPacket(packets[i], data_points + (NUM_CHANNELS * i));
                                 
             }
