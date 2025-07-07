@@ -93,7 +93,7 @@ static bool setTermiosOptions(void){
 }
 
 
-bool beginUART(void){
+bool beginUART(void){//TESTME
     
     if(!openSerialFileDescriptor()) return false;
 

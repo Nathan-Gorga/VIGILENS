@@ -136,7 +136,7 @@ static void dataIntake(void){//TESTME : test everything
 
                 for(int i = 0; i < NUM_CHANNELS; i++){ 
 
-                    is_not_baseline |= !isBaseline(channel_data_point[i], arbitrary_max, arbitrary_min); //TESTME
+                    is_not_baseline |= !isBaseline(channel_data_point[i], arbitrary_max, arbitrary_min); 
 
                 }
 
