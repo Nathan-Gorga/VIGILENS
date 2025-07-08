@@ -1,7 +1,7 @@
 #ifndef GLOBALDEFINITION_H
 #define GLOBALDEFINITION_H
 
-#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,16 +19,16 @@
 
 
 
-#define BLACK "\e[0;30m"
-#define RED "\e[0;31m"
-#define GREEN "\e[0;32m"
-#define YELLOW "\e[0;33m"
-#define BLUE "\e[0;34m"
-#define PURPLE "\e[0;35m"
-#define CYAN "\e[0;36m"
-#define WHITE "\e[0;37m"
+#define BLACK "\x1B[0;30m"
+#define RED "\x1B[0;31m"
+#define GREEN "\x1B[0;32m"
+#define YELLOW "\x1B[0;33m"
+#define BLUE "\x1B[0;34m"
+#define PURPLE "\x1B[0;35m"
+#define CYAN "\x1B[0;36m"
+#define WHITE "\x1B[0;37m"
 
-#define RESET "\e[0m"
+#define RESET "\x1B[0m"
 
 
 // #define DEBUG

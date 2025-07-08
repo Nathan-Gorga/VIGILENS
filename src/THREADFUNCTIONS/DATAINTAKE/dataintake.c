@@ -1,5 +1,8 @@
 #include "dataintake.h"
 
+#define printf(...) printf(DATA_INTAKE_TEXT_COLOR"DATA INTAKE:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
+
+
 static void masterStartupDialogue(void){
 
     sigset_t set;
@@ -50,6 +53,8 @@ void * launchDataIntake(void * arg){
 static void dataIntake(void){//TESTME : test everything
     //CLEANME
     
+    char START_STREAM = 'b'; //TODO : remove
+
     (void)printf("Thread launched succesfully\n");
 
     struct ring_buffer * internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
@@ -81,9 +86,9 @@ static void dataIntake(void){//TESTME : test everything
     (void)printf("Entering main loop\n");
 
     {
-        short maximum_tries = 10;
+        char maximum_tries = 10;
 
-        while(!sendUARTSignal(START_STREAM) && maximum_tries-- ) usleep(10 * 1000); 
+        // while(!sendUARTSignal(START_STREAM) && maximum_tries-- ) usleep(10 * 1000); TODO : uncomment 
 
         if(maximum_tries <= 0) {
             (void)printf("Failed to send start stream signal\n");
@@ -96,7 +101,7 @@ static void dataIntake(void){//TESTME : test everything
 
         pthread_testcancel();
 
-        num_data_points = getUARTData(channel_data_point);
+        num_data_points = 2; channel_data_point[0] = 0.0f; channel_data_point[1] = 0.0f; //TODO : uncomment (getUARTData(channel_data_point);)
 
         assert(num_data_points % NUM_CHANNELS == 0);
 
@@ -104,7 +109,13 @@ static void dataIntake(void){//TESTME : test everything
 
             const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
 
-            if(tail == writePlusOne){
+            printf("writePlusOne : %d\n", writePlusOne);
+
+            printf("tail : %d\n", tail);
+
+            if(tail == writePlusOne){//TESTME : test this condition after, now just test baseline
+
+                printf("shouldn't be here\n");
 
                 extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
 
@@ -126,11 +137,15 @@ static void dataIntake(void){//TESTME : test everything
 
             } else {
 
+                printf("should be here\n");
+
                 for(int i = 0; i < num_data_points; i++){
                     
                     addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
 
                 }
+
+
                 
                 bool is_not_baseline = false;
 

@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra -D_POSIX_C_SOURCE=200809L -pthread -pedantic
+CFLAGS = -Wall -Wextra -D_POSIX_C_SOURCE=200809L -pthread -pedantic # -Werror
 
 # Target executable
 TARGET = VIGILENCE
@@ -11,8 +11,8 @@ SRCS = main.c \
 	EVENTDATASTRUCTURES/eventdatastructure.c \
 	THREADFUNCTIONS/DATAPROCESSING/dataprocessing.c \
 	THREADFUNCTIONS/DATAINTAKE/dataintake.c \
-	UART/uart.c \
-	ALGOS/algos.c
+	ALGOS/algos.c \
+	#UART/uart.c  TODO : uncomment
 	
 OBJS = $(SRCS:.c=.o)
 

@@ -10,7 +10,7 @@
  * @param threshold The threshold to compare against.
  *
  * @return true if the data point is above the threshold, false otherwise.
- */inline bool aboveThreshold(const float data_point, const float threshold);
+ */extern inline bool aboveThreshold(const float data_point, const float threshold);
 
 
 /**
@@ -20,7 +20,7 @@
  * @param threshold The threshold to compare against.
  *
  * @return true if the data point is below or equal to the threshold, false otherwise.
- */inline bool belowThreshold(const float data_point, const float threshold);
+ */extern inline bool belowThreshold(const float data_point, const float threshold);
 
 
 /**
@@ -31,7 +31,12 @@
  * @param min The lower bound of the range.
  *
  * @return true if the data point is within the range, false otherwise.
- */inline bool isBaseline(const float data_point, const float max, const float min);
+ */extern inline bool isBaseline(const float data_point, const float max, const float min);
 
 
 #endif
+
+
+
+
+

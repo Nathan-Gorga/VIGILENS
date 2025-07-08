@@ -1,5 +1,7 @@
 #include "main.h"
 
+#define printf(...) printf(MAIN_TEXT_COLOR"MASTER:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
+
 
 volatile bool keyboard_interrupt = false;
 
@@ -10,6 +12,13 @@ pthread_cond_t ready_cond = PTHREAD_COND_INITIALIZER;
 int ready_count = 0;
 
 const int THREADS_TO_WAIT = 2;
+
+
+void handle_sigint(const int sig) {//DONTTOUCH
+    (void)printf("Keyboard interrupt(%d) received\n",sig);
+    keyboard_interrupt = true;
+}
+
 
 static bool syncThreads(pthread_t data_intake_thread, pthread_t data_processing_thread) {
 
@@ -45,7 +54,7 @@ static bool startupFunction(pthread_t data_intake_thread, pthread_t data_process
 
     (void)signal(SIGINT, handle_sigint);
 
-    beginUART();
+    // beginUART(); TODO : uncomment
 
     sigset_t set;
 
@@ -79,17 +88,12 @@ static bool startupFunction(pthread_t data_intake_thread, pthread_t data_process
 }
 
 
-void handle_sigint(const int sig) {//DONTTOUCH
-    (void)printf("Keyboard interrupt received\n");
-    keyboard_interrupt = true;
-}
-
 
 int main(void){
     
-    pthread_t data_intake_thread, data_processing_thread;
+    pthread_t data_intake_thread=0, data_processing_thread=0;
 
-    if(!startupFunction(&data_intake_thread, &data_processing_thread)) goto end;
+    if(!startupFunction(data_intake_thread, data_processing_thread)) goto end;
    
     while(!keyboard_interrupt) usleep(100);
     
@@ -105,7 +109,7 @@ end:
 
     freeEventDatastructure();
     (void)destroyMutexes();
-    endUART();
+    // endUART(); TODO : uncomment
 
     return 0;
 }

@@ -1,4 +1,6 @@
 #include "dataprocessing.h"
+#define printf(...) printf(DATA_PROCESSING_TEXT_COLOR"DATA PROCESSING:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
+
 
 static void cleanupHandler(void * event_buffer){
     
