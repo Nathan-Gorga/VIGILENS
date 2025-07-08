@@ -15,12 +15,16 @@ const int THREADS_TO_WAIT = 2;
 
 
 void handle_sigint(const int sig) {//DONTTOUCH
+    PRINTF_DEBUG
+
     (void)printf("Keyboard interrupt(%d) received\n",sig);
+    PRINTF_DEBUG
+
     keyboard_interrupt = true;
 }
 
 
-static bool syncThreads(pthread_t data_intake_thread, pthread_t data_processing_thread) {
+static bool syncThreads(pthread_t * data_intake_thread, pthread_t * data_processing_thread) {
 
     {//wait for ready signal from both threads
         if(pthread_mutex_lock(&ready_lock) != 0){
@@ -42,13 +46,14 @@ static bool syncThreads(pthread_t data_intake_thread, pthread_t data_processing_
 
     (void)printf("Sending go signal to slave threads\n");
     
-    while(pthread_kill(data_intake_thread, SIGCONT));
-    while(pthread_kill(data_processing_thread, SIGCONT));
+    while(pthread_kill(*data_intake_thread, SIGCONT));
+    while(pthread_kill(*data_processing_thread, SIGCONT));
 
     return true;
 }
 
-static bool startupFunction(pthread_t data_intake_thread, pthread_t data_processing_thread) {
+
+static bool startupFunction(pthread_t *data_intake_thread, pthread_t* data_processing_thread) {
 
     srand(time(NULL));
 
@@ -75,11 +80,11 @@ static bool startupFunction(pthread_t data_intake_thread, pthread_t data_process
         (void)printf("Error creating mutexes\n"); return false;
     }
 
-    if(pthread_create(&data_intake_thread, NULL, launchDataIntake, NULL) != 0){
+    if(pthread_create(data_intake_thread, NULL, launchDataIntake, NULL) != 0){
         (void)printf("Error creating data intake thread\n"); return false;
     }
 
-    if(pthread_create(&data_processing_thread, NULL, launchDataProcessing, NULL) != 0){
+    if(pthread_create(data_processing_thread, NULL, launchDataProcessing, NULL) != 0){
         (void)printf("Error creating data processing thread\n"); return false;
     }
 
@@ -91,19 +96,27 @@ static bool startupFunction(pthread_t data_intake_thread, pthread_t data_process
 
 int main(void){
     
-    pthread_t data_intake_thread=0, data_processing_thread=0;
+    pthread_t data_intake_thread, data_processing_thread;
 
-    if(!startupFunction(data_intake_thread, data_processing_thread)) goto end;
+    if(!startupFunction(&data_intake_thread, &data_processing_thread)) goto end;
    
     while(!keyboard_interrupt) usleep(100);
     
     (void)printf("Cancelling slave threads\n");
 
+    PRINTF_DEBUG
     (void)pthread_cancel(data_intake_thread);
+    PRINTF_DEBUG
+
     (void)pthread_cancel(data_processing_thread);
+    PRINTF_DEBUG
 
     (void)pthread_join(data_intake_thread, NULL);
+    PRINTF_DEBUG
+
     (void)pthread_join(data_processing_thread, NULL);
+    PRINTF_DEBUG
+
 
 end:
 

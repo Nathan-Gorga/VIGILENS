@@ -14,6 +14,13 @@
 
 #define DATA_INTAKE_TEXT_COLOR BLUE
 
+
+#ifdef DEBUG_INTAKE
+    #define PRINTF_DEBUG do{printf(PURPLE"DEBUG : %s - %s:%d\n"RESET, __FILE__, __func__,__LINE__); fflush(stdout);}while(0);
+#else
+    #define PRINTF_DEBUG
+#endif
+
 void * launchDataIntake(void * arg);
 
 static void dataIntake(void);

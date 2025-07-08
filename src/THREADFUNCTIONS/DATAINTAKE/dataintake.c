@@ -34,12 +34,16 @@ static void masterStartupDialogue(void){
 }
 
 static void cleanupHandler(void * internal_ring_buffer){
+    PRINTF_DEBUG
     
     (void)printf("Cancel signal received\n");    
+    PRINTF_DEBUG
 
-    freeRingBuffer((struct ring_buffer *)internal_ring_buffer);
+    if(internal_ring_buffer != NULL) freeRingBuffer((struct ring_buffer *)internal_ring_buffer);
+    PRINTF_DEBUG
 
     (void)printf("Cleaned up thread\n");   
+    PRINTF_DEBUG
     
 }
 
@@ -60,8 +64,10 @@ static void dataIntake(void){//TESTME : test everything
     struct ring_buffer * internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
     
     if(internal_ring_buffer == NULL) exit(EXIT_FAILURE);
+    PRINTF_DEBUG
     
     pthread_cleanup_push(cleanupHandler, internal_ring_buffer);
+    PRINTF_DEBUG
 
     masterStartupDialogue();
 
@@ -101,21 +107,21 @@ static void dataIntake(void){//TESTME : test everything
 
         pthread_testcancel();
 
+        PRINTF_DEBUG
+
         num_data_points = 2; channel_data_point[0] = 0.0f; channel_data_point[1] = 0.0f; //TODO : uncomment (getUARTData(channel_data_point);)
+        PRINTF_DEBUG
 
         assert(num_data_points % NUM_CHANNELS == 0);
+        PRINTF_DEBUG
 
         if(num_data_points > 0){
+            PRINTF_DEBUG
 
             const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
 
-            printf("writePlusOne : %d\n", writePlusOne);
-
-            printf("tail : %d\n", tail);
-
             if(tail == writePlusOne){//TESTME : test this condition after, now just test baseline
-
-                printf("shouldn't be here\n");
+                PRINTF_DEBUG
 
                 extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
 
@@ -136,8 +142,6 @@ static void dataIntake(void){//TESTME : test everything
                 freeze_tail = false;
 
             } else {
-
-                printf("should be here\n");
 
                 for(int i = 0; i < num_data_points; i++){
                     
@@ -164,6 +168,7 @@ static void dataIntake(void){//TESTME : test everything
         
             tail = !freeze_tail ? internal_ring_buffer->write : tail;
         }
+        PRINTF_DEBUG
     }
 
     pthread_cleanup_pop(1);
