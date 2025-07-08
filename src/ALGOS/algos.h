@@ -3,6 +3,16 @@
 
 #include "../globaldefinition.h"
 
+#define MIN_EVENT_DURATION 80 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define MAX_EVENT_DURATION 200 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define MIN_BASELINE_DURATION 30 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define THRESHOLD_MAX 10 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define THRESHOLD_MIN -10 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+
+//this is because we detect the event only when it crosses baseline threshold, the event actually starts a few indexes before that
+#define DETECTION_TOLERANCE 5 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+
+
 /**
  * @brief Check if a data point is above a certain threshold.
  *
@@ -32,6 +42,11 @@
  *
  * @return true if the data point is within the range, false otherwise.
  */extern inline bool isBaseline(const float data_point, const float max, const float min);
+
+
+
+size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][], size_t size_events[]);
+
 
 
 #endif
