@@ -134,10 +134,7 @@ static void dataIntake(void){//TESTME : test everything
 
                 PRINTF_DEBUG
 
-
                 extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
-
-
 
                 num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);//FIXME : diverging from the size of the expected buffers slightly often deals in undefined behavior, find a solution to make this more robust
 
@@ -147,23 +144,20 @@ static void dataIntake(void){//TESTME : test everything
 
                 }
 
-               
-                for(int i = 0; i < num_data_points; i++){//FIXME : maybe could combine this one with the other in one identical instruction in the loop
+                for(int i = 0; i < num_data_points; i++){
                     
                     addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
-        
+    
                 }
 
                 freeze_tail = false;
 
-            } else {//DONTTOUCH : this condition
+            } else {
 
-                // printf("write : %d, tail : %d\n", internal_ring_buffer->write, tail);
-
-                for(int i = 0; i < num_data_points; i++){//FIXME : maybe could combine this one with the other in one identical instruction in the loop
+                for(int i = 0; i < num_data_points; i++){
                     
                     addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
-
+    
                 }
 
                 bool is_not_baseline = false;
@@ -177,7 +171,7 @@ static void dataIntake(void){//TESTME : test everything
                 if(is_not_baseline) freeze_tail = true;
                 
             }
-        
+
             tail = !freeze_tail ? internal_ring_buffer->write : tail;
         }
 

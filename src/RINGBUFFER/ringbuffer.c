@@ -137,9 +137,12 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     
     size_t size = numElementsBetweenIndexes(buffer->size, start, stop) + 1;
     
+    printf("size : %d, size_data : %d\n", size, size_data);
+
     assert(size == size_data);
 
-    assert(size_data <= buffer->size);
+    printf("size_data : %d, buffer->size : %d\n", size_data, buffer->size);
+    assert(size_data <= buffer->size);//BUG : weird assert fail here the buffer is of size 8 or 13, in data proc maybe
 
     assert(start >= 0 && stop >= 0);
 

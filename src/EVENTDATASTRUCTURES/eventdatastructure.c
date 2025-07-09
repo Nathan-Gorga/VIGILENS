@@ -171,7 +171,7 @@ static size_t _getEvent(float * data){//DONTTOUCH
     const size_t stop = event->stop;
     PRINTF_DEBUG
 
-    const size_t size_data = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);    
+    const size_t size_data = numElementsBetweenIndexes(event_ring_buffer->size, start, stop) + 1;    
     PRINTF_DEBUG
     
     MUTEX_LOCK(&event_ring_buffer_mutex);
