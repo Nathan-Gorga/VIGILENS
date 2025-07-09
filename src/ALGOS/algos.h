@@ -3,8 +3,6 @@
 
 #include "../globaldefinition.h"
 
-
-
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -52,7 +50,7 @@
 
 
 
-size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION * 2], size_t size_events[]);
+size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION], size_t size_events[]);
 
 
 
