@@ -147,16 +147,12 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     assert(start >= 0 && stop >= 0);
 
     assert(start < buffer->size && stop < buffer->size);
-    PRINTF_DEBUG
 
     if(!overflow){
-        PRINTF_DEBUG
 
         for(size_t i = 0; i < size; i ++){//FIXME : USE MEMMOVE
-            PRINTF_DEBUG
 
             data[i] = buffer->memory[i + start];
-            PRINTF_DEBUG
 
         }
 

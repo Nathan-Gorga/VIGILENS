@@ -144,21 +144,13 @@ static void dataIntake(void){//TESTME : test everything
 
                 }
 
-                for(int i = 0; i < num_data_points; i++){
-                    
-                    addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
-    
-                }
+                
 
                 freeze_tail = false;
 
             } else {
 
-                for(int i = 0; i < num_data_points; i++){
-                    
-                    addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
-    
-                }
+                
 
                 bool is_not_baseline = false;
 
@@ -170,6 +162,12 @@ static void dataIntake(void){//TESTME : test everything
 
                 if(is_not_baseline) freeze_tail = true;
                 
+            }
+
+            for(int i = 0; i < num_data_points; i++){
+                    
+                addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
+
             }
 
             tail = !freeze_tail ? internal_ring_buffer->write : tail;
