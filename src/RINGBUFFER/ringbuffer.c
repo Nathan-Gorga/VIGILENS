@@ -63,6 +63,19 @@ inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer){//DONTTOUCH
 }
 
 
+inline size_t writeIndexAfterAddingX(struct ring_buffer * buffer, const size_t x){//TESTME
+
+    //the negation is for speed purposes (false is more common in our case than true)
+    return !isOverflow(buffer, x) ? buffer->write + x : (x + buffer->write) - buffer->size;
+
+}
+
+
+
+
+
+
+
 static inline void _writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
     assert(buffer != NULL);
     PRINTF_DEBUG
@@ -93,7 +106,6 @@ static void writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
 }
 
 
-
 size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){//DONTTOUCH
     assert(buffer_size > 0);
     PRINTF_DEBUG
@@ -112,10 +124,7 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 }
 
 
-
-
-
-void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop){//DONTTOUCH
+void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop){
     PRINTF_DEBUG
     
     assert(buffer != NULL);
@@ -126,7 +135,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     const bool overflow = start > stop;
     PRINTF_DEBUG
     
-    size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
+    size_t size = numElementsBetweenIndexes(buffer->size, start, stop) + 1;
     
     assert(size == size_data);
 
@@ -140,7 +149,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     if(!overflow){
         PRINTF_DEBUG
 
-        for(size_t i = 0; i < size; i ++){
+        for(size_t i = 0; i < size; i ++){//FIXME : USE MEMMOVE
             PRINTF_DEBUG
 
             data[i] = buffer->memory[i + start];
@@ -154,7 +163,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
         const size_t offset = buffer->size - start;
         PRINTF_DEBUG
 
-        for(size_t i = 0; i < offset; i ++){
+        for(size_t i = 0; i < offset; i ++){//FIXME : USE MEMMOVE
             PRINTF_DEBUG
 
             data[i] = buffer->memory[i + start];
@@ -163,7 +172,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
         }
         PRINTF_DEBUG
 
-        for(size_t i = 0; i < stop + 1; i ++){
+        for(size_t i = 0; i < stop + 1; i ++){//FIXME : USE MEMMOVE
 
             data[i + offset] = buffer->memory[i];
             PRINTF_DEBUG
@@ -174,9 +183,6 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     PRINTF_DEBUG
 
 }
-
-
-
 
 void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){//DONTTOUCH
     

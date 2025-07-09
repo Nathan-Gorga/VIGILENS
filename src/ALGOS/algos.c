@@ -27,7 +27,7 @@ inline bool isBaseline(const float data_point, const float max, const float min)
     return !(aboveThreshold(data_point, max) || belowThreshold(data_point, min));
 }
 
-size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION ], size_t size_events[]){
+size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION], size_t size_events[]){
 
     //TESTME : further with artifacts and noise and weird input buffers (like alternating true false for example)
     //FOR FUTURE DEBUGGING/UNDERSTANDING, HERE IS A DIAGRAM OF THE ALGORITHM BELOW : https://www.c  anva.com/design/DAGsqXG_BNU/qtS7Dkq2mF7FSWF6K4jTbQ/edit
@@ -64,7 +64,7 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 
             if(!investigating){
    
-                //SET INVESTIGATION VALUES ON A SEGMENT
+                //SET INVESTIGATION VALUES Of A SEGMENT
                 start = max(i - DETECTION_TOLERANCE, 0);
                 Min = min(start + MIN_EVENT_DURATION, size_buffer - 1);
                 Max = min(start + MAX_EVENT_DURATION, size_buffer - 1);
@@ -79,9 +79,9 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 
             //GO TO THE END OF THE BASELINE (TO MEASURE IT'S SIZE)
             for(j; bool_buffer[j + 1] == BASELINE && j < i + 1 + MAX_EVENT_DURATION; j++);
-
+        
             //THE BASELINE IS LONG ENOUGH AND WE ARE NOT OVER THE BUFFER
-            if(j - i > MIN_BASELINE_DURATION || j >= size_buffer ){
+            if(j - i >= MIN_BASELINE_DURATION && j < size_buffer){
 
                 //THE SIGNAL IS NOT TOO LONG OR TOO SHORT
                 if(Min < i && i < Max){
@@ -89,8 +89,8 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
                     //MARK IT AS AN EVENT
                     size_events[counter_potential_events] = i - start;
 
-                    (void)memmove(events[counter_potential_events], buffer + start, size_events[counter_potential_events] * sizeof(float));
-
+                    (void)memmove(events[counter_potential_events], buffer + start, size_events[counter_potential_events] * sizeof(float));                    
+                    
                     counter_potential_events++;     
                 }
 
@@ -107,3 +107,64 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
     free(bool_buffer);
     return counter_potential_events;
 }
+
+
+
+
+
+// int main(void){
+
+
+//     const int size = 5000;
+//     float buffer[5000] = {0.0f};
+
+//     size_t counter = 0;
+
+//     bool signal_type = false;
+
+//     while(size != counter++){
+
+//         if(counter % 100 == 0) signal_type = !signal_type;
+
+//         buffer[counter] = signal_type ? 100.0f : 0.0f;
+
+//     }
+//     size_t size_of_potential_events[50] = {0};
+//     float potential_events[50][ MAX_EVENT_DURATION] = {0.0f};
+
+//     // for(int i = 0; i < size; i++){
+//     //     const float data_point = buffer[i];
+        
+//     //     data_point == 100.0f ? printf(RED) : printf(RESET);
+
+//     //     printf("%f ", data_point);
+//     // }
+
+
+
+//     size_t nb_events = markEventsInBuffer(buffer, size, potential_events, size_of_potential_events);
+
+
+//     printf("num events : %d\n", nb_events);
+
+//     for(int i = 0; i < nb_events; i++){
+//         printf("event number %d : ", i);
+//         for(int j = 0; j < size_of_potential_events[i]; j++){
+//             const float data_point = potential_events[i][j];
+        
+//             data_point == 100.0f ? printf(RED) : printf(RESET);
+
+//             printf("%f ", data_point);
+//         }
+//         printf("\n\n");
+//     }
+
+//     int size_total = 0;
+
+//     for(int i =0; i < nb_events; i++){
+//         size_total += size_of_potential_events[i];
+//     }
+
+//     printf("size total : %d\n", size_total);
+
+// }

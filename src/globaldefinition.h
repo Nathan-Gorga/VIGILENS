@@ -34,8 +34,8 @@
 
 // #define DEBUG
 // #define DEBUG_MAIN
-// #define DEBUG_INTAKE 
-#define DEBUG_ALGO 
+#define DEBUG_INTAKE 
+// #define DEBUG_ALGO 
 
 
 #ifdef DEBUG
