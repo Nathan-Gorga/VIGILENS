@@ -82,8 +82,6 @@ static void dataIntake(void){//TESTME : test everything
     size_t size_of_potential_events[(size_t)( INTERNAL_RING_BUFFER_SIZE / MAX_EVENT_SIZE )] = {0};
     float potential_events[(size_t)( INTERNAL_RING_BUFFER_SIZE / MAX_EVENT_SIZE )][ MAX_EVENT_SIZE ] = {0.0f};
     
-    const float arbitrary_max = 10.0f, arbitrary_min = -10.0f;
-    
 
     size_t num_data_points = 0;
     float channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
@@ -120,7 +118,7 @@ static void dataIntake(void){//TESTME : test everything
 
             const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
 
-            if(tail == writePlusOne){//TESTME : test this condition after, now just test baseline
+            if(tail == writePlusOne){
                 PRINTF_DEBUG
 
                 extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
@@ -141,7 +139,7 @@ static void dataIntake(void){//TESTME : test everything
 
                 freeze_tail = false;
 
-            } else {
+            } else {//DONTTOUCH : this condition
 
                 for(int i = 0; i < num_data_points; i++){
                     
@@ -149,13 +147,12 @@ static void dataIntake(void){//TESTME : test everything
 
                 }
 
-
                 
                 bool is_not_baseline = false;
 
                 for(int i = 0; i < NUM_CHANNELS; i++){ 
 
-                    is_not_baseline |= !isBaseline(channel_data_point[i], arbitrary_max, arbitrary_min); 
+                    is_not_baseline |= !isBaseline(channel_data_point[i], THRESHOLD_MAX, THRESHOLD_MIN); 
 
                 }
 

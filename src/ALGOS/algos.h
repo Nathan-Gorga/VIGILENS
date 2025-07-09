@@ -3,9 +3,16 @@
 
 #include "../globaldefinition.h"
 
+
+
+#define min(a,b) ((a) < (b) ? (a) : (b))
+#define max(a,b) ((a) > (b) ? (a) : (b))
+
 #define MIN_EVENT_DURATION 80 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
-#define MAX_EVENT_DURATION 200 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define MAX_EVENT_DURATION 300 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+
 #define MIN_BASELINE_DURATION 30 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+
 #define THRESHOLD_MAX 10 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
 #define THRESHOLD_MIN -10 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
 
@@ -45,7 +52,7 @@
 
 
 
-size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][], size_t size_events[]);
+size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION * 2], size_t size_events[]);
 
 
 

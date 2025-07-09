@@ -53,7 +53,7 @@ static bool syncThreads(pthread_t * data_intake_thread, pthread_t * data_process
 }
 
 
-static bool startupFunction(pthread_t *data_intake_thread, pthread_t* data_processing_thread) {
+static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_processing_thread) {
 
     srand(time(NULL));
 
