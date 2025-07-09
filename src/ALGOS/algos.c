@@ -98,7 +98,6 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 
             } else {//FIXME : this else condition may not be useful at all and i = j should happen no matter what
                 //CONTINUE INVESTIGATION AS THE BASELINE WAS TOO SHORT (THE SEGMENT MAY CONTINUES AFTER THIS)
-                
                 i = j;//i gets increment after the for loop
             }    
         }
@@ -108,63 +107,3 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
     return counter_potential_events;
 }
 
-
-
-
-
-// int main(void){
-
-
-//     const int size = 5000;
-//     float buffer[5000] = {0.0f};
-
-//     size_t counter = 0;
-
-//     bool signal_type = false;
-
-//     while(size != counter++){
-
-//         if(counter % 100 == 0) signal_type = !signal_type;
-
-//         buffer[counter] = signal_type ? 100.0f : 0.0f;
-
-//     }
-//     size_t size_of_potential_events[50] = {0};
-//     float potential_events[50][ MAX_EVENT_DURATION] = {0.0f};
-
-//     // for(int i = 0; i < size; i++){
-//     //     const float data_point = buffer[i];
-        
-//     //     data_point == 100.0f ? printf(RED) : printf(RESET);
-
-//     //     printf("%f ", data_point);
-//     // }
-
-
-
-//     size_t nb_events = markEventsInBuffer(buffer, size, potential_events, size_of_potential_events);
-
-
-//     printf("num events : %d\n", nb_events);
-
-//     for(int i = 0; i < nb_events; i++){
-//         printf("event number %d : ", i);
-//         for(int j = 0; j < size_of_potential_events[i]; j++){
-//             const float data_point = potential_events[i][j];
-        
-//             data_point == 100.0f ? printf(RED) : printf(RESET);
-
-//             printf("%f ", data_point);
-//         }
-//         printf("\n\n");
-//     }
-
-//     int size_total = 0;
-
-//     for(int i =0; i < nb_events; i++){
-//         size_total += size_of_potential_events[i];
-//     }
-
-//     printf("size total : %d\n", size_total);
-
-// }

@@ -139,7 +139,7 @@ static void dataIntake(void){//TESTME : test everything
 
 
 
-                num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);
+                num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);//FIXME : diverging from the size of the expected buffers slightly often deals in undefined behavior, find a solution to make this more robust
 
                 for(int i = 0; i < num_potential_events; i++){
 
