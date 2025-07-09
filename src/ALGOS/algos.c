@@ -96,10 +96,10 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 
                 investigating = false; 
 
-            } else {
+            } else {//FIXME : this else condition may not be useful at all and i = j should happen no matter what
                 //CONTINUE INVESTIGATION AS THE BASELINE WAS TOO SHORT (THE SEGMENT MAY CONTINUES AFTER THIS)
-                i = j;//i gets increment after the for loop
                 
+                i = j;//i gets increment after the for loop
             }    
         }
     }
@@ -109,3 +109,18 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 }
 
 
+int main(void){
+
+    float buffer[1000] = 0.0f;
+
+
+    const int start1 = 100;
+    const int end1 = 200;
+    
+
+    for(int i = start1; i < end1; i++){
+        buffer[i] = 100.0f;
+    }
+
+
+}
