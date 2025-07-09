@@ -101,37 +101,56 @@ static void dataIntake(void){//TESTME : test everything
     }   
 
     //TESTME : this whole loop logic needs THOROUGH testing
+
+    bool send_signal = false;
+    const float baseline = 0.0f;
+    const float signal = 100.0f;
+
+    long long counter = 0;
+
     while(true){
 
         pthread_testcancel();
 
-        PRINTF_DEBUG
+        num_data_points = 2; 
+        
+        if(send_signal){
 
-        num_data_points = 2; channel_data_point[0] = 0.0f; channel_data_point[1] = 0.0f; //TODO : uncomment (getUARTData(channel_data_point);)
-        PRINTF_DEBUG
+            channel_data_point[0] = signal; channel_data_point[1] = signal; //TODO : uncomment (getUARTData(channel_data_point);)
+
+        } else {
+
+            channel_data_point[0] = baseline; channel_data_point[1] = baseline; //TODO : uncomment (getUARTData(channel_data_point);)
+
+        }
 
         assert(num_data_points % NUM_CHANNELS == 0);
-        PRINTF_DEBUG
 
         if(num_data_points > 0){
-            PRINTF_DEBUG
 
             const size_t writePlusOne = writeIndexAfterIncrement(internal_ring_buffer);
 
             if(tail == writePlusOne){
-                PRINTF_DEBUG
 
                 extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
 
-                //TODO : get events from extracted buffer (returns number of potential events, potential_events is filled with that number of events as well as the size of each events in the above array)
+                num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);//TESTME : test this integration
 
-                for(int i = 0; i < num_potential_events; i++){
+                // for(int i = 0; i < num_potential_events; i++){//TODO : uncomment
 
-                    addEvent(potential_events[i], size_of_potential_events[i]);
+                //     addEvent(potential_events[i], size_of_potential_events[i]);
 
+                // }
+
+                for(int i = 0; i < num_potential_events; i++){//TODO : remove
+                    for(int j = 0; j < size_of_potential_events[i]; j++){
+                        printf("%f ", potential_events[i][j]);
+                    }
+                    printf("\n");
                 }
 
-                for(int i = 0; i < num_data_points; i++){
+
+                for(int i = 0; i < num_data_points; i++){//FIXME : maybe could combine this one with the other in one identical instruction in the loop
                     
                     addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
         
@@ -141,13 +160,12 @@ static void dataIntake(void){//TESTME : test everything
 
             } else {//DONTTOUCH : this condition
 
-                for(int i = 0; i < num_data_points; i++){
+                for(int i = 0; i < num_data_points; i++){//FIXME : maybe could combine this one with the other in one identical instruction in the loop
                     
                     addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
 
                 }
 
-                
                 bool is_not_baseline = false;
 
                 for(int i = 0; i < NUM_CHANNELS; i++){ 
@@ -165,7 +183,11 @@ static void dataIntake(void){//TESTME : test everything
         
             tail = !freeze_tail ? internal_ring_buffer->write : tail;
         }
-        PRINTF_DEBUG
+
+
+        counter++;
+        if(counter % 500 == 0) send_signal = !send_signal;
+        
     }
 
     pthread_cleanup_pop(1);

@@ -49,7 +49,7 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
     bool investigating = false;
     int i, j;
 
-    bool * bool_buffer = malloc(size_buffer * sizeof(bool));
+    bool * bool_buffer = malloc(size_buffer * sizeof(bool));//FIXME : avoid the heap, especially in a time sensitive function
 
     if(bool_buffer == NULL) return -1;
 
@@ -106,21 +106,4 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 
     free(bool_buffer);
     return counter_potential_events;
-}
-
-
-int main(void){
-
-    float buffer[1000] = 0.0f;
-
-
-    const int start1 = 100;
-    const int end1 = 200;
-    
-
-    for(int i = start1; i < end1; i++){
-        buffer[i] = 100.0f;
-    }
-
-
 }
