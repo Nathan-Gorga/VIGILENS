@@ -175,6 +175,7 @@ int main(void){
     
     (void)logEntry(THREAD_MASTER, LOG_INFO, "All threads joined back to master");
 
+
 end:
 
     freeEventDatastructure();
@@ -182,11 +183,14 @@ end:
     (void)destroyMutexes();
 
     #ifdef UART_ENABLED
+
         endUART();
+    
     #endif
  
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Clean exit of program");
-    usleep(500);
+    
+    (void)usleep(500);
 
     (void)closeLoggingSystem();
 
