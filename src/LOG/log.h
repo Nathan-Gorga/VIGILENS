@@ -20,27 +20,20 @@ typedef enum{
 
 #define LOG_FILE_NAME "vigilence.log"
 
-
-//TODO : creating a logging system
-
-//TODO : init logging file
 int initLoggingSystem(void);
 
-//TODO : write to logging file
 int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
 
+int _log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
 
-//TODO : close logging file
 int closeLoggingSystem(void);
-
-
-//TODO : mutex around logging
 
 
 static FILE * log_file;
 
 static struct timespec begin;
 
+extern pthread_mutex_t log_mutex;
 
 #endif
 

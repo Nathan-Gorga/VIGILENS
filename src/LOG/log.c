@@ -1,5 +1,7 @@
 #include "log.h"
 
+pthread_mutex_t log_mutex;
+
 
 int initLoggingSystem(void){//TESTME
 
@@ -22,8 +24,20 @@ int initLoggingSystem(void){//TESTME
 }
 
 
+int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
 
-int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : find a way to close before a crash, or at least close and save periodically
+    MUTEX_LOCK(&log_mutex);
+
+    const int ret = _log(thread_id, log_type, message);
+
+    MUTEX_UNLOCK(&log_mutex);
+
+    return ret;
+}
+
+
+
+int _log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : find a way to close before a crash, or at least close and save periodically
     
     if(log_file == NULL){
     
