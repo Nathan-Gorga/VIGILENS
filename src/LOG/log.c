@@ -7,9 +7,27 @@ pthread_mutex_t log_mutex;
 pthread_t log_thread[4];//0 : master, 1 : data intake, 2 : data processing, 3 : none
 
 
+void signalHandler(int sig) {
+    
+    closeLoggingSystem();
+    
+}
 
-int initLoggingSystem(void){//TESTME
 
+void setupSignalHandlers() {
+
+    const int size_crash_signals = 11;
+
+    int crash_signals[size_crash_signals] = {
+        SIGSEGV, SIGABRT, SIGFPE, SIGILL, SIGBUS, SIGSYS, 
+        SIGTERM, SIGHUP, SIGQUIT, SIGXCPU, SIGXFSZ
+    };
+
+    for(int i = 0 ; i < size_crash_signals; i++) signal(crash_signals[i], signalHandler);
+
+}
+
+int initLoggingSystem(void){
 
     log_file = fopen(LOG_FILE_NAME, "w");
     
@@ -20,9 +38,10 @@ int initLoggingSystem(void){//TESTME
         return -1;
     }
 
+    setupSignalHandlers();
+    
     (void)clock_gettime(CLOCK_REALTIME, &begin);//don't change begin from now on
 
-    
     return logEntry(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
 }
 
@@ -30,16 +49,21 @@ int initLoggingSystem(void){//TESTME
 int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
     
     LOG_PARAM *log_param = malloc(sizeof(LOG_PARAM));// we need the heap here for log_param to last longer than the function scope
+   
     if (log_param == NULL) return -1;
 
     log_param->thread_id = thread_id;
+
     log_param->log_type = log_type;
+    
     log_param->message = strdup(message); // make a copy of message to be safe
 
     if(pthread_create(&log_thread[thread_id], NULL, _logEntry, log_param) != 0) {
      
         free(log_param->message);
+      
         free(log_param);
+      
         return -1;
     }
 
@@ -51,12 +75,23 @@ int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message)
 
 static void * _logEntry(void * param){
 
+    {//prevent SIGINT from interrupting logging
+        sigset_t sigset;
+    
+        sigemptyset(&sigset);
+    
+        sigaddset(&sigset, SIGINT);
+    
+        pthread_sigmask(SIG_BLOCK, &sigset, NULL);
+    }
+
     LOG_PARAM * log_param = (LOG_PARAM *)param;
 
     const THREAD_ID thread_id = log_param->thread_id;
+   
     const LOG_TYPE log_type = log_param->log_type;
+   
     char * message = log_param->message;
-
     
     MUTEX_LOCK(&log_mutex);
     
@@ -64,8 +99,8 @@ static void * _logEntry(void * param){
     
     MUTEX_UNLOCK(&log_mutex);
 
+    free(log_param->message);
 
-    free(log_param->message);//BUG : double free here I think
     free(log_param);
 
     return NULL;
@@ -137,12 +172,14 @@ static int __logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char *
 
     (void)fprintf(log_file, "%s - %s(%ld.%06lld): %s\n"RESET, log_type_name,thread_name,seconds, (long long)(nanoseconds * 0.001f), message);
 
+    fflush(log_file);
+
     return 0;
 }
 
 
 
-int closeLoggingSystem(void){//TESTME
+int closeLoggingSystem(void){
     if (log_file != NULL) {
     
         fclose(log_file);

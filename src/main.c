@@ -186,6 +186,7 @@ end:
     #endif
  
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Clean exit of program");
+    usleep(500);
 
     (void)closeLoggingSystem();
 
