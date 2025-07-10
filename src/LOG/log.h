@@ -35,6 +35,10 @@ int closeLoggingSystem(void);
 
 //TODO : mutex around logging
 
+
+static FILE * log_file;
+
+
 #endif
 
 
