@@ -27,7 +27,7 @@ typedef enum{
 int initLoggingSystem(void);
 
 //TODO : write to logging file
-int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
+int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
 
 
 //TODO : close logging file

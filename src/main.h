@@ -6,6 +6,8 @@
 #include "THREADFUNCTIONS/DATAPROCESSING/dataprocessing.h"
 #include "RINGBUFFER/ringbuffer.h"
 #include "EVENTDATASTRUCTURES/eventdatastructure.h"
+#include "LOG/log.h"
+
 // #include "UART/uart.h" TODO : uncomment
 
 #define MAIN_TEXT_COLOR GREEN

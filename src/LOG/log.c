@@ -14,14 +14,12 @@ int initLoggingSystem(void){//TESTME
 
     begin = time(NULL);//don't change begin from now on
 
-    logEntry(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
-    
-    return 0;
+    return log(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
 }
 
 
 
-int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
+int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : find a way to close before a crash, or at least close and save periodically
     
     if(log_file == NULL){
     
