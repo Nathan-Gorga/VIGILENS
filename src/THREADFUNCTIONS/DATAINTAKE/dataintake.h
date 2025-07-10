@@ -6,8 +6,7 @@
 #include "../../EVENTDATASTRUCTURES/eventdatastructure.h"
 #include "../../ALGOS/algos.h"
 #include "../../LOG/log.h"
-
-// #include "../../UART/uart.h" TODO : uncomment
+#include "../../UART/uart.h"
 
 #define PACKET_BUFFER_SIZE 10
 

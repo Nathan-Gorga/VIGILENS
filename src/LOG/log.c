@@ -23,11 +23,11 @@ int initLoggingSystem(void){//TESTME
     (void)clock_gettime(CLOCK_REALTIME, &begin);//don't change begin from now on
 
     
-    return log(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
+    return logEntry(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
 }
 
 
-int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
+int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
     
     LOG_PARAM *log_param = malloc(sizeof(LOG_PARAM));// we need the heap here for log_param to last longer than the function scope
     if (log_param == NULL) return -1;
@@ -42,8 +42,8 @@ int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
         free(log_param);
         return -1;
     }
-    pthread_detach(log_thread[thread_id]);
 
+    pthread_detach(log_thread[thread_id]);
 
     return 0;
 }
@@ -67,6 +67,8 @@ static void * _log(void * param){
 
     free(log_param->message);//BUG : double free here I think
     free(log_param);
+
+    return NULL;
 }
 
 
@@ -133,7 +135,7 @@ static int __log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * mess
         nanoseconds += 1000000000L;
     }
 
-    (void)fprintf(log_file, "%s - %s(%ld.%06ld): %s\n"RESET, log_type_name,thread_name,seconds, (long long)(nanoseconds * 0.001f), message);
+    (void)fprintf(log_file, "%s - %s(%ld.%06lld): %s\n"RESET, log_type_name,thread_name,seconds, (long long)(nanoseconds * 0.001f), message);
 
     return 0;
 }

@@ -17,7 +17,8 @@ const int THREADS_TO_WAIT = 2;
 void handle_sigint(const int sig) {//DONTTOUCH
 
     (void)printf("Keyboard interrupt(%d) received\n",sig);
-    log(THREAD_MASTER, LOG_INFO, "Keyboard interrupt received");
+
+    logEntry(THREAD_MASTER, LOG_INFO, "Keyboard interrupt received");
 
     keyboard_interrupt = true;
 }
@@ -27,11 +28,11 @@ static bool syncThreads(pthread_t * data_intake_thread, pthread_t * data_process
 
     {//wait for ready signal from both threads
 
-        log(THREAD_MASTER, LOG_INFO, "Waiting for slave threads to be ready...");
+        logEntry(THREAD_MASTER, LOG_INFO, "Waiting for slave threads to be ready...");
 
         if(pthread_mutex_lock(&ready_lock) != 0){
             (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); 
-            log(THREAD_MASTER, LOG_ERROR, "Error when locking ready mutex");
+            logEntry(THREAD_MASTER, LOG_ERROR, "Error when locking ready mutex");
 
             return false;
         }
@@ -41,13 +42,16 @@ static bool syncThreads(pthread_t * data_intake_thread, pthread_t * data_process
         while (ready_count < THREADS_TO_WAIT) {
             (void)pthread_cond_wait(&ready_cond, &ready_lock);
         }
-        log(THREAD_MASTER, LOG_INFO, "Slave threads are ready");
+
+        logEntry(THREAD_MASTER, LOG_INFO, "Slave threads are ready");
 
         (void)printf("All threads are ready\n");
 
         if(pthread_mutex_unlock(&ready_lock) != 0){
+
             (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__); 
-            log(THREAD_MASTER, LOG_ERROR, "Error when unlocking ready mutex");
+            
+            logEntry(THREAD_MASTER, LOG_ERROR, "Error when unlocking ready mutex");
 
             return false;
         } 
@@ -56,6 +60,7 @@ static bool syncThreads(pthread_t * data_intake_thread, pthread_t * data_process
     (void)printf("Sending go signal to slave threads\n");
     
     while(pthread_kill(*data_intake_thread, SIGCONT));
+
     while(pthread_kill(*data_processing_thread, SIGCONT));
 
     return true;
@@ -72,9 +77,9 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
     
     (void)signal(SIGINT, handle_sigint);
     
-    // beginUART(); TODO : uncomment
-    // log(THREAD_MASTER, LOG_INFO, "UART initialized");
+    beginUART(); 
 
+    log(THREAD_MASTER, LOG_INFO, "UART initialized");
     
     sigset_t set;
     
@@ -84,44 +89,48 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
     
     // Block SIGCONT in all threads, necessary for sigwait to work properly
     while(pthread_sigmask(SIG_BLOCK, &set, NULL));
-    log(THREAD_MASTER, LOG_INFO, "Signal handler initialized");
+
+    logEntry(THREAD_MASTER, LOG_INFO, "Signal handler initialized");
 
     (void)printf("Starting VIGILENCE SYSTEM\n");
-    log(THREAD_MASTER, LOG_INFO, "STARTING VIGILENCE SYSTEM");
-
+    
+    logEntry(THREAD_MASTER, LOG_INFO, "STARTING VIGILENCE SYSTEM");
 
     (void)printf("Initializing event data structure\n");
+
     initEventDatastructure(12);
-    log(THREAD_MASTER, LOG_INFO, "Event data structure initialized");
+
+    logEntry(THREAD_MASTER, LOG_INFO, "Event data structure initialized");
 
 
     (void)printf("Creating mutexes\n");
     if(createMutexes() != 0){
     
-        log(THREAD_MASTER, LOG_ERROR, "mutexes failed to initialize");
+        logEntry(THREAD_MASTER, LOG_ERROR, "mutexes failed to initialize");
 
         (void)printf("Error creating mutexes\n"); return false;
     }
-    log(THREAD_MASTER, LOG_INFO, "Succesful creation of mutexes");
+    logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of mutexes");
 
 
     if(pthread_create(data_intake_thread, NULL, launchDataIntake, NULL) != 0){
 
-        log(THREAD_MASTER, LOG_ERROR, "Failed to create data intake thread");
+        logEntry(THREAD_MASTER, LOG_ERROR, "Failed to create data intake thread");
 
         (void)printf("Error creating data intake thread\n"); return false;
     }
 
-    log(THREAD_MASTER, LOG_INFO, "Succesful creation of data intake thread");
+    logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of data intake thread");
 
 
     if(pthread_create(data_processing_thread, NULL, launchDataProcessing, NULL) != 0){
-        log(THREAD_MASTER, LOG_ERROR, "Failed to create data processing thread");
+
+        logEntry(THREAD_MASTER, LOG_ERROR, "Failed to create data processing thread");
 
         (void)printf("Error creating data processing thread\n"); return false;
     }
 
-    log(THREAD_MASTER, LOG_INFO, "Succesful creation of data processing thread");
+    logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of data processing thread");
 
     return syncThreads(data_intake_thread, data_processing_thread);
 
@@ -135,40 +144,35 @@ int main(void){
 
     if(!startupFunction(&data_intake_thread, &data_processing_thread)) goto end;
    
-    log(THREAD_MASTER, LOG_INFO, "Successful launch of startup function");
+    logEntry(THREAD_MASTER, LOG_INFO, "Successful launch of startup function");
    
-    while(!keyboard_interrupt) usleep(100);
-   
+    while(!keyboard_interrupt) usleep(100);   
     
     (void)printf("Cancelling slave threads\n");
-    log(THREAD_MASTER, LOG_INFO, "SENDING CANCEL SIGNAL TO SLAVE THREADS");
+    logEntry(THREAD_MASTER, LOG_INFO, "SENDING CANCEL SIGNAL TO SLAVE THREADS");
 
-    PRINTF_DEBUG
     (void)pthread_cancel(data_intake_thread);
-    PRINTF_DEBUG
-    log(THREAD_MASTER, LOG_INFO, "Data intake thread cancelled");
+    
+    logEntry(THREAD_MASTER, LOG_INFO, "Data intake thread cancelled");
 
     (void)pthread_cancel(data_processing_thread);
-    PRINTF_DEBUG
-    log(THREAD_MASTER, LOG_INFO, "Data processing thread cancelled");
-
+    
+    logEntry(THREAD_MASTER, LOG_INFO, "Data processing thread cancelled");
 
     (void)pthread_join(data_intake_thread, NULL);
-    PRINTF_DEBUG
 
     (void)pthread_join(data_processing_thread, NULL);
-    PRINTF_DEBUG
-    log(THREAD_MASTER, LOG_INFO, "All threads joined back to master");
+    
+    logEntry(THREAD_MASTER, LOG_INFO, "All threads joined back to master");
 
 
 end:
 
     freeEventDatastructure();
     (void)destroyMutexes();
-    log(THREAD_MASTER, LOG_INFO, "Clean exit of program");
+    logEntry(THREAD_MASTER, LOG_INFO, "Clean exit of program");
     (void)closeLoggingSystem();
-    // endUART(); TODO : uncomment
-
+    endUART(); 
 
 
     return 0;

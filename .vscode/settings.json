@@ -17,6 +17,8 @@
         "cmath": "c",
         "random": "c",
         "termios-baud.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "algos.h": "c",
+        "log.h": "c"
     }
 }

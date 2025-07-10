@@ -55,7 +55,7 @@ typedef struct {
  *          extend their lifetime beyond the function scope. The function
  *          returns immediately after creating the log thread, which handles
  *          the actual logging operation.
- */int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
+ */int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
 
 static void * _log(void * param);
 

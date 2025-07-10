@@ -13,7 +13,7 @@ SRCS = main.c \
 	THREADFUNCTIONS/DATAINTAKE/dataintake.c \
 	ALGOS/algos.c \
 	LOG/log.c \
-	#UART/uart.c  TODO : uncomment
+	UART/uart.c  TODO : uncomment
 	
 OBJS = $(SRCS:.c=.o)
 

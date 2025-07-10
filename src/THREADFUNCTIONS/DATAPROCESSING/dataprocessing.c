@@ -28,12 +28,15 @@ static void dataProcessing(void){
     (void)printf("Thread launched succesfully\n");
     
     sigset_t set;
+
     int sig;
 
     while(sigemptyset(&set));
+
     while(sigaddset(&set, SIGCONT));
 
     size_t event_buffer_size = 0;
+
     float * event_buffer = calloc(MAX_EVENT_SIZE, sizeof(float));
 
     pthread_cleanup_push(cleanupHandler, event_buffer);
@@ -50,14 +53,15 @@ static void dataProcessing(void){
         MUTEX_UNLOCK(&ready_lock);
     }
 
-
     //wait for go signal
     if(sigwait(&set, &sig) == 0) {
         
         (void)printf("Received SIGCONT, continuing execution.\n");
         
     }else {
+
         (void)printf("Error waiting for go signal\n");
+
         pthread_exit(NULL);
     }
 
@@ -68,24 +72,18 @@ static void dataProcessing(void){
         event_buffer_size = 0;//getEvent(event_buffer);
 
         if(event_buffer_size > 0){//there is an event
-            log(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
-
+            logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
             printf("Got event of size %d\n", event_buffer_size);
-            PRINTF_DEBUG
 
             for(int i = 0; i < event_buffer_size; i++){
                 printf("%f\n", event_buffer[i]);
             }
-            PRINTF_DEBUG
 
             //TODO : implement
 
-            PRINTF_DEBUG
             event_buffer_size = 0;
-            PRINTF_DEBUG
         }
-        
     }
     
     pthread_cleanup_pop(1);
