@@ -27,7 +27,9 @@ typedef struct {
 
 int initLoggingSystem(void);
 
-int _log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
+int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
+
+void * _log(void * param);
 
 int __log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
 

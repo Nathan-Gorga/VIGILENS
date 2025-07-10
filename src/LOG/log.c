@@ -2,6 +2,7 @@
 
 pthread_mutex_t log_mutex;
 
+
 //there are multiple because different threads may fire these at the same time, create the same thread at the same time (no bueno)
 pthread_t log_thread[3];//0 : master, 1 : data intake, 2 : data processing
 
@@ -28,11 +29,21 @@ int initLoggingSystem(void){//TESTME
 
 int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
     
-    LOG_PARAM log_param = {thread_id, log_type, message};
+    LOG_PARAM *log_param = malloc(sizeof(LOG_PARAM));// we need the heap here for log_param to last longer than the function scope
+    if (log_param == NULL) return -1;
 
-    if(pthread_create(log_thread[thread_id], NULL, _log, &log_param) != 0) return -1;
+    log_param->thread_id = thread_id;
+    log_param->log_type = log_type;
+    log_param->message = strdup(message); // make a copy of message to be safe
 
+    if(pthread_create(&log_thread[thread_id], NULL, _log, log_param) != 0) {
+     
+        free(log_param->message);
+        free(log_param);
+        return -1;
+    }
     pthread_detach(log_thread[thread_id]);
+
 
     return 0;
 }
@@ -46,13 +57,16 @@ void * _log(void * param){
     const LOG_TYPE log_type = log_param->log_type;
     char * message = log_param->message;
 
+    
     MUTEX_LOCK(&log_mutex);
-
-    const int ret = __log(thread_id, log_type, message);
-
+    
+    (void)__log(thread_id, log_type, message);
+    
     MUTEX_UNLOCK(&log_mutex);
 
-    return ret;
+
+    free(log_param->message);//BUG : double free here I think
+    free(log_param);
 }
 
 
