@@ -182,7 +182,12 @@ bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){//TESTME
     
     const size_t size_written = sizeof(byte);
 
-    if(write(UART_fd, (byte)signal_type, sizeof(byte)) != size_written) return false;
+    byte to_send[2];
+
+    to_send[0] = signal_type;
+    to_send[1] = '\n';
+    
+    if(write(UART_fd, to_send, size_written) != size_written) return false;
     
     return true;
 }

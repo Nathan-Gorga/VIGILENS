@@ -57,9 +57,9 @@ typedef struct {
  *          the actual logging operation.
  */int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
 
-static void * _log(void * param);
+static void * _logEntry(void * param);
 
-static int __log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
+static int __logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message);
 
 
 

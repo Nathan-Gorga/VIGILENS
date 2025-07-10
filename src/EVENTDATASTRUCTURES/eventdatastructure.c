@@ -53,26 +53,19 @@ static void initList(void){//DONTTOUCH
 
 
 static void freeList(void){//DONTTOUCH
-    PRINTF_DEBUG
-
-    assert(head != NULL);
-    PRINTF_DEBUG
+    
+    if(head == NULL) return;
 
     node * curr = head->next;
-    PRINTF_DEBUG
 
     while(curr != NULL){
-        PRINTF_DEBUG
 
         node * next = curr->next;
-        PRINTF_DEBUG
 
         freeNode(curr);
-        PRINTF_DEBUG
 
         curr = next;
     }
-    PRINTF_DEBUG
 
     free(head);
 }
@@ -94,12 +87,8 @@ static void initEventRingBuffer(const size_t size_buffer){//DONTTOUCH
 
 
 static void freeEventRingBuffer(void){//DONTTOUCH
-    PRINTF_DEBUG
-
-    assert(event_ring_buffer != NULL);
-    PRINTF_DEBUG
-
-    freeRingBuffer(event_ring_buffer);
+    
+    if(event_ring_buffer != NULL) freeRingBuffer(event_ring_buffer);
 }
 
 

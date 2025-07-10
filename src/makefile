@@ -1,6 +1,7 @@
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra -D_POSIX_C_SOURCE=200809L -pthread -pedantic # -Werror
+CFLAGS = -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L -pthread
+LDFLAGS = -pthread -lm
 
 # Target executable
 TARGET = VIGILENCE
@@ -13,26 +14,26 @@ SRCS = main.c \
 	THREADFUNCTIONS/DATAINTAKE/dataintake.c \
 	ALGOS/algos.c \
 	LOG/log.c \
-	UART/uart.c  TODO : uncomment
-	
+	UART/uart.c
+
+# Object files
 OBJS = $(SRCS:.c=.o)
 
 # Default rule
 all: $(TARGET)
-	@make clean
+	make clean
 	@./$(TARGET)
 
-# Linking the final binary
+# Link the target executable
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -D_POSIX_C_SOURCE=200809L -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-# Compiling .c to .o
-%.o: %.c %.h
+# Compile each .c to .o
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up
+# Clean object files and the target
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJS)
 
-# Convenience
 .PHONY: all clean

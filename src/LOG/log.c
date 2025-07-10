@@ -36,7 +36,7 @@ int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message)
     log_param->log_type = log_type;
     log_param->message = strdup(message); // make a copy of message to be safe
 
-    if(pthread_create(&log_thread[thread_id], NULL, _log, log_param) != 0) {
+    if(pthread_create(&log_thread[thread_id], NULL, _logEntry, log_param) != 0) {
      
         free(log_param->message);
         free(log_param);
@@ -49,7 +49,7 @@ int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message)
 }
 
 
-static void * _log(void * param){
+static void * _logEntry(void * param){
 
     LOG_PARAM * log_param = (LOG_PARAM *)param;
 
@@ -60,7 +60,7 @@ static void * _log(void * param){
     
     MUTEX_LOCK(&log_mutex);
     
-    (void)__log(thread_id, log_type, message);
+    (void)__logEntry(thread_id, log_type, message);
     
     MUTEX_UNLOCK(&log_mutex);
 
@@ -73,7 +73,7 @@ static void * _log(void * param){
 
 
 
-static int __log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : find a way to close before a crash, or at least close and save periodically
+static int __logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : find a way to close before a crash, or at least close and save periodically
     
     if(log_file == NULL){
     
@@ -107,16 +107,16 @@ static int __log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * mess
 
     switch(log_type){
         case LOG_DEBUG:
-            strcpy(log_type_name, PURPLE"DEBUG"RESET);
+            strcpy(log_type_name, PURPLE"DEBUG  "RESET);
             break;
         case LOG_INFO:
-            strcpy(log_type_name, CYAN"INFO"RESET);
+            strcpy(log_type_name, CYAN"INFO   "RESET);
             break;
         case LOG_WARNING:
             strcpy(log_type_name, YELLOW"WARNING"RESET);
             break;
         case LOG_ERROR:
-            strcpy(log_type_name, RED"ERROR"RESET);
+            strcpy(log_type_name, RED"ERROR  "RESET);
             break;
         default:
             strcpy(log_type_name, "UNKNOWN");

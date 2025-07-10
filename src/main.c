@@ -72,14 +72,16 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
     srand(time(NULL));
     
     if(initLoggingSystem() != 0){
+        
         (void)printf("Error initializing logging system\n"); return false;
+        
     }
     
     (void)signal(SIGINT, handle_sigint);
     
-    beginUART(); 
+    if(!beginUART()) return false;
 
-    log(THREAD_MASTER, LOG_INFO, "UART initialized");
+    (void)logEntry(THREAD_MASTER, LOG_INFO, "UART initialized");
     
     sigset_t set;
     
@@ -90,47 +92,48 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
     // Block SIGCONT in all threads, necessary for sigwait to work properly
     while(pthread_sigmask(SIG_BLOCK, &set, NULL));
 
-    logEntry(THREAD_MASTER, LOG_INFO, "Signal handler initialized");
+    (void)logEntry(THREAD_MASTER, LOG_INFO, "Signal handler initialized");
 
     (void)printf("Starting VIGILENCE SYSTEM\n");
     
-    logEntry(THREAD_MASTER, LOG_INFO, "STARTING VIGILENCE SYSTEM");
+    (void)logEntry(THREAD_MASTER, LOG_INFO, "STARTING VIGILENCE SYSTEM");
 
     (void)printf("Initializing event data structure\n");
 
     initEventDatastructure(12);
 
-    logEntry(THREAD_MASTER, LOG_INFO, "Event data structure initialized");
+    (void)logEntry(THREAD_MASTER, LOG_INFO, "Event data structure initialized");
 
 
     (void)printf("Creating mutexes\n");
+
     if(createMutexes() != 0){
     
-        logEntry(THREAD_MASTER, LOG_ERROR, "mutexes failed to initialize");
+        (void)logEntry(THREAD_MASTER, LOG_ERROR, "mutexes failed to initialize");
 
         (void)printf("Error creating mutexes\n"); return false;
     }
-    logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of mutexes");
 
+    (void)logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of mutexes");
 
     if(pthread_create(data_intake_thread, NULL, launchDataIntake, NULL) != 0){
 
-        logEntry(THREAD_MASTER, LOG_ERROR, "Failed to create data intake thread");
+        (void)logEntry(THREAD_MASTER, LOG_ERROR, "Failed to create data intake thread");
 
         (void)printf("Error creating data intake thread\n"); return false;
     }
 
-    logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of data intake thread");
+    (void)logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of data intake thread");
 
 
     if(pthread_create(data_processing_thread, NULL, launchDataProcessing, NULL) != 0){
 
-        logEntry(THREAD_MASTER, LOG_ERROR, "Failed to create data processing thread");
+        (void)logEntry(THREAD_MASTER, LOG_ERROR, "Failed to create data processing thread");
 
         (void)printf("Error creating data processing thread\n"); return false;
     }
 
-    logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of data processing thread");
+    (void)logEntry(THREAD_MASTER, LOG_INFO, "Succesful creation of data processing thread");
 
     return syncThreads(data_intake_thread, data_processing_thread);
 
@@ -165,7 +168,6 @@ int main(void){
     
     logEntry(THREAD_MASTER, LOG_INFO, "All threads joined back to master");
 
-
 end:
 
     freeEventDatastructure();
@@ -173,7 +175,6 @@ end:
     logEntry(THREAD_MASTER, LOG_INFO, "Clean exit of program");
     (void)closeLoggingSystem();
     endUART(); 
-
 
     return 0;
 }
