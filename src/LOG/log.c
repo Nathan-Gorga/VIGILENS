@@ -11,6 +11,10 @@ int initLoggingSystem(void){//TESTME
     
         return -1;
     }
+
+    begin = time(NULL);//don't change begin from now on
+
+    logEntry(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
     
     return 0;
 }
@@ -19,7 +23,60 @@ int initLoggingSystem(void){//TESTME
 
 int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
     
+    if(log_file == NULL){
+    
+        (void)printf(RED"ERROR in %s:%d\n : logging file was not accessible\n"RESET, __FILE__, __LINE__);
+    
+        return -1;
+    }
 
+    char thread_name[255];
+
+    char log_type_name[255];
+
+    switch(thread_id){
+        case THREAD_MASTER:
+            strcpy(thread_name, "MASTER");
+            break;
+        
+        case THREAD_DATA_INTAKE:
+            strcpy(thread_name, "INTAKE");
+            break;
+        
+        case THREAD_DATA_PROCESSING:
+            strcpy(thread_name, "PROC");
+            break;
+        
+        case NONE:
+        default:
+            strcpy(thread_name, "");
+            break;
+    }
+
+    switch(log_type){
+        case LOG_DEBUG:
+            strcpy(log_type_name, "DEBUG");
+            break;
+        case LOG_INFO:
+            strcpy(log_type_name, "INFO");
+            break;
+        case LOG_WARNING:
+            strcpy(log_type_name, "WARNING");
+            break;
+        case LOG_ERROR:
+            strcpy(log_type_name, "ERROR");
+            break;
+        default:
+            strcpy(log_type_name, "UNKNOWN");
+            break;
+    }
+
+
+    const time_t time_elapsed = difftime( time(NULL), begin );
+
+    (void)fprintf(log_file, "%s(%s) - %s : %s\n",thread_name, ctime(&time_elapsed), log_type_name, message);
+
+    return 0;
 }
 
 

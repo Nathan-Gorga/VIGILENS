@@ -11,7 +11,8 @@ typedef enum{
 }LOG_TYPE;
 
 typedef enum{
-    THREAD_MAIN,
+    NONE,
+    THREAD_MASTER,
     THREAD_DATA_INTAKE,
     THREAD_DATA_PROCESSING
 }THREAD_ID;
@@ -37,6 +38,8 @@ int closeLoggingSystem(void);
 
 
 static FILE * log_file;
+
+static time_t begin;
 
 
 #endif
