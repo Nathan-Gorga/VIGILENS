@@ -12,6 +12,8 @@ courtesy to https://github.com/ultramcu
 #include <fcntl.h>
 #include <termios.h>
 
+// #define UART_ENABLED
+
 #define RASPBERRY_TX_PIN 14
 #define RASPBERRY_RX_PIN 15
 
@@ -162,8 +164,6 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]); //TODO : write functi
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
 
 static u_int32_t UART_fd;
-
-
 
 #endif
 

@@ -7,8 +7,7 @@
 #include "RINGBUFFER/ringbuffer.h"
 #include "EVENTDATASTRUCTURES/eventdatastructure.h"
 #include "LOG/log.h"
-
-// #include "UART/uart.h" TODO : uncomment
+#include "UART/uart.h"
 
 #define MAIN_TEXT_COLOR GREEN
 

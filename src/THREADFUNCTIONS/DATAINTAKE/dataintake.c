@@ -7,9 +7,11 @@ static void masterStartupDialogue(void){
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "In master startup dialogue");
 
     sigset_t set;
+
     int sig;
 
     while(sigemptyset(&set));
+
     while(sigaddset(&set, SIGCONT));
 
     // Send ready signal to master        
@@ -70,9 +72,6 @@ static void dataIntake(void){//TESTME : test everything
     bool freeze_tail = false, is_not_baseline = false;
 
     float linear_buffer[INTERNAL_RING_BUFFER_SIZE] = {0.0f}, potential_events[50][ MAX_EVENT_DURATION ] = {0.0f}, channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
-    
-    char maximum_tries = 10;
-
 
     (void)printf("Thread launched succesfully\n");
     
@@ -99,17 +98,23 @@ static void dataIntake(void){//TESTME : test everything
     masterStartupDialogue();
 
     {
-        
-        while(!sendUARTSignal(START_STREAM) && maximum_tries-- ) usleep(10 * 1000);
-        
-        if(maximum_tries <= 0) {
-            
-            (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR, "UART failed to send start stream signal");
-            
-            (void)printf("Failed to send start stream signal\n");
 
-            pthread_exit(NULL);
-        }
+        #ifdef UART_ENABLED
+
+            char maximum_tries = 10;
+
+            while(!sendUARTSignal(START_STREAM) && maximum_tries--) usleep(10 * 1000);
+        
+            if(maximum_tries <= 0) {
+                
+                (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR, "UART failed to send start stream signal");
+                
+                (void)printf("Failed to send start stream signal\n");
+                
+                pthread_exit(NULL);
+            }
+
+        #endif
     }   
     
     (void)printf("Entering main loop\n");
@@ -123,8 +128,16 @@ static void dataIntake(void){//TESTME : test everything
 
         pthread_testcancel();
         
-        num_data_points = getUARTData(channel_data_point);
+        #ifdef UART_ENABLED
+
+            num_data_points = getUARTData(channel_data_point);
         
+        #else
+
+            num_data_points = 0;
+
+        #endif
+
         assert(num_data_points % NUM_CHANNELS == 0);
 
         if(num_data_points > 0){
@@ -144,7 +157,6 @@ static void dataIntake(void){//TESTME : test everything
                 }
 
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "added events to event buffer");
-
 
                 freeze_tail = false;
 
