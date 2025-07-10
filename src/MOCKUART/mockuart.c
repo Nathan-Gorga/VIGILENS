@@ -1,13 +1,11 @@
 #include "mockuart.h"
 
 
-size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){
-    
-    //TESTME : test this function thoroughly
-    
+size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//TESTME
+        
     const int probability = 100; //1% chance
 
-    const bool send_signal = probability - 1 == (rand() % probability);
+    const bool send_signal = 0 == (rand() % probability);
 
     if(send_signal){
 
@@ -21,10 +19,6 @@ size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){
 
     return 0;
 }
-
-
-
-
 
 
 
