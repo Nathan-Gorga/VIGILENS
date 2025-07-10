@@ -71,16 +71,16 @@ int _log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//T
 
     switch(log_type){
         case LOG_DEBUG:
-            strcpy(log_type_name, "DEBUG");
+            strcpy(log_type_name, PURPLE"DEBUG");
             break;
         case LOG_INFO:
-            strcpy(log_type_name, "INFO");
+            strcpy(log_type_name, BLUE"INFO");
             break;
         case LOG_WARNING:
-            strcpy(log_type_name, "WARNING");
+            strcpy(log_type_name, YELLOW"WARNING");
             break;
         case LOG_ERROR:
-            strcpy(log_type_name, "ERROR");
+            strcpy(log_type_name, RED"ERROR");
             break;
         default:
             strcpy(log_type_name, "UNKNOWN");
@@ -99,7 +99,7 @@ int _log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//T
         nanoseconds += 1000000000L;
     }
 
-    (void)fprintf(log_file, "%s(%ld.%06ld) - %s : %s\n",thread_name,seconds, (long long)(nanoseconds * 0.001f), log_type_name, message);
+    (void)fprintf(log_file, "%s - %s(%ld.%06ld): %s\n"RESET, log_type_name,thread_name,seconds, (long long)(nanoseconds * 0.001f), message);
 
     return 0;
 }
