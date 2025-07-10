@@ -52,15 +52,15 @@ int _log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//T
 
     switch(thread_id){
         case THREAD_MASTER:
-            strcpy(thread_name, "MASTER");
+            strcpy(thread_name, GREEN"MASTER");
             break;
         
         case THREAD_DATA_INTAKE:
-            strcpy(thread_name, "INTAKE");
+            strcpy(thread_name, YELLOW"INTAKE");
             break;
         
         case THREAD_DATA_PROCESSING:
-            strcpy(thread_name, "PROC");
+            strcpy(thread_name, BLUE"PROC");
             break;
         
         case NONE:
@@ -71,16 +71,16 @@ int _log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//T
 
     switch(log_type){
         case LOG_DEBUG:
-            strcpy(log_type_name, PURPLE"DEBUG");
+            strcpy(log_type_name, PURPLE"DEBUG"RESET);
             break;
         case LOG_INFO:
-            strcpy(log_type_name, CYAN"INFO");
+            strcpy(log_type_name, CYAN"INFO"RESET);
             break;
         case LOG_WARNING:
-            strcpy(log_type_name, YELLOW"WARNING");
+            strcpy(log_type_name, YELLOW"WARNING"RESET);
             break;
         case LOG_ERROR:
-            strcpy(log_type_name, RED"ERROR");
+            strcpy(log_type_name, RED"ERROR"RESET);
             break;
         default:
             strcpy(log_type_name, "UNKNOWN");

@@ -5,6 +5,8 @@
 #include "../../RINGBUFFER/ringbuffer.h"
 #include "../../EVENTDATASTRUCTURES/eventdatastructure.h"
 #include "../../ALGOS/algos.h"
+#include "../../LOG/log.h"
+
 // #include "../../UART/uart.h" TODO : uncomment
 
 #define PACKET_BUFFER_SIZE 10

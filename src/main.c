@@ -165,10 +165,10 @@ end:
 
     freeEventDatastructure();
     (void)destroyMutexes();
+    log(THREAD_MASTER, LOG_INFO, "Clean exit of program");
     (void)closeLoggingSystem();
     // endUART(); TODO : uncomment
 
-    log(THREAD_MASTER, LOG_INFO, "Clean exit of program");
 
 
     return 0;
