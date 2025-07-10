@@ -3,8 +3,10 @@
 
 int initLoggingSystem(void){//TESTME
 
-    log_file = fopen(LOG_FILE_NAME, "w");
+    printf("in logging system\n");
 
+    log_file = fopen(LOG_FILE_NAME, "w");
+    
     if(log_file == NULL){
     
         (void)printf(RED"ERROR in %s:%d\n : Could not open log file.\n"RESET, __FILE__, __LINE__);
@@ -12,8 +14,10 @@ int initLoggingSystem(void){//TESTME
         return -1;
     }
 
-    begin = time(NULL);//don't change begin from now on
+    (void)clock_gettime(CLOCK_REALTIME, &begin);//don't change begin from now on
 
+    printf("Logging system initialized\n");
+    
     return log(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
 }
 
@@ -70,9 +74,18 @@ int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TO
     }
 
 
-    const time_t time_elapsed = difftime( time(NULL), begin );
+    struct timespec now;
+    clock_gettime(CLOCK_REALTIME, &now);
 
-    (void)fprintf(log_file, "%s(%s) - %s : %s\n",thread_name, ctime(&time_elapsed), log_type_name, message);
+    time_t seconds = now.tv_sec - begin.tv_sec;
+    long nanoseconds = now.tv_nsec - begin.tv_nsec;
+
+    if (nanoseconds < 0) {
+        seconds--;
+        nanoseconds += 1000000000L;
+    }
+
+    (void)fprintf(log_file, "%s(%ld.%06ld) - %s : %s\n",thread_name,seconds, (long long)(nanoseconds * 0.001f), log_type_name, message);
 
     return 0;
 }
@@ -80,7 +93,7 @@ int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TO
 
 
 int closeLoggingSystem(void){//TESTME
-    
+    printf("closing logging system\n");
     if (log_file != NULL) {
     
         fclose(log_file);

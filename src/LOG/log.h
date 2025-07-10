@@ -39,7 +39,7 @@ int closeLoggingSystem(void);
 
 static FILE * log_file;
 
-static time_t begin;
+static struct timespec begin;
 
 
 #endif
