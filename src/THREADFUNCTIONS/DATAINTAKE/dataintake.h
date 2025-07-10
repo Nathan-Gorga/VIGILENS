@@ -7,6 +7,7 @@
 #include "../../ALGOS/algos.h"
 #include "../../LOG/log.h"
 #include "../../UART/uart.h"
+#include "../../MOCKUART/mockuart.h"
 
 #define PACKET_BUFFER_SIZE 10
 

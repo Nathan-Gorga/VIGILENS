@@ -134,7 +134,7 @@ static void dataIntake(void){//TESTME : test everything
         
         #else
 
-            num_data_points = 0;//TODO : write function to spit out fake data
+            num_data_points = getMockUARTData(channel_data_point);
 
         #endif
 
