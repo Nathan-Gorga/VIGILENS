@@ -4,6 +4,7 @@
 #include "../../globaldefinition.h"
 #include "../../RINGBUFFER/ringbuffer.h"
 #include "../../EVENTDATASTRUCTURES/eventdatastructure.h"
+#include "../../LOG/log.h"
 
 #define DATA_PROCESSING_TEXT_COLOR YELLOW
 

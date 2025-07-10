@@ -68,7 +68,8 @@ static void dataProcessing(void){
         event_buffer_size = 0;//getEvent(event_buffer);
 
         if(event_buffer_size > 0){//there is an event
-            PRINTF_DEBUG
+            log(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
+
 
             printf("Got event of size %d\n", event_buffer_size);
             PRINTF_DEBUG
