@@ -74,7 +74,7 @@ int _log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//T
             strcpy(log_type_name, PURPLE"DEBUG");
             break;
         case LOG_INFO:
-            strcpy(log_type_name, BLUE"INFO");
+            strcpy(log_type_name, CYAN"INFO");
             break;
         case LOG_WARNING:
             strcpy(log_type_name, YELLOW"WARNING");

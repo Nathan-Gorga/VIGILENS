@@ -15,10 +15,9 @@ const int THREADS_TO_WAIT = 2;
 
 
 void handle_sigint(const int sig) {//DONTTOUCH
-    PRINTF_DEBUG
 
     (void)printf("Keyboard interrupt(%d) received\n",sig);
-    PRINTF_DEBUG
+    log(THREAD_MASTER, LOG_INFO, "Keyboard interrupt received");
 
     keyboard_interrupt = true;
 }
@@ -136,22 +135,30 @@ int main(void){
 
     if(!startupFunction(&data_intake_thread, &data_processing_thread)) goto end;
    
+    log(THREAD_MASTER, LOG_INFO, "Successful launch of startup function");
+   
     while(!keyboard_interrupt) usleep(100);
+   
     
     (void)printf("Cancelling slave threads\n");
+    log(THREAD_MASTER, LOG_INFO, "SENDING CANCEL SIGNAL TO SLAVE THREADS");
 
     PRINTF_DEBUG
     (void)pthread_cancel(data_intake_thread);
     PRINTF_DEBUG
+    log(THREAD_MASTER, LOG_INFO, "Data intake thread cancelled");
 
     (void)pthread_cancel(data_processing_thread);
     PRINTF_DEBUG
+    log(THREAD_MASTER, LOG_INFO, "Data processing thread cancelled");
+
 
     (void)pthread_join(data_intake_thread, NULL);
     PRINTF_DEBUG
 
     (void)pthread_join(data_processing_thread, NULL);
     PRINTF_DEBUG
+    log(THREAD_MASTER, LOG_INFO, "All threads joined back to master");
 
 
 end:
@@ -160,6 +167,9 @@ end:
     (void)destroyMutexes();
     (void)closeLoggingSystem();
     // endUART(); TODO : uncomment
+
+    log(THREAD_MASTER, LOG_INFO, "Clean exit of program");
+
 
     return 0;
 }
