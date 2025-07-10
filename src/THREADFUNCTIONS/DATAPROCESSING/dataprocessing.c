@@ -66,18 +66,23 @@ static void dataProcessing(void){
     }
 
     (void)printf("Entering main loop\n");
+
     while(1){
+
         pthread_testcancel();
         
-        event_buffer_size = 0;//getEvent(event_buffer);
+        event_buffer_size = getEvent(event_buffer);
 
         if(event_buffer_size > 0){//there is an event
+
             logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
             printf("Got event of size %d\n", event_buffer_size);
 
             for(int i = 0; i < event_buffer_size; i++){
+
                 printf("%f\n", event_buffer[i]);
+                
             }
 
             //TODO : implement
