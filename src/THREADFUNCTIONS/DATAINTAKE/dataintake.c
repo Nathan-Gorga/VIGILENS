@@ -144,13 +144,9 @@ static void dataIntake(void){//TESTME : test everything
 
                 }
 
-                
-
                 freeze_tail = false;
 
-            } else {
-
-                
+            } else {              
 
                 bool is_not_baseline = false;
 

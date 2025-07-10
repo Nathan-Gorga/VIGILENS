@@ -65,7 +65,7 @@ static void dataProcessing(void){
     while(1){
         pthread_testcancel();
         
-        event_buffer_size = getEvent(event_buffer);
+        event_buffer_size = 0;//getEvent(event_buffer);
 
         if(event_buffer_size > 0){//there is an event
             PRINTF_DEBUG
