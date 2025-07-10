@@ -3,13 +3,13 @@
 pthread_mutex_t log_mutex;
 
 
-//there are multiple because different threads may fire these at the same time, create the same thread at the same time (no bueno)
-pthread_t log_thread[3];//0 : master, 1 : data intake, 2 : data processing
+//there are multiple because different callers may fire these at the same time, creating the same thread at the same time (no bueno)
+pthread_t log_thread[4];//0 : master, 1 : data intake, 2 : data processing, 3 : none
+
 
 
 int initLoggingSystem(void){//TESTME
 
-    printf("in logging system\n");
 
     log_file = fopen(LOG_FILE_NAME, "w");
     
@@ -22,10 +22,10 @@ int initLoggingSystem(void){//TESTME
 
     (void)clock_gettime(CLOCK_REALTIME, &begin);//don't change begin from now on
 
-    printf("Logging system initialized\n");
     
     return log(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
 }
+
 
 int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
     
@@ -49,7 +49,7 @@ int log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
 }
 
 
-void * _log(void * param){
+static void * _log(void * param){
 
     LOG_PARAM * log_param = (LOG_PARAM *)param;
 
@@ -71,7 +71,7 @@ void * _log(void * param){
 
 
 
-int __log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : find a way to close before a crash, or at least close and save periodically
+static int __log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : find a way to close before a crash, or at least close and save periodically
     
     if(log_file == NULL){
     
@@ -141,7 +141,6 @@ int __log(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//
 
 
 int closeLoggingSystem(void){//TESTME
-    printf("closing logging system\n");
     if (log_file != NULL) {
     
         fclose(log_file);
