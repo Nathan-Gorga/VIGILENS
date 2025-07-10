@@ -1,7 +1,7 @@
 #include "mockuart.h"
 
 
-size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//TESTME
+size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){
         
     const int probability = 100; //1% chance
 
@@ -12,6 +12,7 @@ size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//TESTME
         for(int i = 0; i < 124; i++){
 
             data_points[i] = 100.0f;
+            
         }
 
         return 124;

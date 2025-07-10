@@ -77,9 +77,7 @@ static void dataIntake(void){//TESTME : test everything
     
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "thread launch successfully");
 
-
     internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
-    
     
     if(internal_ring_buffer == NULL) { 
 
@@ -97,32 +95,28 @@ static void dataIntake(void){//TESTME : test everything
 
     masterStartupDialogue();
 
-    {
+    #ifdef UART_ENABLED
 
-        #ifdef UART_ENABLED
+        char maximum_tries = 10;
 
-            char maximum_tries = 10;
+        while(!sendUARTSignal(START_STREAM) && maximum_tries--) usleep(10 * 1000);
+    
+        if(maximum_tries <= 0) {
+            
+            (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR, "UART failed to send start stream signal");
+            
+            (void)printf("Failed to send start stream signal\n");
+            
+            pthread_exit(NULL);
+        }
 
-            while(!sendUARTSignal(START_STREAM) && maximum_tries--) usleep(10 * 1000);
-        
-            if(maximum_tries <= 0) {
-                
-                (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR, "UART failed to send start stream signal");
-                
-                (void)printf("Failed to send start stream signal\n");
-                
-                pthread_exit(NULL);
-            }
-
-        #endif
-    }   
+    #endif
     
     (void)printf("Entering main loop\n");
 
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "Entering main loop");
 
     //TESTME : this whole loop logic needs THOROUGH testing
-
 
     while(true){
 
@@ -134,7 +128,7 @@ static void dataIntake(void){//TESTME : test everything
         
         #else
 
-            num_data_points = getMockUARTData(channel_data_point);
+            num_data_points = getMockUARTData(channel_data_point);//TODO : test this function and that data intake does it's job PERFECTLY
 
         #endif
 

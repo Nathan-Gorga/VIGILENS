@@ -71,7 +71,7 @@ static void dataProcessing(void){
 
         pthread_testcancel();
         
-        event_buffer_size = getEvent(event_buffer);
+        event_buffer_size = getEvent(event_buffer);//TODO : test the handling of the event
 
         if(event_buffer_size > 0){//there is an event
 
@@ -82,7 +82,7 @@ static void dataProcessing(void){
             for(int i = 0; i < event_buffer_size; i++){
 
                 printf("%f\n", event_buffer[i]);
-                
+
             }
 
             //TODO : implement
