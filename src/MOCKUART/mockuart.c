@@ -1,24 +1,32 @@
 #include "mockuart.h"
 
 
-size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){
+size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//this function needs to return 0s
         
-    const int probability = 100; //1% chance
+    const int probability = 1000000; //1% chance
 
     const bool send_signal = 0 == (rand() % probability);
 
+    const size_t size = 124;
+
     if(send_signal){
 
-        for(int i = 0; i < 124; i++){
+        for(int i = 0; i < size; i++){
 
             data_points[i] = 100.0f;
-            
+
         }
 
-        return 124;
+        return size;
     }
 
-    return 0;
+    for(int i = 0; i < size; i++){
+
+        data_points[i] = 0.0f;
+
+    }
+
+    return size;
 }
 
 

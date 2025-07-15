@@ -14,7 +14,8 @@ SRCS = main.c \
 	THREADFUNCTIONS/DATAINTAKE/dataintake.c \
 	ALGOS/algos.c \
 	LOG/log.c \
-	UART/uart.c
+	UART/uart.c \
+	MOCKUART/mockuart.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)

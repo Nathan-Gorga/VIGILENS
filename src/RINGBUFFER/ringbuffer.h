@@ -35,6 +35,7 @@ struct ring_buffer{
 
 
 
+ 
 /**
  * @brief Frees the memory of a ring buffer.
  *
@@ -50,6 +51,7 @@ extern inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer);//TOD
 extern inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer);
 extern inline size_t writeIndexAfterAddingX(struct ring_buffer * buffer, const size_t x);//TESTME
 
+extern inline size_t writeIndexAfterSubtractingX(struct ring_buffer * buffer, const size_t x);//TESTME
 
 
 /**
@@ -87,6 +89,9 @@ extern inline size_t writeIndexAfterAddingX(struct ring_buffer * buffer, const s
  *
  * @return true if adding the specified amount of data would overflow the buffer, false otherwise.
  */static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add);
+
+ 
+ static bool isUnderflow(struct ring_buffer * buffer, const size_t size_to_subtract);
 
 
 /**

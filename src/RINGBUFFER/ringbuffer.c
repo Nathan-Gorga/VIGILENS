@@ -43,6 +43,10 @@ static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){//
     return (buffer->write + size_to_add) > buffer->size;
 }
 
+static bool isUnderflow(struct ring_buffer * buffer, const size_t size_to_subtract){
+    return (buffer->write - size_to_subtract) < 0;
+}
+
 
 inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer){//DONTTOUCH
     return (buffer->write + 1) % buffer->size;
@@ -58,6 +62,11 @@ inline size_t writeIndexAfterAddingX(struct ring_buffer * buffer, const size_t x
     //the negation is for speed purposes (false is more common in our case than true)
     return !isOverflow(buffer, x) ? buffer->write + x : (x + buffer->write) - buffer->size;
 
+}
+
+
+inline size_t writeIndexAfterSubtractingX(struct ring_buffer * buffer, const size_t x){//TESTME
+    return !isUnderflow(buffer, x) ? buffer->write - x : (buffer->write - x) + buffer->size;//BUG : this is undeflowing in a weird way
 }
 
 
@@ -108,8 +117,10 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     const bool overflow = start > stop;
     
     size_t size = numElementsBetweenIndexes(buffer->size, start, stop) + 1;
+
+    printf("size = %d, size_data = %d\n", size, size_data);
     
-    assert(size == size_data);
+    assert(size == size_data);//BUG : weird assert fail here : size = 5002, size_data = 5000
 
     assert(size_data <= buffer->size);//BUG : weird assert fail here the buffer is of size 8 or 13, in data proc maybe
 

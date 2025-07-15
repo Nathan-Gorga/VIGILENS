@@ -67,9 +67,9 @@ static void dataIntake(void){//TESTME : test everything
 
     struct ring_buffer * internal_ring_buffer;
 
-    size_t i, tail = 0, num_potential_events = 0, num_data_points = 0, writePlusOne, size_of_potential_events[50] = {0};
+    size_t i, tail = 0, num_potential_events = 0, num_data_points = 0, writePlusX, size_of_potential_events[50] = {0}, tail_min, tail_max;
 
-    bool freeze_tail = false, is_not_baseline = false;
+    bool freeze_tail = false, is_not_baseline = false, tail_is_overlap = false;
 
     float linear_buffer[INTERNAL_RING_BUFFER_SIZE] = {0.0f}, potential_events[50][ MAX_EVENT_DURATION ] = {0.0f}, channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
 
@@ -136,13 +136,27 @@ static void dataIntake(void){//TESTME : test everything
 
         if(num_data_points > 0){
 
-            writePlusOne = writeIndexAfterAddingX(internal_ring_buffer, num_data_points); 
+            // logEntry(THREAD_DATA_INTAKE, LOG_INFO, "got data from UART"); 
             
-            if(tail == writePlusOne){
+
+            
+            if((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||// if there is no overlap over the point 0, then we check if it is in the interval
+                (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max))){ // if there is an overlap, then we just need one of the two conditions to be truw
+                printf("test\n");
+                printf("tail_is_overlap : %s, tail_min : %zu, write : %zu, tail_max : %zu\n", tail_is_overlap ? "true" : "false", tail_min, internal_ring_buffer->write, tail_max); 
+
+                logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
                 
                 extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
 
                 num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);//FIXME : diverging from the size of the expected buffers slightly often deals in undefined behavior, find a solution to make this more robust
+
+                char message[255];
+
+                sprintf(message,"%d events found\n", num_potential_events);
+
+                logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
+
 
                 for(int i = 0; i < num_potential_events; i++){
 
@@ -163,8 +177,19 @@ static void dataIntake(void){//TESTME : test everything
 
                 }
 
-                if(is_not_baseline) freeze_tail = true;
-                
+                if(is_not_baseline){
+
+                    freeze_tail = true;
+
+                    tail_min = !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;//FIXME : make this in a function
+
+                    tail_max = !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER;//FIXME : make this in a function
+
+                    tail_is_overlap = tail_min > tail_max;
+
+                    // printf("tail : %zu, tail_min, : %zu, tail_max : %zu, tail_is_overlap : %s\n",tail, tail_min, tail_max, tail_is_overlap ? "true" : "false");
+
+                }
             }
 
             for(i = 0; i < num_data_points; i++){
