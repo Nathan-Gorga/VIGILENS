@@ -44,7 +44,8 @@ static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){//
 }
 
 static bool isUnderflow(struct ring_buffer * buffer, const size_t size_to_subtract){
-    return (buffer->write - size_to_subtract) < 0;
+    const int test = buffer->write - size_to_subtract;//to avoid underflow
+    return test < 0;
 }
 
 
@@ -66,7 +67,8 @@ inline size_t writeIndexAfterAddingX(struct ring_buffer * buffer, const size_t x
 
 
 inline size_t writeIndexAfterSubtractingX(struct ring_buffer * buffer, const size_t x){//TESTME
-    return !isUnderflow(buffer, x) ? buffer->write - x : (buffer->write - x) + buffer->size;//BUG : this is undeflowing in a weird way
+    const int temp = buffer->write - x;//to avoid underflow
+    return !isUnderflow(buffer, x) ? temp : temp + buffer->size;
 }
 
 

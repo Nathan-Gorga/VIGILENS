@@ -181,13 +181,16 @@ static void dataIntake(void){//TESTME : test everything
 
                     freeze_tail = true;
 
-                    tail_min = !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;//FIXME : make this in a function
+                    const int temp_tail = tail; //to avoid underflow 
 
-                    tail_max = !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER;//FIXME : make this in a function
+                    const int test = temp_tail - num_data_points;//to avoid underflow
+
+                    tail_min = !(test < 0) ? test : test + INTERNAL_RING_BUFFER_SIZE;//FIXME : make this in a function
+
+                    tail_max = !(temp_tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? temp_tail + num_data_points : (num_data_points + temp_tail) - INTERNAL_RING_BUFFER_SIZE;//FIXME : make this in a function
 
                     tail_is_overlap = tail_min > tail_max;
 
-                    // printf("tail : %zu, tail_min, : %zu, tail_max : %zu, tail_is_overlap : %s\n",tail, tail_min, tail_max, tail_is_overlap ? "true" : "false");
 
                 }
             }
