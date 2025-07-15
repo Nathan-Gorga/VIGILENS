@@ -55,6 +55,12 @@ static void cleanupHandler(void * internal_ring_buffer){
     (void)printf("Cleaned up thread\n");     
 }
 
+size_t testMinusTail(const int tail, const int num_data_points){
+
+    return !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;
+}
+
+
 void * launchDataIntake(void * arg){
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "launching data intake execution");
     
@@ -147,7 +153,7 @@ static void dataIntake(void){//TESTME : test everything
 
                 logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
                 
-                extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, internal_ring_buffer->write);
+                extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, testMinusTail(tail, 1));
 
                 num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);//FIXME : diverging from the size of the expected buffers slightly often deals in undefined behavior, find a solution to make this more robust
 
@@ -183,9 +189,8 @@ static void dataIntake(void){//TESTME : test everything
 
                     const int temp_tail = tail; //to avoid underflow 
 
-                    const int test = temp_tail - num_data_points;//to avoid underflow
 
-                    tail_min = !(test < 0) ? test : test + INTERNAL_RING_BUFFER_SIZE;//FIXME : make this in a function
+                    tail_min = testMinusTail(tail, num_data_points);
 
                     tail_max = !(temp_tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? temp_tail + num_data_points : (num_data_points + temp_tail) - INTERNAL_RING_BUFFER_SIZE;//FIXME : make this in a function
 

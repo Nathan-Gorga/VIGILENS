@@ -118,11 +118,11 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
 
     const bool overflow = start > stop;
     
-    size_t size = numElementsBetweenIndexes(buffer->size, start, stop) + 1;
+    size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
 
     printf("size = %d, size_data = %d\n", size, size_data);
     
-    assert(size == size_data);//BUG : weird assert fail here : size = 5002, size_data = 5000
+    assert(size == size_data);
 
     assert(size_data <= buffer->size);//BUG : weird assert fail here the buffer is of size 8 or 13, in data proc maybe
 
