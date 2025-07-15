@@ -164,8 +164,10 @@ static void dataIntake(void){//TESTME : test everything
 
                 // printf("num : %d\n", num_potential_events);
 
-                for(int i = 0; i < num_potential_events; i++){
+                
 
+                for(int i = 0; i < num_potential_events; i++){
+                    printf("size : %d\n", size_of_potential_events[i]);
                     addEvent(potential_events[i], size_of_potential_events[i]);
 
                 }

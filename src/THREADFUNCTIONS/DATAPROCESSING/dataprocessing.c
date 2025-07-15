@@ -79,11 +79,11 @@ static void dataProcessing(void){
 
             printf("Got event of size %d\n", event_buffer_size);
 
-            for(int i = 0; i < event_buffer_size; i++){
+            // for(int i = 0; i < event_buffer_size; i++){
 
-                printf("%f\n", event_buffer[i]);
+            //     printf("%f\n", event_buffer[i]);
 
-            }
+            // }
 
             //TODO : implement
 

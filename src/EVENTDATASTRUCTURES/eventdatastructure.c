@@ -168,7 +168,7 @@ static void _addEvent(const float * data, const size_t size_data){//DONTTOUCH
 
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
 
-    printf("start = %d, stop = %d\n", start, stop);
+    printf("size_data = %d, start = %d, stop = %d\n", size_data, start, stop);
 
     node * n = initNode(start, stop);
 

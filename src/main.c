@@ -106,7 +106,7 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
 
     (void)printf("Initializing event data structure\n");
 
-    initEventDatastructure(12);
+    initEventDatastructure(EVENT_RING_BUFFER_SIZE);
 
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Event data structure initialized");
 
