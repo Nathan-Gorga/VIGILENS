@@ -73,9 +73,9 @@ static void dataIntake(void){//TESTME : test everything
 
     struct ring_buffer * internal_ring_buffer;
 
-    size_t i, tail = 0, num_potential_events = 0, num_data_points = 0, writePlusX, size_of_potential_events[50] = {0}, tail_min, tail_max;
+    size_t i, tail = 0, num_potential_events = 0, num_data_points = 0, writePlusX, size_of_potential_events[50] = {0}, tail_min = 0, tail_max = 0;
 
-    bool freeze_tail = false, is_not_baseline = false, tail_is_overlap = false;
+    bool freeze_tail = false, is_not_baseline = false, tail_is_overlap = false, loop = false;
 
     float linear_buffer[INTERNAL_RING_BUFFER_SIZE] = {0.0f}, potential_events[50][ MAX_EVENT_DURATION ] = {0.0f}, channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
 
@@ -144,12 +144,11 @@ static void dataIntake(void){//TESTME : test everything
 
             // logEntry(THREAD_DATA_INTAKE, LOG_INFO, "got data from UART"); 
             
-
             
-            if((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||// if there is no overlap over the point 0, then we check if it is in the interval
-                (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max))){ // if there is an overlap, then we just need one of the two conditions to be truw
-                printf("test\n");
-                printf("tail_is_overlap : %s, tail_min : %zu, write : %zu, tail_max : %zu\n", tail_is_overlap ? "true" : "false", tail_min, internal_ring_buffer->write, tail_max); 
+            if(loop && ((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||  // if there is no overlap over the point 0, then we check if it is in the interval
+                (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
+                // printf("test\n");
+                // printf("(%d && %d && %d) || (%d && (%d || %d))\n", !tail_is_overlap, tail_min < internal_ring_buffer->write, internal_ring_buffer->write < tail_max, tail_is_overlap, tail_min < internal_ring_buffer->write, internal_ring_buffer->write < tail_max);
 
                 logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
                 
@@ -159,10 +158,11 @@ static void dataIntake(void){//TESTME : test everything
 
                 char message[255];
 
-                sprintf(message,"%d events found\n", num_potential_events);
+                sprintf(message,"%d events found", num_potential_events);
 
                 logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
 
+                // printf("num : %d\n", num_potential_events);
 
                 for(int i = 0; i < num_potential_events; i++){
 
@@ -174,17 +174,22 @@ static void dataIntake(void){//TESTME : test everything
 
                 freeze_tail = false;
 
+                loop = false;
+
+                // sleep(1);
+
             } else {              
-
-
+                
                 for(i = 0; i < NUM_CHANNELS; i++){ 
 
                     is_not_baseline |= !isBaseline(channel_data_point[i], THRESHOLD_MAX, THRESHOLD_MIN); 
 
                 }
 
+                loop = false;
+                
                 if(is_not_baseline){
-
+                    
                     freeze_tail = true;
 
                     const int temp_tail = tail; //to avoid underflow 
@@ -194,10 +199,12 @@ static void dataIntake(void){//TESTME : test everything
 
                     tail_max = !(temp_tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? temp_tail + num_data_points : (num_data_points + temp_tail) - INTERNAL_RING_BUFFER_SIZE;//FIXME : make this in a function
 
-                    tail_is_overlap = tail_min > tail_max;
-
+                    loop = true;
 
                 }
+
+                tail_is_overlap = tail_min > tail_max;
+
             }
 
             for(i = 0; i < num_data_points; i++){

@@ -134,7 +134,7 @@ static size_t _getEvent(float * data){//DONTTOUCH
 
     const size_t stop = event->stop;
 
-    const size_t size_data = numElementsBetweenIndexes(event_ring_buffer->size, start, stop) + 1;    
+    const size_t size_data = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);     
     
     MUTEX_LOCK(&event_ring_buffer_mutex);
         
@@ -149,7 +149,7 @@ static size_t _getEvent(float * data){//DONTTOUCH
 
 
 static void _addEvent(const float * data, const size_t size_data){//DONTTOUCH
-
+    printf(RED"adding event\n"RESET);
     assert(data != NULL);
 
     assert(size_data > 0);
@@ -167,6 +167,8 @@ static void _addEvent(const float * data, const size_t size_data){//DONTTOUCH
         const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size - 1;
 
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
+
+    printf("start = %d, stop = %d\n", start, stop);
 
     node * n = initNode(start, stop);
 

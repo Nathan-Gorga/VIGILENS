@@ -120,7 +120,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     
     size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
 
-    printf("size = %d, size_data = %d\n", size, size_data);
+    // printf("size = %d, size_data = %d\n", size, size_data);
     
     assert(size == size_data);
 
