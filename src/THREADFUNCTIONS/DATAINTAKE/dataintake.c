@@ -55,10 +55,15 @@ static void cleanupHandler(void * internal_ring_buffer){
     (void)printf("Cleaned up thread\n");     
 }
 
-size_t testMinusTail(const int tail, const int num_data_points){
+size_t minusTail(const int tail, const int num_data_points){
 
     return !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;
 }
+
+size_t addTail(const int tail, const int num_data_points){
+    return !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER_SIZE;
+}
+
 
 
 void * launchDataIntake(void * arg){
@@ -140,34 +145,34 @@ static void dataIntake(void){//TESTME : test everything
 
         assert(num_data_points % NUM_CHANNELS == 0);
 
-        if(num_data_points > 0){
+        if(num_data_points > 0){        
+            
+            
 
-            // logEntry(THREAD_DATA_INTAKE, LOG_INFO, "got data from UART"); 
-            
-            
+            //FIXME : this if should be accessed one loop after a new shift from baseline
             if(loop && ((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||  // if there is no overlap over the point 0, then we check if it is in the interval
-                (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
-                // printf("test\n");
-                // printf("(%d && %d && %d) || (%d && (%d || %d))\n", !tail_is_overlap, tail_min < internal_ring_buffer->write, internal_ring_buffer->write < tail_max, tail_is_overlap, tail_min < internal_ring_buffer->write, internal_ring_buffer->write < tail_max);
-
-                logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
+                        (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
                 
-                extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, testMinusTail(tail, 1));
+                printf("tail_is_overlap : %d, tail_min : %d, tail_max : %d, internal_ring_buffer->write : %d\n", tail_is_overlap, tail_min, tail_max, internal_ring_buffer->write);
+                
+                
+                (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
+                
+                extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, minusTail(tail, 1));
 
-                num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);//FIXME : diverging from the size of the expected buffers slightly often deals in undefined behavior, find a solution to make this more robust
+                num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);
 
                 char message[255];
 
-                sprintf(message,"%d events found", num_potential_events);
+                (void)sprintf(message,"%d events found", num_potential_events);
 
-                logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
+                printf("%d events found\n", num_potential_events);
 
-                // printf("num : %d\n", num_potential_events);
+                (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
 
                 
-
                 for(int i = 0; i < num_potential_events; i++){
-                    printf("size : %d\n", size_of_potential_events[i]);
+
                     addEvent(potential_events[i], size_of_potential_events[i]);
 
                 }
@@ -178,28 +183,26 @@ static void dataIntake(void){//TESTME : test everything
 
                 loop = false;
 
-                // sleep(1);
-
-            } else {              
+            } else if(!loop){           
                 
+                is_not_baseline = false;
+
                 for(i = 0; i < NUM_CHANNELS; i++){ 
 
                     is_not_baseline |= !isBaseline(channel_data_point[i], THRESHOLD_MAX, THRESHOLD_MIN); 
 
                 }
 
-                loop = false;
                 
-                if(is_not_baseline){
-                    
+                
+                if(is_not_baseline){//FIXME : add a once a loop check
+                    printf("is not baseline\n");
                     freeze_tail = true;
-
-                    const int temp_tail = tail; //to avoid underflow 
-
-
-                    tail_min = testMinusTail(tail, num_data_points);
-
-                    tail_max = !(temp_tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? temp_tail + num_data_points : (num_data_points + temp_tail) - INTERNAL_RING_BUFFER_SIZE;//FIXME : make this in a function
+                    
+                    tail_min = minusTail(tail, num_data_points);
+                    
+                    tail_max = addTail(tail, num_data_points);
+                    printf("tail : %d, tailMin : %d, tailMax : %d\n", tail, tail_min, tail_max);
 
                     loop = true;
 
@@ -216,6 +219,17 @@ static void dataIntake(void){//TESTME : test everything
             }
 
             tail = !freeze_tail ? internal_ring_buffer->write : tail;
+
+
+
+
+
+
+
+
+
+
+
         }        
     }
 
