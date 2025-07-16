@@ -32,13 +32,17 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
     //TESTME : further with artifacts and noise and weird input buffers (like alternating true false for example)
     //FOR FUTURE DEBUGGING/UNDERSTANDING, HERE IS A DIAGRAM OF THE ALGORITHM BELOW : https://www.c  anva.com/design/DAGsqXG_BNU/qtS7Dkq2mF7FSWF6K4jTbQ/edit
 
-    assert(buffer != NULL);
+    #ifdef ASSERT_ENABLED
 
-    assert(events != NULL);
+    // assert(buffer != NULL);
 
-    assert(size_buffer > 0);
+    // assert(events != NULL);
 
-    assert(size_events != NULL);
+    // assert(size_buffer > 0);
+
+    // assert(size_events != NULL);
+
+    #endif
 
     enum {
         SIGNAL = false,

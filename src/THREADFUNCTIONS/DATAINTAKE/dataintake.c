@@ -143,7 +143,11 @@ static void dataIntake(void){//TESTME : test everything
 
         #endif
 
-        assert(num_data_points % NUM_CHANNELS == 0);
+        #ifdef ASSERT_ENABLED
+
+            assert(num_data_points % NUM_CHANNELS == 0);
+
+        #endif
 
         if(num_data_points > 0){        
             

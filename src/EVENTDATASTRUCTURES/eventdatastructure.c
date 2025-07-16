@@ -25,7 +25,11 @@ static node * initNode(const size_t start, const size_t stop){
 
 static void freeNode(node * n){
     
-    assert(n != NULL);
+    #ifdef ASSERT_ENABLED
+    
+        assert(n != NULL);
+
+    #endif
 
     free(n);
 }
@@ -64,7 +68,11 @@ static void freeList(void){
 
 static void initEventRingBuffer(const size_t size_buffer){
 
-    assert(size_buffer > 0);
+    #ifdef ASSERT_ENABLED
+
+        assert(size_buffer > 0);
+
+    #endif
 
     event_ring_buffer = initRingBuffer(size_buffer, EVENT_RING_BUFFER);
 
@@ -84,9 +92,13 @@ static void freeEventRingBuffer(void){
 
 static void addNodeToList(node * restrict n){
 
-    assert(head != NULL);
+    #ifdef ASSERT_ENABLED
 
-    assert(n != NULL);
+        assert(head != NULL);
+
+        assert(n != NULL);
+
+    #endif
 
     if(head->next == NULL){
 
@@ -109,7 +121,11 @@ static void addNodeToList(node * restrict n){
 
 static void popNodeFromList(void){
 
-    assert(head != NULL);
+    #ifdef ASSERT_ENABLED
+
+        assert(head != NULL);
+
+    #endif
 
     node * curr = head->next;
 
@@ -124,7 +140,11 @@ static void popNodeFromList(void){
 
 static size_t _getEvent(float * restrict data){
     
-    assert(head != NULL);
+    #ifdef ASSERT_ENABLED
+
+        assert(head != NULL);
+
+    #endif
     
     if(head->next == NULL) return 0;//list is empty
 
@@ -150,11 +170,16 @@ static size_t _getEvent(float * restrict data){
 
 static void _addEvent(const float * restrict data, const size_t size_data){
     printf(RED"adding event\n"RESET);
-    assert(data != NULL);
 
-    assert(size_data > 0);
+    #ifdef ASSERT_ENABLED
 
-    assert(head != NULL);
+        assert(data != NULL);
+
+        assert(size_data > 0);
+
+        assert(head != NULL);
+
+    #endif
     
     MUTEX_LOCK(&event_ring_buffer_mutex);
 
@@ -178,7 +203,11 @@ static void _addEvent(const float * restrict data, const size_t size_data){
 
 void initEventDatastructure(const size_t size_buffer){
 
-    assert(size_buffer > 0);
+    #ifdef ASSERT_ENABLED
+
+        assert(size_buffer > 0);
+
+    #endif
 
     initEventRingBuffer(size_buffer);
 

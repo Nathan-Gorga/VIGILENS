@@ -143,8 +143,13 @@ size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size
 
 
 static inline void _writeIndexIncrement(struct ring_buffer * buffer){
-    assert(buffer != NULL);
+
+    #ifdef ASSERT_ENABLED
+
+        assert(buffer != NULL);
     
+    #endif
+
     buffer->write++;
 
     //this is faster than the modulo operation in our case
@@ -167,12 +172,16 @@ static void writeIndexIncrement(struct ring_buffer * buffer){
 
 
 size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){
+
+    #ifdef ASSERT_ENABLED
    
-    assert(buffer_size > 0);
+        assert(buffer_size > 0);
 
-    assert(start >= 0 && stop >= 0);
+        assert(start >= 0 && stop >= 0);
 
-    assert(start < buffer_size && stop < buffer_size); 
+        assert(start < buffer_size && stop < buffer_size); 
+
+    #endif
 
     if(stop > start) return stop - start + 1;
 
@@ -182,21 +191,29 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 
 void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * restrict data, const size_t size_data, const size_t start, const size_t stop){
     
-    assert(buffer != NULL);
+    #ifdef ASSERT_ENABLED
 
-    assert(data != NULL);
+        assert(buffer != NULL);
+
+        assert(data != NULL);
+
+    #endif
 
     const bool overflow = start > stop;
     
     size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
     
-    assert(size == size_data);
+    #ifdef ASSERT_ENABLED
 
-    assert(size_data <= buffer->size);
+        assert(size == size_data);
 
-    assert(start >= 0 && stop >= 0);
+        assert(size_data <= buffer->size);
 
-    assert(start < buffer->size && stop < buffer->size);
+        assert(start >= 0 && stop >= 0);
+
+        assert(start < buffer->size && stop < buffer->size);
+
+    #endif
 
     if(!overflow){
 
@@ -214,9 +231,13 @@ void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * rest
 
 void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data){//TODO : add macros for asserts
     
-    assert(buffer != NULL);
+    #ifdef ASSERT_ENABLED
 
-    assert(buffer->type == INTERNAL_RING_BUFFER);
+        assert(buffer != NULL);
+
+        assert(buffer->type == INTERNAL_RING_BUFFER);
+
+    #endif
 
     buffer->memory[buffer->write] = data;// no need for mutex (internal)
 
@@ -227,13 +248,18 @@ void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data
 
 void addBufferToRingBuffer(struct ring_buffer * buffer, const float * restrict data, const size_t size){
 
-    assert(buffer != NULL);
+    #ifdef ASSERT_ENABLED
 
-    assert(data != NULL);
 
-    assert(size > 0);
+        assert(buffer != NULL);
 
-    assert(buffer->type == EVENT_RING_BUFFER);
+        assert(data != NULL);
+
+        assert(size > 0);
+
+        assert(buffer->type == EVENT_RING_BUFFER);
+
+    #endif
 
     if(!isOverflow(buffer, size - 1)){
         
