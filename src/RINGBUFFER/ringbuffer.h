@@ -142,7 +142,7 @@ size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size
  *          It then increments the write index, wrapping it around to the start of the buffer if necessary.
  *
  * @pre buffer is not NULL and buffer's type is INTERNAL_RING_BUFFER.
- */void addFloatToRingBuffer(struct ring_buffer * buffer, const float data); 
+ */void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data); 
  
  
 
@@ -160,7 +160,7 @@ size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size
  *          It handles wrapping around the ring buffer if necessary.
  *
  * @pre buffer is not NULL and buffer's type is EVENT_RING_BUFFER.
- */void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size);
+ */void addBufferToRingBuffer(struct ring_buffer * buffer, const float * restrict data, const size_t size);
 
 
 

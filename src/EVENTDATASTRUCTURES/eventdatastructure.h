@@ -111,7 +111,8 @@ extern pthread_cond_t ready_cond;
  * @details This function adds a node to the linked list.
  *
  * @pre n must not be NULL and head must not be NULL.
- */static void addNodeToList(node * n);
+ */static void addNodeToList(node * restrict n);
+;
 
 
 
@@ -128,7 +129,7 @@ extern pthread_cond_t ready_cond;
  * @pre head must not be NULL, and data must not be NULL.
  *
  * @post head->next points to the next node in the list, or NULL if the list is empty.
- */static size_t _getEvent(float * data);
+ */static size_t _getEvent(float * restrict data);
 
 
 
@@ -141,7 +142,7 @@ extern pthread_cond_t ready_cond;
  * @details This function adds the given event data to the event ring buffer.
  *
  * @pre data is not NULL, size_data is greater than 0, and head is not NULL.
- */static void _addEvent(const float * data, const size_t size_data);
+ */static void _addEvent(const float * restrict data, const size_t size_data);
 
 
 //GLOBAL FUNCTIONS, called only once by main, don't need mutex
@@ -203,7 +204,7 @@ int destroyMutexes(void);
  * @pre data must not be NULL.
  *
  * @post head->next points to the next node in the list, or NULL if the list is empty.
- */size_t getEvent(float * data);
+ */size_t getEvent(float * restrict data);
 
 
 /**
@@ -219,7 +220,7 @@ int destroyMutexes(void);
  *
  * @pre data must not be NULL, size_data must be greater than 0, and the event data
  *      structure must be initialized.
- */void addEvent(const float * data, const size_t size_data);
+ */void addEvent(const float * restrict data, const size_t size_data);
 
 
 #endif
