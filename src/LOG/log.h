@@ -3,6 +3,9 @@
 
 #include "../globaldefinition.h"
 
+// #define LOG_ENABLED//comment out this line to turn off logging
+
+
 typedef enum{
     LOG_DEBUG,
     LOG_INFO,

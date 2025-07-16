@@ -48,26 +48,30 @@ int initLoggingSystem(void){
 
 int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
     
-    LOG_PARAM *log_param = malloc(sizeof(LOG_PARAM));// we need the heap here for log_param to last longer than the function scope
-   
-    if (log_param == NULL) return -1;
-
-    log_param->thread_id = thread_id;
-
-    log_param->log_type = log_type;
+    #ifdef LOG_ENABLED
+        
+        LOG_PARAM *log_param = malloc(sizeof(LOG_PARAM));// we need the heap here for log_param to last longer than the function scope
     
-    log_param->message = strdup(message); // make a copy of message to be safe
+        if (log_param == NULL) return -1;
 
-    if(pthread_create(&log_thread[thread_id], NULL, _logEntry, log_param) != 0) {
-     
-        free(log_param->message);
-      
-        free(log_param);
-      
-        return -1;
-    }
+        log_param->thread_id = thread_id;
 
-    pthread_detach(log_thread[thread_id]);
+        log_param->log_type = log_type;
+        
+        log_param->message = strdup(message); // make a copy of message to be safe
+
+        if(pthread_create(&log_thread[thread_id], NULL, _logEntry, log_param) != 0) {
+        
+            free(log_param->message);
+        
+            free(log_param);
+        
+            return -1;
+        }
+
+        pthread_detach(log_thread[thread_id]);
+        
+    #endif
 
     return 0;
 }
