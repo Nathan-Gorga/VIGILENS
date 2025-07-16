@@ -53,7 +53,7 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
     bool investigating = false;
     int i, j;
 
-    bool bool_buffer[INTERNAL_RING_BUFFER_SIZE];// TRY : for now this is fine because it's the only use for this function but the size may be too small if used on event ring buffer
+    bool bool_buffer[INTERNAL_RING_BUFFER_SIZE];// NOTE : for now this is fine because it's the only use for this function but the size may be too small if used on event ring buffer
 
     if(bool_buffer == NULL) return -1;
 
@@ -100,10 +100,9 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 
                 investigating = false; 
 
-            } else {//FIXME : this else condition may not be useful at all and i = j should happen no matter what
-                //CONTINUE INVESTIGATION AS THE BASELINE WAS TOO SHORT (THE SEGMENT MAY CONTINUES AFTER THIS)
-                i = j;//i gets increment after the for loop
-            }    
+            }
+            //NOTE : if things start to break, put the i=j in an else{} statement (might help)
+            i = j;    
         }
     }
 

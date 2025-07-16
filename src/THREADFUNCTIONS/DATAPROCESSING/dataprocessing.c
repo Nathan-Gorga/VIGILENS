@@ -78,6 +78,10 @@ static void dataProcessing(void){
             logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
             printf("Got event of size %d\n", event_buffer_size);
+            
+            printf("first element :  %f\n", event_buffer[0]);
+            printf("last element :  %f\n", event_buffer[event_buffer_size - 1]);
+
 
             // for(int i = 0; i < event_buffer_size; i++){
 
