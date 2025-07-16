@@ -149,13 +149,11 @@ static void dataIntake(void){//TESTME : test everything
             
             
 
-            //FIXME : this if should be accessed one loop after a new shift from baseline
+            
             if(loop && ((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||  // if there is no overlap over the point 0, then we check if it is in the interval
                         (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
                 
-                printf("tail_is_overlap : %d, tail_min : %d, tail_max : %d, internal_ring_buffer->write : %d\n", tail_is_overlap, tail_min, tail_max, internal_ring_buffer->write);
-                
-                
+                                
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
                 
                 extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, minusTail(tail, 1));
@@ -166,7 +164,6 @@ static void dataIntake(void){//TESTME : test everything
 
                 (void)sprintf(message,"%d events found", num_potential_events);
 
-                printf("%d events found\n", num_potential_events);
 
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
 
@@ -193,16 +190,13 @@ static void dataIntake(void){//TESTME : test everything
 
                 }
 
-                
-                
-                if(is_not_baseline){//FIXME : add a once a loop check
-                    printf("is not baseline\n");
+                if(is_not_baseline){
+
                     freeze_tail = true;
                     
                     tail_min = minusTail(tail, num_data_points);
                     
                     tail_max = addTail(tail, num_data_points);
-                    printf("tail : %d, tailMin : %d, tailMax : %d\n", tail, tail_min, tail_max);
 
                     loop = true;
 

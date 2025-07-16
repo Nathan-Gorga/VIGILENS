@@ -47,11 +47,11 @@ struct ring_buffer{
 
 
 //FIXME : these two may need mutexes (differentiate between internal and event ring buffer indexes if you do)
-extern inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer);//TODO : write function comment
-extern inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer);
-extern inline size_t writeIndexAfterAddingX(struct ring_buffer * buffer, const size_t x);//TESTME
+size_t writeIndexAfterIncrement(const struct ring_buffer * buffer);//TODO : write function comment
+size_t writeIndexAfterDecrement(const struct ring_buffer * buffer);
 
-extern inline size_t writeIndexAfterSubtractingX(struct ring_buffer * buffer, const size_t x);//TESTME
+size_t writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x);//TESTME
+size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x);//TESTME
 
 
 /**

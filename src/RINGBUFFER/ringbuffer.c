@@ -49,27 +49,97 @@ static bool isUnderflow(struct ring_buffer * buffer, const size_t size_to_subtra
 }
 
 
-inline size_t writeIndexAfterIncrement(struct ring_buffer * buffer){//DONTTOUCH
+static inline size_t _writeIndexAfterIncrement(const struct ring_buffer * buffer){//DONTTOUCH
     return (buffer->write + 1) % buffer->size;
 }
 
-inline size_t writeIndexAfterDecrement(struct ring_buffer * buffer){//DONTTOUCH
+
+size_t writeIndexAfterIncrement(const struct ring_buffer * buffer){//TODO : add restriction to pointers
+
+    if(buffer->type == EVENT_RING_BUFFER){
+        
+        MUTEX_LOCK(&write_index_mutex);
+
+            const size_t temp = _writeIndexAfterIncrement(buffer);
+
+        MUTEX_UNLOCK(&write_index_mutex);
+
+        return temp;
+    }
+
+    return _writeIndexAfterIncrement(buffer);
+}
+
+
+static inline size_t _writeIndexAfterDecrement(const struct ring_buffer * buffer){//DONTTOUCH
     return (buffer->write - 1) % buffer->size;
 }
 
 
-inline size_t writeIndexAfterAddingX(struct ring_buffer * buffer, const size_t x){//TESTME
+size_t writeIndexAfterDecrement(const struct ring_buffer * buffer){
+
+    if(buffer->type == EVENT_RING_BUFFER){
+        
+        MUTEX_LOCK(&write_index_mutex);
+
+            const size_t temp = _writeIndexAfterDecrement(buffer);
+
+        MUTEX_UNLOCK(&write_index_mutex);
+
+        return temp;
+    } 
+    
+    return _writeIndexAfterDecrement(buffer);
+    
+}
+
+
+static inline size_t _writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x){//TESTME
 
     //the negation is for speed purposes (false is more common in our case than true)
     return !isOverflow(buffer, x) ? buffer->write + x : (x + buffer->write) - buffer->size;
 
 }
 
+size_t writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x){//TESTME
 
-inline size_t writeIndexAfterSubtractingX(struct ring_buffer * buffer, const size_t x){//TESTME
+    if(buffer->type == EVENT_RING_BUFFER){
+        
+        MUTEX_LOCK(&write_index_mutex);
+
+            const size_t temp = _writeIndexAfterAddingX(buffer, x); 
+
+        MUTEX_UNLOCK(&write_index_mutex);
+
+        return temp;
+    }
+
+    return _writeIndexAfterAddingX(buffer, x);
+}
+
+
+
+static inline size_t _writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x){//TESTME
     const int temp = buffer->write - x;//to avoid underflow
     return !isUnderflow(buffer, x) ? temp : temp + buffer->size;
 }
+
+size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x){//TESTME
+
+    if(buffer->type == EVENT_RING_BUFFER){
+        
+        MUTEX_LOCK(&write_index_mutex);
+
+            const size_t temp = _writeIndexAfterSubtractingX(buffer, x); 
+
+        MUTEX_UNLOCK(&write_index_mutex);
+
+        return temp;
+    }
+
+    return _writeIndexAfterSubtractingX(buffer, x);
+}
+
 
 
 static inline void _writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
@@ -130,31 +200,13 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
 
     if(!overflow){
 
-        // for(size_t i = 0; i < size; i ++){//FIXME : USE MEMMOVE
-
-        //     data[i] = buffer->memory[i + start];
-
-        // }
-
         memmove(data, buffer->memory + start, size * sizeof(float));
 
     } else {
         
         const size_t offset = buffer->size - start;
 
-        // for(size_t i = 0; i < offset; i ++){//FIXME : USE MEMMOVE
-
-        //     data[i] = buffer->memory[i + start];
-
-        // }
-
         memmove(data, buffer->memory + start, offset * sizeof(float));
-
-        // for(size_t i = 0; i < stop + 1; i ++){//FIXME : USE MEMMOVE
-
-        //     data[i + offset] = buffer->memory[i];
-
-        // }
 
         memmove(data + offset, buffer->memory, (stop + 1) * sizeof(float));
     }

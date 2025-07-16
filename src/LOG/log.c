@@ -108,7 +108,7 @@ static void * _logEntry(void * param){
 
 
 
-static int __logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : find a way to close before a crash, or at least close and save periodically
+static int __logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : add macros to turn off logging
     
     if(log_file == NULL){
     
