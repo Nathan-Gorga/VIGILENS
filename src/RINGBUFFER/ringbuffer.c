@@ -119,12 +119,10 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     const bool overflow = start > stop;
     
     size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
-
-    // printf("size = %d, size_data = %d\n", size, size_data);
     
     assert(size == size_data);
 
-    assert(size_data <= buffer->size);//BUG : weird assert fail here the buffer is of size 8 or 13, in data proc maybe
+    assert(size_data <= buffer->size);
 
     assert(start >= 0 && stop >= 0);
 
@@ -132,27 +130,33 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
 
     if(!overflow){
 
-        for(size_t i = 0; i < size; i ++){//FIXME : USE MEMMOVE
+        // for(size_t i = 0; i < size; i ++){//FIXME : USE MEMMOVE
 
-            data[i] = buffer->memory[i + start];
+        //     data[i] = buffer->memory[i + start];
 
-        }
+        // }
+
+        memmove(data, buffer->memory + start, size * sizeof(float));
 
     } else {
         
         const size_t offset = buffer->size - start;
 
-        for(size_t i = 0; i < offset; i ++){//FIXME : USE MEMMOVE
+        // for(size_t i = 0; i < offset; i ++){//FIXME : USE MEMMOVE
 
-            data[i] = buffer->memory[i + start];
+        //     data[i] = buffer->memory[i + start];
 
-        }
+        // }
 
-        for(size_t i = 0; i < stop + 1; i ++){//FIXME : USE MEMMOVE
+        memmove(data, buffer->memory + start, offset * sizeof(float));
 
-            data[i + offset] = buffer->memory[i];
+        // for(size_t i = 0; i < stop + 1; i ++){//FIXME : USE MEMMOVE
 
-        }
+        //     data[i + offset] = buffer->memory[i];
+
+        // }
+
+        memmove(data + offset, buffer->memory, (stop + 1) * sizeof(float));
     }
 }
 
