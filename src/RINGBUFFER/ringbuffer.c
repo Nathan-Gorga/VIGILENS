@@ -1,7 +1,7 @@
 #include "ringbuffer.h"
 
 
-struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){//DONTTOUCH
+struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){
     
     if(size == 0) return NULL; //size cannot be negative (size_t is unsigned)
 
@@ -26,7 +26,7 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
 }
 
 
-void freeRingBuffer(struct ring_buffer * buffer){//DONTTOUCH
+void freeRingBuffer(struct ring_buffer * buffer){
 
     if(buffer == NULL) return;
 
@@ -39,7 +39,7 @@ freebuffer:
     free(buffer);
 }
 
-static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){//DONTTOUCH
+static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
     return (buffer->write + size_to_add) > buffer->size;
 }
 
@@ -49,12 +49,12 @@ static bool isUnderflow(struct ring_buffer * buffer, const size_t size_to_subtra
 }
 
 
-static inline size_t _writeIndexAfterIncrement(const struct ring_buffer * buffer){//DONTTOUCH
+static inline size_t _writeIndexAfterIncrement(const struct ring_buffer * buffer){
     return (buffer->write + 1) % buffer->size;
 }
 
 
-size_t writeIndexAfterIncrement(const struct ring_buffer * buffer){//TODO : add restriction to pointers
+size_t writeIndexAfterIncrement(const struct ring_buffer * buffer){
 
     if(buffer->type == EVENT_RING_BUFFER){
         
@@ -71,7 +71,7 @@ size_t writeIndexAfterIncrement(const struct ring_buffer * buffer){//TODO : add 
 }
 
 
-static inline size_t _writeIndexAfterDecrement(const struct ring_buffer * buffer){//DONTTOUCH
+static inline size_t _writeIndexAfterDecrement(const struct ring_buffer * buffer){
     return (buffer->write - 1) % buffer->size;
 }
 
@@ -142,7 +142,7 @@ size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size
 
 
 
-static inline void _writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
+static inline void _writeIndexIncrement(struct ring_buffer * buffer){
     assert(buffer != NULL);
     
     buffer->write++;
@@ -152,7 +152,7 @@ static inline void _writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
 }
 
 
-static void writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
+static void writeIndexIncrement(struct ring_buffer * buffer){
 
     if(buffer->type == EVENT_RING_BUFFER){
         
@@ -166,7 +166,7 @@ static void writeIndexIncrement(struct ring_buffer * buffer){//DONTTOUCH
 }
 
 
-size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){//DONTTOUCH
+size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){
    
     assert(buffer_size > 0);
 
@@ -180,7 +180,7 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 }
 
 
-void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop){
+void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * restrict data, const size_t size_data, const size_t start, const size_t stop){
     
     assert(buffer != NULL);
 
@@ -212,7 +212,7 @@ void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, cons
     }
 }
 
-void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){//DONTTOUCH
+void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data){//TODO : add macros for asserts
     
     assert(buffer != NULL);
 
@@ -225,7 +225,7 @@ void addFloatToRingBuffer(struct ring_buffer * buffer, const float data){//DONTT
 
 
 
-void addBufferToRingBuffer(struct ring_buffer * buffer, const float * data, const size_t size){//DONTTOUCH
+void addBufferToRingBuffer(struct ring_buffer * buffer, const float * restrict data, const size_t size){
 
     assert(buffer != NULL);
 

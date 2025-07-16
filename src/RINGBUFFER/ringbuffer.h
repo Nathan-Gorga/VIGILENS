@@ -46,7 +46,7 @@ struct ring_buffer{
 
 
 
-//FIXME : these two may need mutexes (differentiate between internal and event ring buffer indexes if you do)
+
 size_t writeIndexAfterIncrement(const struct ring_buffer * buffer);//TODO : write function comment
 size_t writeIndexAfterDecrement(const struct ring_buffer * buffer);
 
@@ -109,7 +109,7 @@ size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size
  *
  * @pre buffer is not NULL, data is not NULL, and size_data is equal to the size of the data
  *      that should be extracted.
- */void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * data, const size_t size_data, const size_t start, const size_t stop);
+ */void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * restrict data, const size_t size_data, const size_t start, const size_t stop);
 
 
 
