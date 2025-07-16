@@ -53,7 +53,7 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
     bool investigating = false;
     int i, j;
 
-    bool * bool_buffer = malloc(size_buffer * sizeof(bool));//FIXME : avoid the heap, especially in a time sensitive function
+    bool bool_buffer[INTERNAL_RING_BUFFER_SIZE];// TRY : for now this is fine because it's the only use for this function but the size may be too small if used on event ring buffer
 
     if(bool_buffer == NULL) return -1;
 
@@ -107,7 +107,6 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
         }
     }
 
-    free(bool_buffer);
     return counter_potential_events;
 }
 
