@@ -150,10 +150,7 @@ static inline void _writeIndexIncrement(struct ring_buffer * buffer){
     
     #endif
 
-    buffer->write++;
-
-    //this is faster than the modulo operation in our case
-    if(buffer->write == buffer->size) buffer->write = 0;
+    buffer->write = (buffer->write + 1) % buffer->size;
 }
 
 
@@ -229,7 +226,7 @@ void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * rest
     }
 }
 
-void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data){//TODO : add macros for asserts
+void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data){
     
     #ifdef ASSERT_ENABLED
 
