@@ -1,7 +1,9 @@
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L -pthread
+CFLAGS = -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L -O1
 LDFLAGS = -pthread -lm
+PROF_FLAGS = -pg
+
 
 # Target executable
 TARGET = VIGILENCE
@@ -22,12 +24,13 @@ OBJS = $(SRCS:.c=.o)
 
 # Default rule
 all: $(TARGET)
-	make clean
+	@make clean
 	@./$(TARGET)
+	@gprof ./$(TARGET) gmon.out > analysis.txt
 
 # Link the target executable
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(PROF_FLAGS)
 
 # Compile each .c to .o
 %.o: %.c
