@@ -17,7 +17,7 @@ courtesy to https://github.com/ultramcu
 #define RASPBERRY_TX_PIN 14
 #define RASPBERRY_RX_PIN 15
 
-#define SERIAL_DEVICE "/dev/ttyACM0" //FIXME : check this is in fact the case on our raspberry pi
+#define SERIAL_DEVICE "/dev/serial0" //TESTME : this should be the correct serial link, test it just in case
 #define UART_BAUDRATE 115200
 
 #define UART_BUFFER_SIZE (size_t)(sizeof(openbci_packet) * SAMPLING_RATE / 2)

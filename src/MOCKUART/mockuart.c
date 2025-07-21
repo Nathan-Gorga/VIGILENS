@@ -3,7 +3,7 @@
 
 size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//this function needs to return 0s
         
-    const int probability = 1000000; 
+    const int probability = 100000; 
 
     const bool send_signal = 0 == (rand() % probability);
 
