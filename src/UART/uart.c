@@ -1,7 +1,6 @@
 #include "uart.h"
 
 
-
 static int32_t interpret24BitToInt(const byte data[3]){//DONTTOUCH
     
     int32_t Int = (  
@@ -59,7 +58,7 @@ static int32_t convertBaudrate(const int32_t baudrate)
 }
 static bool openSerialFileDescriptor(void){
 
-    UART_fd = open(SERIAL_DEVICE, O_RDWR | O_NOCTTY | O_NDELAY);
+    UART_fd = open(SERIAL_DEVICE, O_RDWR | O_NOCTTY);
     
     if(UART_fd == -1)
     {
@@ -128,8 +127,6 @@ static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_re
         if(buffer[i] == START_BYTE){
             
             memcpy(&packets[count++], &buffer[i], packet_size);
-            
-            printf("count : %d\n", count);
             
             i += packet_size - 1;
         }
