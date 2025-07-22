@@ -236,7 +236,7 @@ void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data
 
     #endif
 
-    buffer->memory[buffer->write] = data;// no need for mutex (internal)
+    buffer->memory[buffer->write] = data;
 
     buffer->write = (buffer->write + 1) % buffer->size; //we dont use writeIndexIncrement for this one, it is only used for internal buffer and therefore we need to bypass the mutex for speed
 }

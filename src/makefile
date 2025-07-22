@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L -O1
+CFLAGS = -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L -O2
 LDFLAGS = -pthread -lm
 PROF_FLAGS = -pg
 
