@@ -14,7 +14,7 @@ static void masterStartupDialogue(void){
 
     while(sigaddset(&set, SIGCONT));
 
-    // Send ready signal to master        
+    // Send ready signal to master
     MUTEX_LOCK(&ready_lock);
 
     ready_count++;
@@ -76,6 +76,10 @@ void * launchDataIntake(void * arg){
 
 static void dataIntake(void){//TESTME : test everything
 
+    printf("data intake size : %d\n", INTERNAL_RING_BUFFER_SIZE);
+
+    static int intake_count = 0;
+
     struct ring_buffer * internal_ring_buffer;
 
     size_t i, tail = 0, num_potential_events = 0, num_data_points = 0, writePlusX, size_of_potential_events[50] = {0}, tail_min = 0, tail_max = 0;
@@ -90,7 +94,7 @@ static void dataIntake(void){//TESTME : test everything
 
     internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
     
-    if(internal_ring_buffer == NULL) { 
+    if(internal_ring_buffer == NULL) {
 
         (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR , "failure initializing internal ring buffer");
         
@@ -107,6 +111,8 @@ static void dataIntake(void){//TESTME : test everything
     masterStartupDialogue();
 
     #ifdef UART_ENABLED
+/*TODO : test and double check this code will work with the openBCI board
+
 
         char maximum_tries = 10;
 
@@ -120,9 +126,9 @@ static void dataIntake(void){//TESTME : test everything
             
             pthread_exit(NULL);
         }
-
+*/
     #endif
-    
+
     (void)printf("Entering main loop\n");
 
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "Entering main loop");
@@ -132,14 +138,14 @@ static void dataIntake(void){//TESTME : test everything
     while(true){
 
         pthread_testcancel();
-        
+
         #ifdef UART_ENABLED
 
             num_data_points = getUARTData(channel_data_point);
-        
+
         #else
 
-            num_data_points = getMockUARTData(channel_data_point);//TODO : test this function and that data intake does it's job PERFECTLY
+            num_data_points = getMockUARTData(channel_data_point);
 
         #endif
 
@@ -149,17 +155,21 @@ static void dataIntake(void){//TESTME : test everything
 
         #endif
 
-        if(num_data_points > 0){        
-            
-            
+        if(num_data_points > 0){
 
-            
+//            printf("%d/%d : %f\%\n", intake_count,INTERNAL_RING_BUFFER_SIZE, ((float)intake_count/(float)INTERNAL_RING_BUFFER_SIZE) * 100);
+
+	    intake_count += num_data_points;
+
             if(loop && ((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||  // if there is no overlap over the point 0, then we check if it is in the interval
                         (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
-                
-                                
+
+		printf("one loop\n");
+
+		intake_count = 0;
+
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
-                
+
                 extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, minusTail(tail, 1));
 
                 num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);
@@ -168,10 +178,11 @@ static void dataIntake(void){//TESTME : test everything
 
                 (void)sprintf(message,"%d events found", num_potential_events);
 
+		printf(message);
+
 
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
 
-                
                 for(int i = 0; i < num_potential_events; i++){
 
                     addEvent(potential_events[i], size_of_potential_events[i]);
@@ -184,13 +195,13 @@ static void dataIntake(void){//TESTME : test everything
 
                 loop = false;
 
-            } else if(!loop){           
-                
+            } else if(!loop){
+
                 is_not_baseline = false;
 
-                for(i = 0; i < NUM_CHANNELS; i++){ 
+                for(i = 0; i < NUM_CHANNELS; i++){ //TODO : change the baseline parameters to fit the output of the openBCI function
 
-                    is_not_baseline |= !isBaseline(channel_data_point[i], THRESHOLD_MAX, THRESHOLD_MIN); 
+                    is_not_baseline |= !isBaseline(channel_data_point[i], THRESHOLD_MAX, THRESHOLD_MIN);
 
                 }
 
@@ -211,24 +222,14 @@ static void dataIntake(void){//TESTME : test everything
             }
 
             for(i = 0; i < num_data_points; i++){
-                    
+
                 addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
 
             }
 
             tail = !freeze_tail ? internal_ring_buffer->write : tail;
 
-
-
-
-
-
-
-
-
-
-
-        }        
+        }
     }
 
     pthread_cleanup_pop(1);
