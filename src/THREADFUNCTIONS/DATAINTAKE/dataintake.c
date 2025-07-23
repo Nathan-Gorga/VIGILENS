@@ -111,13 +111,11 @@ static void dataIntake(void){//TESTME : test everything
     masterStartupDialogue();
 
     #ifdef UART_ENABLED
-/*TODO : test and double check this code will work with the openBCI board
-
 
         char maximum_tries = 10;
 
-        while(!sendUARTSignal(START_STREAM) && maximum_tries--) usleep(10 * 1000);
-    
+        while(!sendUARTSignal(START_STREAM) && --maximum_tries) usleep(10 * 1000);
+
         if(maximum_tries <= 0) {
             
             (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR, "UART failed to send start stream signal");
@@ -126,7 +124,7 @@ static void dataIntake(void){//TESTME : test everything
             
             pthread_exit(NULL);
         }
-*/
+
     #endif
 
     (void)printf("Entering main loop\n");

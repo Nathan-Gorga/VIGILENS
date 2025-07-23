@@ -225,15 +225,18 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TESTME
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){//TESTME
 
     // TODO : openBCI sends $$$ when ready (before any signal), add this to the function
-    
-    const size_t size_written = sizeof(byte);
 
     byte to_send[2];
 
-    to_send[0] = signal_type;
+    to_send[0] = (byte)signal_type;
+
     to_send[1] = '\n';
-    
-    if(write(UART_fd, to_send, size_written) != size_written) return false;
-    
+
+    const size_t size = sizeof(to_send);
+
+    ssize_t bytes_written = write(UART_fd, to_send, size);
+
+    if(bytes_written != size) return false;
+
     return true;
 }

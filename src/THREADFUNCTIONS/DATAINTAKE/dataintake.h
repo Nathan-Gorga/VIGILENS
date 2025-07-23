@@ -11,7 +11,7 @@
 
 #define PACKET_BUFFER_SIZE 10
 
-#define TIME_IN_INTERNAL_RING_BUFFER 1//TODO change to fit the best openBCI stream settings
+#define TIME_IN_INTERNAL_RING_BUFFER 0.5f//TODO change to fit the best openBCI stream settings
 #define INTERNAL_RING_BUFFER_SIZE (size_t)(TIME_IN_INTERNAL_RING_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
 #define DATA_INTAKE_TEXT_COLOR BLUE
