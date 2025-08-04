@@ -76,8 +76,6 @@ void * launchDataIntake(void * arg){
 
 static void dataIntake(void){//TESTME : test everything
 
-    printf("data intake size : %d\n", INTERNAL_RING_BUFFER_SIZE);
-
     static int intake_count = 0;
 
     struct ring_buffer * internal_ring_buffer;
@@ -159,6 +157,8 @@ static void dataIntake(void){//TESTME : test everything
 
 	    intake_count += num_data_points;
 
+
+	    //FIXME : the loop over mechanism doesnt seem to be working properly, the events detected in the loop buffer all start at the previous  event found, so its like a chain, shoudl not be like this
             if(loop && ((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||  // if there is no overlap over the point 0, then we check if it is in the interval
                         (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
 

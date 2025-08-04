@@ -1,6 +1,5 @@
 #include "uart.h"
 
-
 static int32_t interpret24BitToInt(const byte data[3]){//DONTTOUCH
     
     int32_t Int = (  
@@ -112,6 +111,12 @@ bool beginUART(void){//TESTME
 
 void endUART(void){
 
+    int attempts = 10;
+
+    while(!sendUARTSignal(STOP_BYTE) && --attempts) usleep(100 * 1000);
+
+    //it isnt a big deal if send uart fails, so we dont need to pass it on in the return
+
     close(UART_fd);
 
 }
@@ -140,9 +145,9 @@ static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_re
 
 
 
-size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TESTME
+size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parameter in this funciton to specify allowable wait time
 
-    static byte uart_accum_buf[UART_BUFFER_SIZE];  // persistent accumulation buffer
+    static uint8_t uart_accum_buf[UART_BUFFER_SIZE];  // persistent accumulation buffer
 
     static size_t uart_accum_len = 0;              // how much valid data is stored
 
@@ -162,7 +167,7 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TESTME
 
     if (ready > 0 && FD_ISSET(UART_fd, &read_UART_fd)) {
 
-        byte temp_buf[64];  // temporary read buffer
+        uint8_t temp_buf[64];  // temporary read buffer
 
         ssize_t size_read = read(UART_fd, temp_buf, sizeof(temp_buf));
 
@@ -192,11 +197,17 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TESTME
 
             size_t processed = 0;
 
+	    
             while (uart_accum_len - processed >= packet_size && count < PACKET_BUFFER_SIZE) {
 
-                if (uart_accum_buf[processed] == START_BYTE) {
-
-                    memcpy(&packets[count], &uart_accum_buf[processed], packet_size);
+//		printf("%d - %d = %d, packet_size : %d, count %d\n", uart_accum_len, processed, uart_accum_len-processed, packet_size, count);
+		
+                if ((byte)uart_accum_buf[processed] == START_BYTE) {
+		    
+		    for(int i = processed; i < 33 + processed; i++){
+			printf("%x ", uart_accum_buf[i]);
+		    }printf("\n");
+		    memcpy(&packets[count], &uart_accum_buf[processed], packet_size);
 
                     getChannelDataFromPacket(packets[count], data_points + (NUM_CHANNELS * count));
 
@@ -210,7 +221,10 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TESTME
                 }
             }
 
+//	    printf("\n");
+
             // shift unprocessed bytes to front of buffer
+
             uart_accum_len -= processed;
 
             memmove(uart_accum_buf, &uart_accum_buf[processed], uart_accum_len);

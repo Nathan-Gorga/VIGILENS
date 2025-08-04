@@ -183,7 +183,7 @@ end:
     (void)destroyMutexes();
 
     #ifdef UART_ENABLED
-
+	
         endUART();
     
     #endif
