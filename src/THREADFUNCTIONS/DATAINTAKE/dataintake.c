@@ -97,7 +97,6 @@ static void dataIntake(void){//TESTME : test everything
         (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR , "failure initializing internal ring buffer");
         
         exit(EXIT_FAILURE);
-        
     }
 
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "internal ring buffer initialized");
@@ -110,18 +109,7 @@ static void dataIntake(void){//TESTME : test everything
 
     #ifdef UART_ENABLED
 
-        char maximum_tries = 10;
-
-        while(!sendUARTSignal(START_STREAM) && --maximum_tries) usleep(10 * 1000);
-
-        if(maximum_tries <= 0) {
-            
-            (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR, "UART failed to send start stream signal");
-            
-            (void)printf("Failed to send start stream signal\n");
-            
-            pthread_exit(NULL);
-        }
+        if(!beginUART()) pthread_exit(NULL);;
 
     #endif
 

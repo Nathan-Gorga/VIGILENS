@@ -81,14 +81,6 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
     
     (void)signal(SIGINT, handle_sigint);
     
-    #ifdef UART_ENABLED
-
-        if(!beginUART()) return false;
-
-        (void)logEntry(THREAD_MASTER, LOG_INFO, "UART initialized");
-
-    #endif
-    
     sigset_t set;
     
     while(sigemptyset(&set));
@@ -174,7 +166,6 @@ int main(void){
     (void)pthread_join(data_processing_thread, NULL);
     
     (void)logEntry(THREAD_MASTER, LOG_INFO, "All threads joined back to master");
-
 
 end:
 

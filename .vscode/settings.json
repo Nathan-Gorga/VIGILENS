@@ -19,6 +19,7 @@
         "termios-baud.h": "c",
         "cstdint": "c",
         "algos.h": "c",
-        "log.h": "c"
+        "log.h": "c",
+        "uart.h": "c"
     }
 }

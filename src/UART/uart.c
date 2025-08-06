@@ -103,9 +103,21 @@ bool beginUART(void){//TESTME
     
     if(!openSerialFileDescriptor()) return false;
 
-    if(!setTermiosOptions()) return false;
+    if(!setTermiosOptions()) goto fail_uart;
+
+    char maximum_tries = 10;
+
+    while(!sendUARTSignal(START_STREAM) && --maximum_tries) usleep(10 * 1000);
+
+    if(maximum_tries <= 0) goto fail_uart;
 
     return true;
+
+fail_uart:
+
+    endUART();
+
+    return false;
 }
 
 
@@ -113,8 +125,9 @@ void endUART(void){
 
     int attempts = 10;
 
-    while(!sendUARTSignal(STOP_BYTE) && --attempts) usleep(100 * 1000);
+    while(!sendUARTSignal(STOP_STREAM) && --attempts) usleep(100 * 1000);
 
+	endUART();
     //it isnt a big deal if send uart fails, so we dont need to pass it on in the return
 
     close(UART_fd);
@@ -200,14 +213,9 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parame
 	    
             while (uart_accum_len - processed >= packet_size && count < PACKET_BUFFER_SIZE) {
 
-//		printf("%d - %d = %d, packet_size : %d, count %d\n", uart_accum_len, processed, uart_accum_len-processed, packet_size, count);
-		
                 if ((byte)uart_accum_buf[processed] == START_BYTE) {
-		    
-		    for(int i = processed; i < 33 + processed; i++){
-			printf("%x ", uart_accum_buf[i]);
-		    }printf("\n");
-		    memcpy(&packets[count], &uart_accum_buf[processed], packet_size);
+                    
+                    memcpy(&packets[count], &uart_accum_buf[processed], packet_size);
 
                     getChannelDataFromPacket(packets[count], data_points + (NUM_CHANNELS * count));
 
@@ -220,8 +228,6 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parame
                     processed++;  // skip junk bytes until we find a START_BYTE
                 }
             }
-
-//	    printf("\n");
 
             // shift unprocessed bytes to front of buffer
 
