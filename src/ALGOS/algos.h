@@ -72,6 +72,10 @@
 
 
 
+bool simpleThresholdEventDetection(const float threshold, const float event[MAX_EVENT_DURATION], const size_t size);
+
+
+
 #endif
 
 

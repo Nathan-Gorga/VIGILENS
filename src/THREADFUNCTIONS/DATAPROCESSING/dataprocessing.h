@@ -5,6 +5,8 @@
 #include "../../RINGBUFFER/ringbuffer.h"
 #include "../../EVENTDATASTRUCTURES/eventdatastructure.h"
 #include "../../LOG/log.h"
+#include "../../ALGOS/algos.h"
+
 
 #define DATA_PROCESSING_TEXT_COLOR YELLOW
 

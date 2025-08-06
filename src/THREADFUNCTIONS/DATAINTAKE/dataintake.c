@@ -4,6 +4,7 @@
 
 
 static void masterStartupDialogue(void){
+
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "In master startup dialogue");
 
     sigset_t set;
@@ -150,7 +151,7 @@ static void dataIntake(void){//TESTME : test everything
             if(loop && ((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||  // if there is no overlap over the point 0, then we check if it is in the interval
                         (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
 
-		printf("one loop\n");
+//		printf("one loop\n");
 
 		intake_count = 0;
 

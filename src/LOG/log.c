@@ -2,17 +2,14 @@
 
 pthread_mutex_t log_mutex;
 
-
 //there are multiple because different callers may fire these at the same time, creating the same thread at the same time (no bueno)
 pthread_t log_thread[4];//0 : master, 1 : data intake, 2 : data processing, 3 : none
-
 
 void signalHandler(int sig) {
     
     closeLoggingSystem();
     
 }
-
 
 void setupSignalHandlers() {
 
@@ -184,6 +181,8 @@ static int __logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char *
 
 
 int closeLoggingSystem(void){
+
+
     if (log_file != NULL) {
     
         fclose(log_file);

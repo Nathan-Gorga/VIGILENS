@@ -140,47 +140,55 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
 
 
 int main(void){
-    
+
     pthread_t data_intake_thread, data_processing_thread;
 
     if(!startupFunction(&data_intake_thread, &data_processing_thread)) goto end;
-   
+
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Successful launch of startup function");
-   
-    while(!keyboard_interrupt) usleep(100);   
-    
+
+
+
+    while(!keyboard_interrupt) usleep(100);
+
     (void)printf("Cancelling slave threads\n");
 
     (void)logEntry(THREAD_MASTER, LOG_INFO, "SENDING CANCEL SIGNAL TO SLAVE THREADS");
 
     (void)pthread_cancel(data_intake_thread);
-    
+
+
+
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Data intake thread cancelled");
 
     (void)pthread_cancel(data_processing_thread);
-    
+
+
+
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Data processing thread cancelled");
 
     (void)pthread_join(data_intake_thread, NULL);
 
     (void)pthread_join(data_processing_thread, NULL);
-    
+
+
+
     (void)logEntry(THREAD_MASTER, LOG_INFO, "All threads joined back to master");
 
 end:
 
     freeEventDatastructure();
-    
+
     (void)destroyMutexes();
 
     #ifdef UART_ENABLED
-	
+
         endUART();
-    
+
     #endif
- 
+
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Clean exit of program");
-    
+
     (void)usleep(500);
 
     (void)closeLoggingSystem();

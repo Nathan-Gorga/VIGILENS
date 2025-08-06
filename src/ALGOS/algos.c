@@ -1,10 +1,13 @@
 #include "algos.h"
 
-
 #ifdef DEBUG_ALGO
+
     #define PRINTF_DEBUG do{printf(PURPLE"DEBUG : %s - %s:%d\n"RESET, __FILE__, __func__,__LINE__); fflush(stdout);}while(0);
+
 #else
+
     #define PRINTF_DEBUG
+
 #endif
 
 inline bool aboveThreshold(const float data_point, const float threshold){//DONTTOUCH
@@ -98,14 +101,30 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
                     counter_potential_events++;     
                 }
 
-                investigating = false; 
+                investigating = false;
 
             }
             //NOTE : if things start to break, put the i=j in an else{} statement (might help)
-            i = j;    
+            i = j;
         }
     }
 
     return counter_potential_events;
 }
+
+
+
+
+
+bool simpleThresholdEventDetection(const float threshold, const float event[MAX_EVENT_DURATION], const size_t size){
+
+	for(int i = 0; i < size; ++i){
+		if(threshold <= event[i]) return true;
+	}
+
+	return false;
+}
+
+
+
 

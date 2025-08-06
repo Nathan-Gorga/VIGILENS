@@ -127,7 +127,6 @@ void endUART(void){
 
     while(!sendUARTSignal(STOP_STREAM) && --attempts) usleep(100 * 1000);
 
-	endUART();
     //it isnt a big deal if send uart fails, so we dont need to pass it on in the return
 
     close(UART_fd);
