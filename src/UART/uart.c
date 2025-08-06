@@ -19,7 +19,7 @@ static int32_t interpret24BitToInt(const byte data[3]){//DONTTOUCH
 
 
 static inline float convertToFloat(const int32_t value){//DONTTOUCH
-    return (float)(value * SCALE_FACTOR);
+    return (float)(value * SCALE_FACTOR * MACHINE_USEABLE_SCALE_FACTOR);
 }
 
 
@@ -107,7 +107,7 @@ bool beginUART(void){//TESTME
 
     char maximum_tries = 10;
 
-    while(!sendUARTSignal(START_STREAM) && --maximum_tries) usleep(10 * 1000);
+    while(!sendUARTSignal(START_STREAM) && --maximum_tries) usleep(100 * 1000);
 
     if(maximum_tries <= 0) goto fail_uart;
 

@@ -1,6 +1,6 @@
 #include "dataprocessing.h"
-#define printf(...) printf(DATA_PROCESSING_TEXT_COLOR"DATA PROCESSING:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
 
+#define printf(...) printf(DATA_PROCESSING_TEXT_COLOR"DATA PROCESSING:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
 
 static void cleanupHandler(void * event_buffer){
 
@@ -78,24 +78,13 @@ static void dataProcessing(void){
 
         if(event_buffer_size > 0){//there is an event
 
-            logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
+           logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
-            printf("Got event of size %d\n", event_buffer_size);
+	   if(simpleThresholdEventDetection(10.0f, event_buffer, event_buffer_size)){
 
-            printf("first element :  %f\n", event_buffer[0]);
+	    	printf("FOUND AN EVENT\n");
 
-            printf("last element :  %f\n", event_buffer[event_buffer_size - 1]);
-
-	    for(int i = 0; i < event_buffer_size; ++i){
-
-		if(simpleThresholdEventDetection(10.0f, event_buffer, event_buffer_size)){
-
-	    		printf("FOUND AN EVENT\n");
-
-		}
-	    }
-
-            //TODO : implement
+	   }
 
             event_buffer_size = 0;
         }

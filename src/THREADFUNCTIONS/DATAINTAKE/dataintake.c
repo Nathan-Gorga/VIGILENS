@@ -2,7 +2,6 @@
 
 #define printf(...) printf(DATA_INTAKE_TEXT_COLOR"DATA INTAKE:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
 
-
 static void masterStartupDialogue(void){
 
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "In master startup dialogue");
@@ -21,7 +20,7 @@ static void masterStartupDialogue(void){
     ready_count++;
 
     (void)pthread_cond_signal(&ready_cond);
-    
+
     (void)printf("Thread Ready!\n");
 
     MUTEX_UNLOCK(&ready_lock);
@@ -128,6 +127,10 @@ static void dataIntake(void){//TESTME : test everything
 
             num_data_points = getUARTData(channel_data_point);
 
+	    printf("\r%f %f                   ", channel_data_point[0], channel_data_point[1]);
+
+	    fflush(stdout);
+
         #else
 
             num_data_points = getMockUARTData(channel_data_point);
@@ -167,7 +170,6 @@ static void dataIntake(void){//TESTME : test everything
 
 		printf(message);
 
-
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
 
                 for(int i = 0; i < num_potential_events; i++){
@@ -195,9 +197,9 @@ static void dataIntake(void){//TESTME : test everything
                 if(is_not_baseline){
 
                     freeze_tail = true;
-                    
+
                     tail_min = minusTail(tail, num_data_points);
-                    
+
                     tail_max = addTail(tail, num_data_points);
 
                     loop = true;
