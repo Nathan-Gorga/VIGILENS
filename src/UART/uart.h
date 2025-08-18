@@ -18,18 +18,18 @@ courtesy to https://github.com/ultramcu
 #define RASPBERRY_TX_PIN 14
 #define RASPBERRY_RX_PIN 15
 
-#define SERIAL_DEVICE "/dev/serial0" //TESTME : this should be the correct serial link, test it just in case
+#define SERIAL_DEVICE "/dev/serial0"
 #define UART_BAUDRATE 115200
 
 #define UART_BUFFER_SIZE (size_t)(sizeof(openbci_packet) * SAMPLING_RATE / 2)
 
 #define PACKET_BUFFER_SIZE (size_t)(UART_BUFFER_SIZE / sizeof(openbci_packet))
 
-#define GAIN 1 //TRY : different value for best results (1 - 24)
+#define GAIN 24 //TRY : different value for best results (1 - 24)
 
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
 
-#define MACHINE_USEABLE_SCALE_FACTOR 22.2222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+#define MACHINE_USEABLE_SCALE_FACTOR 1//22.2222222222222222222222222222222222222222222222222222222222222222222222222222222222222
 
 #define SAMPLE_TIME_uS (double)(1000000.0f / SAMPLING_RATE)
 

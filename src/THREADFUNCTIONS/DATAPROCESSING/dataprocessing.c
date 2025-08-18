@@ -78,9 +78,11 @@ static void dataProcessing(void){
 
         if(event_buffer_size > 0){//there is an event
 
+	   printf("Got event of size %d\n", event_buffer_size);
+
            logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
-	   if(simpleThresholdEventDetection(10.0f, event_buffer, event_buffer_size)){
+	   if(simpleThresholdEventDetection(80.0f, event_buffer, event_buffer_size)){
 
 	    	printf("FOUND AN EVENT\n");
 

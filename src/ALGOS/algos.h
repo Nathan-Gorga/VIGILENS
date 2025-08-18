@@ -75,6 +75,22 @@
 bool simpleThresholdEventDetection(const float threshold, const float event[MAX_EVENT_DURATION], const size_t size);
 
 
+typedef struct {
+	float b0, b1, b2;
+	float a1, a2;
+	float z1, z2;
+} iir_filter;
+
+
+
+void iirFilterInit(irr_filter * filt, const float b0, const float b1, const float b2, const float a1, const float a2);
+
+float iirFilterProcess(iir_filter * filt, const float x);
+
+void setupFilter(void);
+
+
+
 
 #endif
 
