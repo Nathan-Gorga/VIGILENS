@@ -92,6 +92,8 @@ static void dataIntake(void){//TESTME : test everything
 
     internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
     
+    setupFilter();
+
     if(internal_ring_buffer == NULL) {
 
         (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR , "failure initializing internal ring buffer");

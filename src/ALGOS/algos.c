@@ -129,6 +129,12 @@ bool simpleThresholdEventDetection(const float threshold, const float event[MAX_
 iir_filter bp_filter;
 
 
+float filterDataPoint(const float point){//this wrapper is so we can call this function externally without having to worry about the scope of the filter
+	return irrFilterProcess(&bp_filter, point);
+}//TESTME
+
+
+
 void iirFilterInit(irr_filter * filt, const float b0, const float b1, const float b2, const float a1, const float a2){
 	filt->b0 = b0;
 	filt->b1 = b1;
@@ -137,7 +143,7 @@ void iirFilterInit(irr_filter * filt, const float b0, const float b1, const floa
 	filt->a2 = a2;
 	filt->z1 = 0.0f;
 	filt->z2 = 0.0f;
-}
+}//TESTME
 
 
 float irrFilterProcess(irr_filter * filt, const float x){
@@ -145,10 +151,10 @@ float irrFilterProcess(irr_filter * filt, const float x){
 	filt->z1 = filt->b1 * x - filt->a1 * y + filt->z2;
 	filt->z2 = filt->b2 * x - filt->a2 * y;
 	return y;
-}
+}//TESTME
 
 void setupFilter(void){
 	iirFilterInit(&bp_filter,
 		      0.02008337f, 0.0f, -0.02008337f,
 		      -1.959934f, 0.9598333f);//constants for filter (0.5-10Hz @ 250Hz) calculated before hand
-}
+}//TESTME

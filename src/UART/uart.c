@@ -22,10 +22,8 @@ static inline float convertToFloat(const int32_t value){//DONTTOUCH
     return (float)(value * SCALE_FACTOR * MACHINE_USEABLE_SCALE_FACTOR);
 }
 
-
-
 static inline float channelDataToFloat(const byte data[3]){//DONTTOUCH
-    return convertToFloat(interpret24BitToInt(data));
+    return filterDataPoint(convertToFloat(interpret24BitToInt(data)));
 }
 
 

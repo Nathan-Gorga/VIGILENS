@@ -89,7 +89,7 @@ float iirFilterProcess(iir_filter * filt, const float x);
 
 void setupFilter(void);
 
-
+float filterDataPoint(const float point);
 
 
 #endif

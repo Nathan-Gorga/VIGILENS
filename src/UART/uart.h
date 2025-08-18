@@ -9,11 +9,17 @@ courtesy to https://github.com/ultramcu
 
 #include "../globaldefinition.h"
 #include "../EVENTDATASTRUCTURES/eventdatastructure.h"
+#include "../ALGOS/algos.h"
+
 #include <fcntl.h>
 #include <termios.h>
 #include <stdint.h>
 
 #define UART_ENABLED
+
+#define RPI_FILTER_ENABLED
+
+
 
 #define RASPBERRY_TX_PIN 14
 #define RASPBERRY_RX_PIN 15
