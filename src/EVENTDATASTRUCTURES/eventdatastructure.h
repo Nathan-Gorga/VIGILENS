@@ -112,7 +112,7 @@ extern pthread_cond_t ready_cond;
  *
  * @pre n must not be NULL and head must not be NULL.
  */static void addNodeToList(node * restrict n);
-;
+
 
 
 

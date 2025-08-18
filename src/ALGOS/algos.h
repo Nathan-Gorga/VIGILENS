@@ -83,7 +83,7 @@ typedef struct {
 
 
 
-void iirFilterInit(irr_filter * filt, const float b0, const float b1, const float b2, const float a1, const float a2);
+void iirFilterInit(iir_filter * filt, const float b0, const float b1, const float b2, const float a1, const float a2);
 
 float iirFilterProcess(iir_filter * filt, const float x);
 

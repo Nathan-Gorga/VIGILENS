@@ -130,12 +130,12 @@ iir_filter bp_filter;
 
 
 float filterDataPoint(const float point){//this wrapper is so we can call this function externally without having to worry about the scope of the filter
-	return irrFilterProcess(&bp_filter, point);
+	return iirFilterProcess(&bp_filter, point);
 }//TESTME
 
 
 
-void iirFilterInit(irr_filter * filt, const float b0, const float b1, const float b2, const float a1, const float a2){
+void iirFilterInit(iir_filter * filt, const float b0, const float b1, const float b2, const float a1, const float a2){
 	filt->b0 = b0;
 	filt->b1 = b1;
 	filt->b2 = b2;
@@ -146,7 +146,7 @@ void iirFilterInit(irr_filter * filt, const float b0, const float b1, const floa
 }//TESTME
 
 
-float irrFilterProcess(irr_filter * filt, const float x){
+float iirFilterProcess(iir_filter * filt, const float x){
 	const float y = filt->b0 * x + filt->z1;
 	filt->z1 = filt->b1 * x - filt->a1 * y + filt->z2;
 	filt->z2 = filt->b2 * x - filt->a2 * y;

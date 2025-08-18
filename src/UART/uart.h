@@ -17,9 +17,6 @@ courtesy to https://github.com/ultramcu
 
 #define UART_ENABLED
 
-#define RPI_FILTER_ENABLED
-
-
 
 #define RASPBERRY_TX_PIN 14
 #define RASPBERRY_RX_PIN 15

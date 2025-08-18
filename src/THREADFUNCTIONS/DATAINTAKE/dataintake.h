@@ -9,7 +9,7 @@
 #include "../../UART/uart.h"
 #include "../../MOCKUART/mockuart.h"
 
-#define PACKET_BUFFER_SIZE 10
+//#define PACKET_BUFFER_SIZE 10
 
 #define TIME_IN_INTERNAL_RING_BUFFER 5//TODO change to fit the best openBCI stream settings
 #define INTERNAL_RING_BUFFER_SIZE (size_t)(TIME_IN_INTERNAL_RING_BUFFER * SAMPLING_RATE * NUM_CHANNELS)

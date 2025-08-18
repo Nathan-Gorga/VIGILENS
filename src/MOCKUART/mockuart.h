@@ -4,7 +4,7 @@
 #include "../globaldefinition.h"
 #include "../UART/uart.h"
 
-size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]);
+size_t getMockUARTData(float data_points[]);
 
 #endif
 
