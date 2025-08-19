@@ -119,7 +119,9 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 bool simpleThresholdEventDetection(const float threshold, const float event[MAX_EVENT_DURATION], const size_t size){
 
 	for(int i = 0; i < size; ++i){
+
 		if(threshold <= event[i]) return true;
+
 	}
 
 	return false;

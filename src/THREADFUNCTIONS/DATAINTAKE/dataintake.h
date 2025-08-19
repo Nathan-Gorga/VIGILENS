@@ -8,6 +8,10 @@
 #include "../../LOG/log.h"
 #include "../../UART/uart.h"
 #include "../../MOCKUART/mockuart.h"
+#include "../../GRAPHING/graphing.h"
+
+
+
 
 //#define PACKET_BUFFER_SIZE 10
 

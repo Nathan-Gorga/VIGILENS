@@ -25,7 +25,11 @@ void * launchDataProcessing(void * arg){
 
 static void dataProcessing(void){
 
+    #ifdef PRINTF_ENABLED
+
     (void)printf("Thread launched succesfully\n");
+
+    #endif
 
     sigset_t set;
 
@@ -78,11 +82,16 @@ static void dataProcessing(void){
 
         if(event_buffer_size > 0){//there is an event
 
+
+	   #ifdef PRINTF_ENABLED
+
 	   printf("Got event of size %d\n", event_buffer_size);
+
+	   #endif
 
            logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
-	   if(simpleThresholdEventDetection(80.0f, event_buffer, event_buffer_size)){
+	   if(simpleThresholdEventDetection(5.0f, event_buffer, event_buffer_size)){
 
 	    	printf("FOUND AN EVENT\n");
 

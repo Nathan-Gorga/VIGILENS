@@ -17,7 +17,10 @@ SRCS = main.c \
 	ALGOS/algos.c \
 	LOG/log.c \
 	UART/uart.c \
-	MOCKUART/mockuart.c
+	MOCKUART/mockuart.c \
+	GRAPHING/graphing.c
+
+
 
 # Object files
 OBJS = $(SRCS:.c=.o)

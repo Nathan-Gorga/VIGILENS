@@ -47,7 +47,11 @@ static bool syncThreads(pthread_t * data_intake_thread, pthread_t * data_process
 
         (void)logEntry(THREAD_MASTER, LOG_INFO, "Slave threads are ready");
 
+	#ifdef PRINTF_ENABLED
+
         (void)printf("All threads are ready\n");
+
+	#endif
 
         if(pthread_mutex_unlock(&ready_lock) != 0){
 
@@ -56,11 +60,15 @@ static bool syncThreads(pthread_t * data_intake_thread, pthread_t * data_process
             (void)logEntry(THREAD_MASTER, LOG_ERROR, "Error when unlocking ready mutex");
 
             return false;
-        } 
+        }
     }
 
+    #ifdef PRINTF_ENABLED
+
     (void)printf("Sending go signal to slave threads\n");
-    
+
+    #endif
+
     while(pthread_kill(*data_intake_thread, SIGCONT));
 
     while(pthread_kill(*data_processing_thread, SIGCONT));
@@ -92,18 +100,31 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
 
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Signal handler initialized");
 
+    #ifdef PRINTF_ENABLED
+
     (void)printf("Starting VIGILENCE SYSTEM\n");
-    
+
+    #endif
+
     (void)logEntry(THREAD_MASTER, LOG_INFO, "STARTING VIGILENCE SYSTEM");
 
+
+    #ifdef PRINTF_ENABLED
+
     (void)printf("Initializing event data structure\n");
+
+
+    #endif
 
     initEventDatastructure(EVENT_RING_BUFFER_SIZE);
 
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Event data structure initialized");
 
+    #ifdef PRINTF_ENABLED
 
     (void)printf("Creating mutexes\n");
+
+    #endif
 
     if(createMutexes() != 0){
     
@@ -151,7 +172,11 @@ int main(void){
 
     while(!keyboard_interrupt) usleep(100);
 
+    #ifdef PRINTF_ENABLED
+
     (void)printf("Cancelling slave threads\n");
+
+    #endif
 
     (void)logEntry(THREAD_MASTER, LOG_INFO, "SENDING CANCEL SIGNAL TO SLAVE THREADS");
 

@@ -21,7 +21,11 @@ static void masterStartupDialogue(void){
 
     (void)pthread_cond_signal(&ready_cond);
 
+    #ifdef PRINTF_ENABLED
+
     (void)printf("Thread Ready!\n");
+
+    #endif
 
     MUTEX_UNLOCK(&ready_lock);
 
@@ -29,15 +33,15 @@ static void masterStartupDialogue(void){
 
     //wait for go signal
     if(sigwait(&set, &sig) == 0) {
-        
+
         (void)printf("Received SIGCONT, continuing execution.\n");
 
         (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "Received SIGCONT, continuing execution.");
-        
-    }else {
+
+    } else {
 
         (void)printf("Error waiting for go signal\n");
-        
+
         (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR, "Error waiting for go signal");
 
         pthread_exit(NULL);
@@ -45,14 +49,14 @@ static void masterStartupDialogue(void){
 }
 
 static void cleanupHandler(void * internal_ring_buffer){
-    
-    (void)printf("Cancel signal received\n");    
+
+    (void)printf("Cancel signal received\n");
 
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "Cancel signal received");
 
     if(internal_ring_buffer != NULL) freeRingBuffer((struct ring_buffer *)internal_ring_buffer);
 
-    (void)printf("Cleaned up thread\n");     
+    (void)printf("Cleaned up thread\n");
 }
 
 size_t minusTail(const int tail, const int num_data_points){
@@ -86,23 +90,27 @@ static void dataIntake(void){//TESTME : test everything
 
     float linear_buffer[INTERNAL_RING_BUFFER_SIZE] = {0.0f}, potential_events[50][ MAX_EVENT_DURATION ] = {0.0f}, channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
 
+    #ifdef PRINTF_ENABLED
+
     (void)printf("Thread launched succesfully\n");
-    
+
+    #endif
+
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "thread launch successfully");
 
     internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
-    
+
     setupFilter();
 
     if(internal_ring_buffer == NULL) {
 
         (void)logEntry(THREAD_DATA_INTAKE, LOG_ERROR , "failure initializing internal ring buffer");
-        
+
         exit(EXIT_FAILURE);
     }
 
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "internal ring buffer initialized");
-    
+
     pthread_cleanup_push(cleanupHandler, internal_ring_buffer);
 
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "Registered cleanup handler");
@@ -129,11 +137,18 @@ static void dataIntake(void){//TESTME : test everything
 
             num_data_points = getUARTData(channel_data_point);
 
-	    printf("\r%f %f                   ", channel_data_point[0], channel_data_point[1]);
+            plot_point(channel_data_point[1]);
+
+
+	    #ifdef PRINTF_ENABLED
+
+	    printf("\r%f %f                                ", channel_data_point[0], channel_data_point[1]);
 
 	    fflush(stdout);
 
-	    usleep(1000);
+	    #endif
+	   // usleep(1000); TODO : uncommenting this may help with data "comprehension"
+
         #else
 
             num_data_points = getMockUARTData(channel_data_point);
@@ -157,8 +172,6 @@ static void dataIntake(void){//TESTME : test everything
             if(loop && ((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||  // if there is no overlap over the point 0, then we check if it is in the interval
                         (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
 
-//		printf("one loop\n");
-
 		intake_count = 0;
 
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
@@ -169,9 +182,13 @@ static void dataIntake(void){//TESTME : test everything
 
                 char message[255];
 
+		#ifdef PRINTF_ENABLED
+
                 (void)sprintf(message,"%d events found", num_potential_events);
 
 		printf(message);
+
+		#endif 
 
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
 
