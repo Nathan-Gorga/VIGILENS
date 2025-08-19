@@ -133,6 +133,7 @@ static void dataIntake(void){//TESTME : test everything
 
 	    fflush(stdout);
 
+	    usleep(1000);
         #else
 
             num_data_points = getMockUARTData(channel_data_point);

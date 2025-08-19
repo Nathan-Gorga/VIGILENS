@@ -12,8 +12,8 @@
 
 #define MIN_BASELINE_DURATION 30 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
 
-#define THRESHOLD_MAX 0.5f //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
-#define THRESHOLD_MIN -0.5f //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define THRESHOLD_MAX 2.0f //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define THRESHOLD_MIN -2.0f //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
 
 //this is because we detect the event only when it crosses baseline threshold, the event actually starts a few indexes before that
 #define DETECTION_TOLERANCE 5 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
