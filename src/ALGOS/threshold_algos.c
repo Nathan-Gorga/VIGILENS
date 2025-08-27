@@ -102,56 +102,48 @@ static double robust_threshold(double * signal, const int start, const int end, 
 
 
 
-int adaptiveThreshold(double eeg[], const int signal_length, const int sample_freq, const float win_size, int * blink_indices, const float th_mult, double thresholds[]){
+int adaptiveThreshold(
+	double eeg[],
+	const int signal_length,
+	const int sample_freq,
+	const float win_size,
+	int * blink_indices,
+	const float th_mult
+) {
 
-	const bool use_abs = true;
-
-	double * signal = (double *)malloc(signal_length * sizeof(double));
-
-	const int n_samples = signal_length;
-
-	const int win_len = (int)(win_size * sample_freq);
+	const int win_len = (win_size * sample_freq);
 
 	const int refractory_samples = (REFRACTORY_PERIOD * sample_freq);
 
-	int thresh_count= 0;
-
 	int count = 0;
 
-	int prevent_window_overflow = 0;
+	int prevent_overlap = 0;
 
-	for(int i = 0; i < signal_length; ++i){
-		signal[i] = use_abs ? fabs(eeg[i]) : eeg[i];
-	}
+	double signal[signal_length];
 
-	for(int i = 0; i < n_samples; i+=win_len){
-		const int end_of_window = fmin(i + win_len, n_samples-1);
+	for(int i = 0; i < signal_length; i++) signal[i] = fabs(eeg[i]);
 
-		const double threshold = robust_threshold(signal, i , end_of_window, th_mult);
+	for(int i = 0; i < signal_length; i += win_len){
 
-		thresholds[thresh_count++] = threshold;
+		const int end = min(i + win_len, signal_length - 1);
 
-		for(int j = prevent_window_overflow; j < win_len; j++){
+		const double threshold = robust_threshold(signal, i , end, th_mult);
 
-			if(signal[i + j] > threshold){
+		for(int j = prevent_overlap; j < win_len; j++){
 
-				int limit = fmin(j + i + refractory_samples, end_of_window);
+			const int idx = i + j;
 
-				if(limit == end_of_window && limit != n_samples - 1){//too complicated, make it simpler
-					limit += refractory_samples;
-				}
+			if(signal[idx] <= threshold) continue;
 
-				blink_indices[count++] = find_local_maxima(signal, j + i, limit);
+			const int limit = min(idx + refractory_samples, min(signal_length - 1, end + refractory_samples));
 
-				j += refractory_samples;
-			}
+			blink_indices[count++] = find_local_maxima(signal, idx, limit);
 
-			prevent_window_overflow = fmax(j - win_len, 0);
+			j += refractory_samples;
+
+			prevent_overlap = max(j - win_len, 0);
 		}
 	}
 
-	free(signal);
-
 	return count;
-
 }
