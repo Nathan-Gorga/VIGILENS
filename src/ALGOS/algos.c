@@ -10,26 +10,6 @@
 
 #endif
 
-inline bool aboveThreshold(const float data_point, const float threshold){//DONTTOUCH
-    return data_point >= threshold;
-}
-
-
-inline bool belowThreshold(const float data_point, const float threshold){//DONTTOUCH
-    return data_point <= threshold;
-}
-
-
-inline bool isBaseline(const float data_point, const float max, const float min){//DONTTOUCH
-    /*
-    NOT ( TRUE OR TRUE) = FALSE 
-    NOT (TRUE OR FALSE) = FALSE
-    NOT (FALSE OR TRUE) = FALSE
-    NOT (FALSE OR FALSE) = TRUE
-    */
-    return !(aboveThreshold(data_point, max) || belowThreshold(data_point, min));
-}
-
 size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION], size_t size_events[]){
 
     //TESTME : further with artifacts and noise and weird input buffers (like alternating true false for example)
@@ -116,17 +96,6 @@ size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events
 
 
 
-bool simpleThresholdEventDetection(const float threshold, const float event[MAX_EVENT_DURATION], const size_t size){
-
-	for(int i = 0; i < size; ++i){
-
-		if(threshold <= event[i]) return true;
-
-	}
-
-	return false;
-}
-
 
 iir_filter hp_filter;
 iir_filter lp_filter;
@@ -175,3 +144,10 @@ void setupFilter(void){
 
 
 }//TESTME
+
+
+
+
+
+
+

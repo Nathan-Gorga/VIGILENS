@@ -12,11 +12,12 @@
 
 #define MIN_BASELINE_DURATION 30 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
 
-#define THRESHOLD_MAX 2.0f //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
-#define THRESHOLD_MIN -2.0f //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define THRESHOLD_MAX 5.0f //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define THRESHOLD_MIN -5.0f //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
 
 //this is because we detect the event only when it crosses baseline threshold, the event actually starts a few indexes before that
 #define DETECTION_TOLERANCE 5 //TRY : different values for best results (will need experimentation as well as maybe a calibration phase to get this down)
+#define REFRACTORY_PERIOD 0.35f
 
 
 /**
@@ -90,6 +91,12 @@ float iirFilterProcess(iir_filter * filt, const float x);
 void setupFilter(void);
 
 float filterDataPoint(const float point);
+
+int argmax(const double arr[], const int n);
+
+int find_local_maxima(double segment[], const int start, const int end);
+
+int adaptiveThreshold(double eeg[], const int signal_length, const int sample_freq, const float win_size, int * blink_indices, const float th_mult, double thresholds[]);
 
 
 #endif

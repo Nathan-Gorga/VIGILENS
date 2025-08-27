@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = clang
 CFLAGS = -Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L -O2
-LDFLAGS = -pthread -lm
+LDFLAGS = -pthread -lm -lgsl
 PROF_FLAGS = #-pg
 
 
@@ -18,7 +18,8 @@ SRCS = main.c \
 	LOG/log.c \
 	UART/uart.c \
 	MOCKUART/mockuart.c \
-	GRAPHING/graphing.c
+	GRAPHING/graphing.c \
+	ALGOS/threshold_algos.c
 
 
 

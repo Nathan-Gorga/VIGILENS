@@ -169,7 +169,7 @@ static size_t _getEvent(float * restrict data){
 
 
 static void _addEvent(const float * restrict data, const size_t size_data){
-    printf(RED"adding event\n"RESET);
+   // printf(RED"adding event\n"RESET);
 
     #ifdef ASSERT_ENABLED
 
@@ -193,7 +193,7 @@ static void _addEvent(const float * restrict data, const size_t size_data){
 
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
 
-    printf("size_data = %d, start = %d, stop = %d\n", size_data, start, stop);
+    //printf("size_data = %d, start = %d, stop = %d\n", size_data, start, stop);
 
     node * n = initNode(start, stop);
 

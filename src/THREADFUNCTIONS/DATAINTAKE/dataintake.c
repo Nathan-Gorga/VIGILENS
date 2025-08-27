@@ -65,7 +65,9 @@ size_t minusTail(const int tail, const int num_data_points){
 }
 
 size_t addTail(const int tail, const int num_data_points){
+
     return !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER_SIZE;
+
 }
 
 
@@ -79,6 +81,8 @@ void * launchDataIntake(void * arg){
 }
 
 static void dataIntake(void){//TESTME : test everything
+
+
 
     static int intake_count = 0;
 
@@ -137,7 +141,7 @@ static void dataIntake(void){//TESTME : test everything
 
             num_data_points = getUARTData(channel_data_point);
 
-            plot_point(channel_data_point[1]);
+//            plot_point(channel_data_point[1], 5.0f);
 
 
 	    #ifdef PRINTF_ENABLED
@@ -197,7 +201,7 @@ static void dataIntake(void){//TESTME : test everything
                     addEvent(potential_events[i], size_of_potential_events[i]);
 
                 }
-
+		printf("ADDING EVENT TO DATA PROCESSING \n");
                 (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "added events to event buffer");
 
                 freeze_tail = false;
@@ -215,7 +219,7 @@ static void dataIntake(void){//TESTME : test everything
                 }
 
                 if(is_not_baseline){
-
+//		    printf("THIS IS AN EVENT\n");
                     freeze_tail = true;
 
                     tail_min = minusTail(tail, num_data_points);
