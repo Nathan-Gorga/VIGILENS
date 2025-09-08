@@ -167,9 +167,14 @@ static void dataIntake(void){//TESTME : test everything
 
         if(num_data_points > 0){
 
-//            printf("%d/%d : %f\%\n", intake_count,INTERNAL_RING_BUFFER_SIZE, ((float)intake_count/(float)INTERNAL_RING_BUFFER_SIZE) * 100);
+            
 
-	    intake_count += num_data_points;
+
+
+
+
+
+        /*  intake_count += num_data_points;
 
 
 	    //FIXME : the loop over mechanism doesnt seem to be working properly, the events detected in the loop buffer all start at the previous  event found, so its like a chain, shoudl not be like this
@@ -241,7 +246,7 @@ static void dataIntake(void){//TESTME : test everything
             }
 
             tail = !freeze_tail ? internal_ring_buffer->write : tail;
-
+*/
         }
     }
 
