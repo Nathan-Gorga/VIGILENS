@@ -180,9 +180,9 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 
     #endif
 
-    if(stop > start) return stop - start + 1;
+    if(stop > start) return stop - start;//+1;
 
-    return buffer_size - start + stop + 1;
+    return buffer_size - start + stop;// + 1;
 }
 
 
@@ -197,9 +197,10 @@ void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * rest
     #endif
 
     const bool overflow = start > stop;
-    
+
     size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
-    
+    // printf("size : %d, size_data : %d\n", size, size_data);
+
     #ifdef ASSERT_ENABLED
 
         assert(size == size_data);
@@ -211,6 +212,7 @@ void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * rest
         assert(start < buffer->size && stop < buffer->size);
 
     #endif
+
 
     if(!overflow){
 
@@ -224,6 +226,8 @@ void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * rest
 
         memmove(data + offset, buffer->memory, (stop + 1) * sizeof(float));
     }
+
+
 }
 
 void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data){
