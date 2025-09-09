@@ -67,49 +67,104 @@ int find_local_maxima(double segment[], const int start, const int end){
 	return ret;
 }
 
+int cmp_double(const void *a, const void *b) {
+    double da = *(double *)a;
+    double db = *(double *)b;
+    return (da > db) - (da < db);
+}
 
+double compute_median(double *data, int length) {
+    double *copy = malloc(length * sizeof(double));
+    memcpy(copy, data, length * sizeof(double));
+    qsort(copy, length, sizeof(double), cmp_double);
 
+    double median;
+    if (length % 2 == 0) {
+        median = 0.5 * (copy[length / 2 - 1] + copy[length / 2]);
+    } else {
+        median = copy[length / 2];
+    }
 
+    free(copy);
+    return median;
+}
+
+#define MIN_THRESHOLD_BOUNDARY 0.0
+//FIXME : threshold is negative here
 static double robust_threshold(double * signal, const int start, const int end, const double th_mult){
 
+	// for(int i = 0; i < 10; i++){
+	// 	printf("%d : %f\n", i, signal[i]);
+	// }
+
 	const int segment_length = end - start;
+    if (segment_length <= 0) {
+        fprintf(stderr, "Invalid segment length: %d\n", segment_length);
+        return -1.0;
+    }
 
-	double * segment = (double *)malloc(segment_length * sizeof(double));
+    double *segment = (double *)malloc(segment_length * sizeof(double));
+    if (!segment) {
+        perror("malloc failed");
+        return -1.0;
+    }
 
-	memmove(segment, signal + start, segment_length * sizeof(double));
+    for (int i = 0; i < segment_length; ++i) {
+        segment[i] = signal[start + i];
+		// printf("%d : %f\n", i, segment[i]);
+    }
 
-	const double * test  = signal + start;
+    // Sort before median
+    
+    const double med = compute_median(segment, segment_length);
+	// printf("med : %f\n", med);
 
-	const double med = gsl_stats_median(segment, 1, segment_length);
+    // for (int i = 0; i < 10; ++i) {
+    //     // segment[i] = signal[start + i];
+	// 	printf("%d : %f\n", i, segment[i]);
+    // }
 
-	double * temp = (double *)malloc(segment_length * sizeof(double));
+	
+    double *temp = (double *)malloc(segment_length * sizeof(double));
+    if (!temp) {
+        perror("malloc failed");
+        free(segment);
+        return -1.0;
+    }
 
-	for(int j = 0; j < segment_length; j++){
+    for (int j = 0; j < segment_length; ++j) {
+        temp[j] = fabs(signal[start + j] - med);  // Use fabs twice to be safe
+    }
 
-		temp[j] = fabs(test[j] - med);
+    const double mad = 1.4826 * compute_median(temp, segment_length);
 
-	}
+	// printf("mad : %f\n", mad);
 
-	const double mad = 1.4826f * gsl_stats_median(temp, 1, segment_length);
+    free(temp);
+    free(segment);
 
-	free(temp);
+    const double ret = med + th_mult * mad;
 
-	free(segment);
+    // printf("threshold: %f\n", ret);
 
-	return med + th_mult * mad;
+    return ret;
 
 }
 
 
 
 int adaptiveThreshold(
-	double eeg[],
+	float * eeg,
 	const int signal_length,
 	const int sample_freq,
 	const float win_size,
 	int * blink_indices,
-	const float th_mult
+	const float th_mult,
+	double * threshold
 ) {
+	// for(int i = 0; i < 10; i++){
+	// 	printf("%d : %f\n", i , eeg[i]);
+	// }
 
 	const int win_len = (win_size * sample_freq);
 
@@ -121,19 +176,27 @@ int adaptiveThreshold(
 
 	double signal[signal_length];
 
+
 	for(int i = 0; i < signal_length; i++) signal[i] = fabs(eeg[i]);
+
+	// for(int i = 0; i < 10; i++){
+	// 	printf("%d : %f\n", i , signal[i]);
+	// }
+
 
 	for(int i = 0; i < signal_length; i += win_len){
 
 		const int end = min(i + win_len, signal_length - 1);
 
-		const double threshold = robust_threshold(signal, i , end, th_mult);
+		*threshold = robust_threshold(signal, i , end, th_mult);
+
+		printf("THRESHOLD : %f\n", *threshold);
 
 		for(int j = prevent_overlap; j < win_len; j++){
 
 			const int idx = i + j;
 
-			if(signal[idx] <= threshold) continue;
+			if(signal[idx] <= *threshold) continue;
 
 			const int limit = min(idx + refractory_samples, min(signal_length - 1, end + refractory_samples));
 

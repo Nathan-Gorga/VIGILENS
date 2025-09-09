@@ -168,7 +168,7 @@ int main(void){
 
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Successful launch of startup function");
 
-
+    PRINTF_DEBUG
 
     while(!keyboard_interrupt) usleep(100);
 
@@ -182,7 +182,7 @@ int main(void){
 
     (void)pthread_cancel(data_intake_thread);
 
-
+PRINTF_DEBUG
 
     (void)logEntry(THREAD_MASTER, LOG_INFO, "Data intake thread cancelled");
 
@@ -196,7 +196,7 @@ int main(void){
 
     (void)pthread_join(data_processing_thread, NULL);
 
-
+PRINTF_DEBUG
 
     (void)logEntry(THREAD_MASTER, LOG_INFO, "All threads joined back to master");
 

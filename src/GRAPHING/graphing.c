@@ -9,10 +9,6 @@ static void _plot_point(float value, float min, float max, int width, const floa
 	if (value > max) value = max;
 
 
-
-
-
-
 	int pos = (int)((value - min) / (max - min) * (width - 1));
 
 	const int threshold = (int)((thresh  - min) / (max - min) * (width - 1));
@@ -76,7 +72,7 @@ static void plot_threshold(const float threshold){
 
 void plot_point(const float point, const float threshold){
 
-	const int timeout = 100;
+	const int timeout = 50;
 
 	static int function_call_count = 0;
 
@@ -93,6 +89,7 @@ void plot_point(const float point, const float threshold){
 //	if(point > maximum) maximum = point;
 
 	function_call_count = 0;
+	// printf("threshold : %f , point : %f\n", threshold, point);
 
         _plot_point(point, -BOUNDARY, BOUNDARY, 100, threshold);
 

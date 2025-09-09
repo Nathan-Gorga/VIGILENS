@@ -31,9 +31,9 @@
 
 #define RESET "\x1B[0m"
 
-//#define ASSERT_ENABLED
+#define ASSERT_ENABLED
 
-// #define DEBUG
+#define DEBUG
 // #define DEBUG_MAIN
 // #define DEBUG_INTAKE 
 // #define DEBUG_ALGO 

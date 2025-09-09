@@ -81,10 +81,12 @@ void * launchDataIntake(void * arg){
 }
 
 static void dataIntake(void){//TESTME : test everything
+    
+    int data_intake_count = 0;
+    
+    int blink_indices[20];//TESTME : try different sizes
 
-
-
-    static int intake_count = 0;
+    float threshold = 0.0f;
 
     struct ring_buffer * internal_ring_buffer;
 
@@ -93,6 +95,8 @@ static void dataIntake(void){//TESTME : test everything
     bool freeze_tail = false, is_not_baseline = false, tail_is_overlap = false, loop = false;
 
     float linear_buffer[INTERNAL_RING_BUFFER_SIZE] = {0.0f}, potential_events[50][ MAX_EVENT_DURATION ] = {0.0f}, channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
+
+    float window_buffer[WINDOW_SIZE];
 
     #ifdef PRINTF_ENABLED
 
@@ -132,26 +136,18 @@ static void dataIntake(void){//TESTME : test everything
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "Entering main loop");
 
     //TESTME : this whole loop logic needs THOROUGH testing
-
+PRINTF_DEBUG
     while(true){
 
         pthread_testcancel();
+
 
         #ifdef UART_ENABLED
 
             num_data_points = getUARTData(channel_data_point);
 
-//            plot_point(channel_data_point[1], 5.0f);
-
-
-	    #ifdef PRINTF_ENABLED
-
-	    printf("\r%f %f                                ", channel_data_point[0], channel_data_point[1]);
-
-	    fflush(stdout);
-
-	    #endif
-	   // usleep(1000); TODO : uncommenting this may help with data "comprehension"
+            // plot_point(channel_data_point[0], threshold);
+            
 
         #else
 
@@ -167,87 +163,72 @@ static void dataIntake(void){//TESTME : test everything
 
         if(num_data_points > 0){
 
-            
-
-
-
-
-
-
-        /*  intake_count += num_data_points;
-
-
-	    //FIXME : the loop over mechanism doesnt seem to be working properly, the events detected in the loop buffer all start at the previous  event found, so its like a chain, shoudl not be like this
-            if(loop && ((!tail_is_overlap && tail_min < internal_ring_buffer->write && internal_ring_buffer->write < tail_max) ||  // if there is no overlap over the point 0, then we check if it is in the interval
-                        (tail_is_overlap && (tail_min < internal_ring_buffer->write || internal_ring_buffer->write < tail_max)))){ // if there is an overlap, then we just need one of the two conditions to be truw
-
-		intake_count = 0;
-
-                (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "The internal ring buffer has completed a loop since first signal, checking for events...");
-
-                extractBufferFromRingBuffer(internal_ring_buffer, linear_buffer, INTERNAL_RING_BUFFER_SIZE, tail, minusTail(tail, 1));
-
-                num_potential_events = markEventsInBuffer(linear_buffer, INTERNAL_RING_BUFFER_SIZE, potential_events, size_of_potential_events);
-
-                char message[255];
-
-		#ifdef PRINTF_ENABLED
-
-                (void)sprintf(message,"%d events found", num_potential_events);
-
-		printf(message);
-
-		#endif 
-
-                (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, message);
-
-                for(int i = 0; i < num_potential_events; i++){
-
-                    addEvent(potential_events[i], size_of_potential_events[i]);
-
-                }
-		printf("ADDING EVENT TO DATA PROCESSING \n");
-                (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "added events to event buffer");
-
-                freeze_tail = false;
-
-                loop = false;
-
-            } else if(!loop){
-
-                is_not_baseline = false;
-
-                for(i = 0; i < NUM_CHANNELS; i++){ //TODO : change the baseline parameters to fit the output of the openBCI function
-
-                    is_not_baseline |= !isBaseline(channel_data_point[i], THRESHOLD_MAX, THRESHOLD_MIN);
-
-                }
-
-                if(is_not_baseline){
-//		    printf("THIS IS AN EVENT\n");
-                    freeze_tail = true;
-
-                    tail_min = minusTail(tail, num_data_points);
-
-                    tail_max = addTail(tail, num_data_points);
-
-                    loop = true;
-
-                }
-
-                tail_is_overlap = tail_min > tail_max;
-
-            }
+            data_intake_count += num_data_points;
 
             for(i = 0; i < num_data_points; i++){
 
                 addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
+                // printf("%d : %f | ", i + 1, channel_data_point[i]);
+            }//printf("\n");
 
+            if(data_intake_count % WINDOW_SIZE == 0){
+                // printf("window size found in data\n");
+                
+                const int signal_length = SAMPLING_RATE * TIME_IN_WINDOW;
+
+                int event_count[NUM_CHANNELS] = {0};
+
+                float channel_windows[NUM_CHANNELS][(size_t)(SAMPLING_RATE * TIME_IN_WINDOW)];
+                PRINTF_DEBUG
+
+                data_intake_count = 0;
+
+                const size_t extract_index = internal_ring_buffer->write;
+
+                // printf("start idx : %d, stop idx : %d\n", extract_index, minusTail(extract_index, WINDOW_SIZE) );
+
+                extractBufferFromRingBuffer(internal_ring_buffer, window_buffer, WINDOW_SIZE, minusTail(extract_index, WINDOW_SIZE), extract_index);
+
+
+                // printf("signal length : %d\n",signal_length);
+
+                for(int i = 0; i < NUM_CHANNELS; i++){
+                    for(int j = 0; j < signal_length; j++){
+
+                        const int idx = (j * NUM_CHANNELS) + i;
+                        channel_windows[i][j] = window_buffer[idx]; 
+                    }
+
+                    	// for(int j = 0; j < 10; j++){
+                        //     printf("sample[%d][%d] : %f\n", i, j, channel_windows[i][j]);
+                        // }
+
+
+                    event_count[i] = adaptiveThreshold(
+                        channel_windows[i],
+                        signal_length,
+                        SAMPLING_RATE,
+                        TIME_IN_WINDOW,
+                        blink_indices,
+                        THRESH_MULT,
+                        &threshold
+                    ); 
+                }
+
+
+                // for(int i = 0; i < NUM_CHANNELS -1 ; i++){
+                 
+                //     printf("event count for channel %d : %d\n", i+1, event_count[i]);
+                // }
+            
             }
 
-            tail = !freeze_tail ? internal_ring_buffer->write : tail;
-*/
+                     
+            // printf("end of if\n");
         }
+
+        // printf("end of loop\n");
+
     }
 
     pthread_cleanup_pop(1);
