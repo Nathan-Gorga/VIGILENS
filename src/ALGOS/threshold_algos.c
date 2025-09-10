@@ -159,8 +159,7 @@ int adaptiveThreshold(
 	const int sample_freq,
 	const float win_size,
 	int * blink_indices,
-	const float th_mult,
-	double * threshold
+	const float th_mult
 ) {
 	// for(int i = 0; i < 10; i++){
 	// 	printf("%d : %f\n", i , eeg[i]);
@@ -188,15 +187,19 @@ int adaptiveThreshold(
 
 		const int end = min(i + win_len, signal_length - 1);
 
-		*threshold = robust_threshold(signal, i , end, th_mult);
+		const double threshold = robust_threshold(signal, i , end, th_mult);
 
-		printf("THRESHOLD : %f\n", *threshold);
+		// printf("THRESHOLD : %f\n", threshold);
+
+		// const int timeout = 1;
+
+		// plot_point(signal[i], threshold, timeout);
 
 		for(int j = prevent_overlap; j < win_len; j++){
 
 			const int idx = i + j;
 
-			if(signal[idx] <= *threshold) continue;
+			if(signal[idx] <= threshold) continue;
 
 			const int limit = min(idx + refractory_samples, min(signal_length - 1, end + refractory_samples));
 

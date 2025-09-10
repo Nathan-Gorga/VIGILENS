@@ -96,7 +96,7 @@ int argmax(const double arr[], const int n);
 
 int find_local_maxima(double segment[], const int start, const int end);
 
-int adaptiveThreshold(float * eeg, const int signal_length, const int sample_freq, const float win_size, int * blink_indices, const float th_mult, double * threshold);
+int adaptiveThreshold(float * eeg, const int signal_length, const int sample_freq, const float win_size, int * blink_indices, const float th_mult);
 
 
 #endif

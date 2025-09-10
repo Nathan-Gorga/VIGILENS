@@ -80,19 +80,26 @@ void * launchDataIntake(void * arg){
     pthread_exit(NULL);
 }
 
+#define BLINK_DURATION 0.35f//in seconds
+
+#define NUM_SAMPLES_IN_BLINK ((size_t)BLINK_DURATION * SAMPLING_RATE)
+
+
 static void dataIntake(void){//TESTME : test everything
     
     int data_intake_count = 0;
     
     int blink_indices[20];//TESTME : try different sizes
 
-    float threshold = 0.0f;
-
     struct ring_buffer * internal_ring_buffer;
 
     size_t i, tail = 0, num_potential_events = 0, num_data_points = 0, writePlusX, size_of_potential_events[50] = {0}, tail_min = 0, tail_max = 0;
 
+    size_t start_event, end_event;
+
     bool freeze_tail = false, is_not_baseline = false, tail_is_overlap = false, loop = false;
+
+    bool wait_for_event_to_end = false;
 
     float linear_buffer[INTERNAL_RING_BUFFER_SIZE] = {0.0f}, potential_events[50][ MAX_EVENT_DURATION ] = {0.0f}, channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
 
@@ -136,7 +143,7 @@ static void dataIntake(void){//TESTME : test everything
     (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "Entering main loop");
 
     //TESTME : this whole loop logic needs THOROUGH testing
-PRINTF_DEBUG
+
     while(true){
 
         pthread_testcancel();
@@ -147,7 +154,6 @@ PRINTF_DEBUG
             num_data_points = getUARTData(channel_data_point);
 
             // plot_point(channel_data_point[0], threshold);
-            
 
         #else
 
@@ -168,8 +174,39 @@ PRINTF_DEBUG
             for(i = 0; i < num_data_points; i++){
 
                 addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
-                // printf("%d : %f | ", i + 1, channel_data_point[i]);
+
             }//printf("\n");
+
+            if(wait_for_event_to_end){
+
+                if(internal_ring_buffer->write == end_event){
+                    //extract and send data
+
+                    const size_t size_event = numElementsBetweenIndexes(internal_ring_buffer->size, start,event, end_event);
+
+                    float * event = malloc(size_event * sizeof(float));
+
+                    extractBufferFromRingBuffer(internal_ring_buffer, event, size_event, start_event, end_event);
+
+                    const size_t size_event_buf = size_event / 2;
+        
+                    float * event_buf = malloc(size_event_buf * sizeof(float));
+                    
+                    for(int k = 0; k < size_event_buf; k++){
+                        const int idx = (k * NUM_CHANNELS) + i;
+                        event_buf[k] = event[idx];
+                    }
+
+                    free(event);
+
+                    addEvent(event_buf, size_event_buf);
+                    
+                    free(event_buf);
+
+                }
+
+            }
+
 
             if(data_intake_count % WINDOW_SIZE == 0){
                 // printf("window size found in data\n");
@@ -184,13 +221,8 @@ PRINTF_DEBUG
                 data_intake_count = 0;
 
                 const size_t extract_index = internal_ring_buffer->write;
-
-                // printf("start idx : %d, stop idx : %d\n", extract_index, minusTail(extract_index, WINDOW_SIZE) );
-
+             
                 extractBufferFromRingBuffer(internal_ring_buffer, window_buffer, WINDOW_SIZE, minusTail(extract_index, WINDOW_SIZE), extract_index);
-
-
-                // printf("signal length : %d\n",signal_length);
 
                 for(int i = 0; i < NUM_CHANNELS; i++){
                     for(int j = 0; j < signal_length; j++){
@@ -199,36 +231,113 @@ PRINTF_DEBUG
                         channel_windows[i][j] = window_buffer[idx]; 
                     }
 
-                    	// for(int j = 0; j < 10; j++){
-                        //     printf("sample[%d][%d] : %f\n", i, j, channel_windows[i][j]);
-                        // }
-
-
                     event_count[i] = adaptiveThreshold(
                         channel_windows[i],
                         signal_length,
                         SAMPLING_RATE,
                         TIME_IN_WINDOW,
                         blink_indices,
-                        THRESH_MULT,
-                        &threshold
+                        THRESH_MULT
                     ); 
+                }
+                
+                //indentify where in the window the blink is positioned
+                const size_t blink_in_window_start = BLINK_DURATION;
+                const size_t blink_in_window_end = WINDOW_SIZE - (size_t)(BLINK_DURATION);
+                
+
+                for(int i = 0; i < NUM_CHANNELS; i++){
+
+                    for(int j = 0; j < event_count[i]; j++){
+                        
+                        if(blink_indices[j] >= blink_in_window_start && blink_indices[j] <= blink_in_window_end)
+                        {//case 1, the blink is fully contained in the window
+                            
+                            const size_t event_index = extract_index + (blink_indices[j] * NUM_CHANNELS) + i;
+
+                            // we dont divide by 2 because of the 2 by 2 channel shift
+                            start_event = event_index - (size_t)(BLINK_DURATION);
+                            end_event = event_index + (size_t)(BLINK_DURATION);
+
+                            const size_t size_event = end_event - start_event;
+                            
+                            float * event = malloc(size_event * sizeof(float));
+
+                            extractBufferFromRingBuffer(internal_ring_buffer, event, size_event, minusTail(extract_index, size_event), extract_index);
+
+                            const size_t size_event_buf = size_event / 2;
+
+                            float * event_buf = malloc(size_event_buf * sizeof(float));
+
+                            for(int k = 0; k < size_event_buf; k++){
+                                const int idx = (k * NUM_CHANNELS) + i;
+                                event_buf[k] = event[idx];
+                            }
+                            
+                            free(event);
+
+                            addEvent(event_buf, size_event_buf);
+
+                            free(event_buf);
+
+                        } else if( blink_indices[j] < blink_in_window_start)
+                        {//case 2, the blink overlaps on the start of the window
+
+                            //TAKE INTO ACCOUNT THE CHANNEL SHIFT 2BY2
+                            const size_t event_index = extract_index + (blink_indices[j] * NUM_CHANNELS) + i;
+
+                            // we dont divide by 2 because of the 2 by 2 channel shift
+                            start_event = event_index - (size_t)(BLINK_DURATION);
+                            end_event = event_index + (size_t)(BLINK_DURATION);
+
+                            const size_t size_event = numElementsBetweenIndexes(internal_ring_buffer->size, start_event, end_event);
+
+                            float * event = malloc(size_event * sizeof(float));
+
+                            extractBufferFromRingBuffer(internal_ring_buffer, event, size_event, start_event, end_event);
+
+                            const size_t size_event_buf = size_event / 2;
+                            
+                            
+                            float * event_buf = malloc(size_event_buf * sizeof(float));
+                            
+                            for(int k = 0; k < size_event_buf; k++){
+                                const int idx = (k * NUM_CHANNELS) + i;
+                                event_buf[k] = event[idx];
+                            }
+                            
+                            free(event);
+                            
+                            addEvent(event_buf, size_event_buf);
+
+                            free(event_buf);
+
+
+                        } else
+                        {//case 3, the blink overlaps on the end of the window
+
+                            const size_t event_index = extract_index + (blink_indices[j] * NUM_CHANNELS) + i;
+
+                            start_event = event_index - BLINK_DURATION;
+
+                            end_event = event_index + BLINK_DURATION;
+
+                            wait_for_event_to_end = true;
+
+                        }
+                    }
                 }
 
 
-                // for(int i = 0; i < NUM_CHANNELS -1 ; i++){
-                 
-                //     printf("event count for channel %d : %d\n", i+1, event_count[i]);
-                // }
-            
-            }
 
-                     
-            // printf("end of if\n");
+                //accordingly extract it
+
+                //send it towards data processing
+
+
+
+            }            
         }
-
-        // printf("end of loop\n");
-
     }
 
     pthread_cleanup_pop(1);

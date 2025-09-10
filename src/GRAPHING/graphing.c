@@ -70,9 +70,9 @@ static void plot_threshold(const float threshold){
 }
 
 
-void plot_point(const float point, const float threshold){
+void plot_point(const float point, const float threshold, const int timeout){
 
-	const int timeout = 50;
+	
 
 	static int function_call_count = 0;
 
