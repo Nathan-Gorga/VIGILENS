@@ -180,55 +180,43 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 
     #endif
 
-    if(stop > start) return stop - start;//+1;
+    if(stop > start) return stop - start;
 
-    return buffer_size - start + stop;// + 1;
+    return buffer_size - start + stop;
 }
 
-
-void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * restrict data, const size_t size_data, const size_t start, const size_t stop){
-    
-    #ifdef ASSERT_ENABLED
-
-        assert(buffer != NULL);
-
-        assert(data != NULL);
-
-    #endif
+void extractBufferFromRingBuffer(const struct ring_buffer *buffer,
+                                 float *restrict data,
+                                 const size_t size_data,
+                                 const size_t start,
+                                 const size_t stop) {
+#ifdef ASSERT_ENABLED
+    assert(buffer != NULL);
+    assert(data != NULL);
+    assert(size_data <= buffer->size);
+    assert(start < buffer->size);
+    assert(stop < buffer->size);
+#endif
 
     const bool overflow = start > stop;
 
     size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
-    // printf("size : %d, size_data : %d\n", size, size_data);
 
-    #ifdef ASSERT_ENABLED
+#ifdef ASSERT_ENABLED
+    assert(size == size_data);
+#endif
 
-        assert(size == size_data);
-
-        assert(size_data <= buffer->size);
-
-        assert(start >= 0 && stop >= 0);
-
-        assert(start < buffer->size && stop < buffer->size);
-
-    #endif
-
-
-    if(!overflow){
-
+    if (!overflow) {
+        // contiguous copy
         memmove(data, buffer->memory + start, size * sizeof(float));
-
     } else {
-        
+        // wrapped copy
         const size_t offset = buffer->size - start;
-
         memmove(data, buffer->memory + start, offset * sizeof(float));
-
-        memmove(data + offset, buffer->memory, (stop + 1) * sizeof(float));
+        memmove(data + offset, buffer->memory, stop * sizeof(float));  // fixed
     }
-
-
 }
+
 
 void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data){
     

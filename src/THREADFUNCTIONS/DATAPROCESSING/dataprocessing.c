@@ -82,25 +82,24 @@ static void dataProcessing(void){
 
         if(event_buffer_size > 0){//there is an event
 
-	   for(int i = 0; i < event_buffer_size; i++){
+        //    for(int i = 0; i < event_buffer_size; i++){
 
-		printf("%f ", event_buffer[i]);
+        // 	printf("%f ", event_buffer[i]);
 
-	   }printf("\n");
+        //    }printf("\n");
 
-	   #ifdef PRINTF_ENABLED
+        
+            printf("Got event of size %d\n", event_buffer_size);
 
-	   printf("Got event of size %d\n", event_buffer_size);
+        
 
-	   #endif
+            logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
-           logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
+            if(simpleThresholdEventDetection(5.0f, event_buffer, event_buffer_size)){
 
-	   if(simpleThresholdEventDetection(5.0f, event_buffer, event_buffer_size)){
+                printf("FOUND AN EVENT\n");
 
-	    	printf("FOUND AN EVENT\n");
-
-	   }
+            }
 
             event_buffer_size = 0;
         }
