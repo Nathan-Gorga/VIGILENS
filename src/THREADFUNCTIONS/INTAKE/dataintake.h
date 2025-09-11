@@ -10,23 +10,15 @@
 #include "../../MOCKUART/mockuart.h"
 
 
-
-
-//#define PACKET_BUFFER_SIZE 10
-
 #define TIME_IN_INTERNAL_RING_BUFFER 3//TODO change to fit the best openBCI stream settings
+
 #define INTERNAL_RING_BUFFER_SIZE (int)(TIME_IN_INTERNAL_RING_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
-#define DATA_INTAKE_TEXT_COLOR BLUE
-#define TIME_IN_WINDOW 1.2f
+#define TIME_IN_WINDOW 1.0f
+
 #define WINDOW_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * TIME_IN_WINDOW)
 
-#define THRESH_MULT 4.0f
-
-
-
 void * launchDataIntake(void * _);
-
 
 extern pthread_mutex_t ready_lock;
 

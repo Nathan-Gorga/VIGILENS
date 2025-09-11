@@ -41,7 +41,6 @@ static void cleanupHandler(void * internal_ring_buffer){
     (void)printf("Cleaned up thread\n");
 }
 
-
 static void dataIntake(void){
     
     int data_intake_count = 0;
@@ -150,6 +149,9 @@ static void dataIntake(void){
                 
                 for(i = 0; i < NUM_CHANNELS; i++){
 
+                    printf("found %zu in channel %zu\n", event_count[i], i);
+
+
                     for(size_t j = 0; j < event_count[i]; j++){
                         
                         const size_t event_index = (internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
@@ -187,6 +189,8 @@ static void dataIntake(void){
                         }
 
                         free(event_temp);
+
+                        // printf(RED"SEND EVENT : %zu\n"RESET, size_event);
 
                         addEvent(event, size_event);
 

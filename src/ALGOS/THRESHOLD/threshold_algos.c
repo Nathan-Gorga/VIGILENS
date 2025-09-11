@@ -99,6 +99,41 @@ double compute_median(double *data, int length) {
 }
 
 //TODO : implement stdThreshold alongside robust and test which is best
+static double std_threshold(double * signal, const int start, const int end, const double th_mult){
+	const int segment_length = end - start;
+
+	if (segment_length <= 0) {
+
+		fprintf(stderr, "Invalid segment length: %d\n", segment_length);
+
+		return -1.0;
+
+	}
+
+    double *segment = (double *)malloc(segment_length * sizeof(double));//FIXME : heap is slow
+
+	if (!segment) {
+
+		perror("malloc failed");
+
+		return -1.0;
+
+	}
+
+	//FIXME : switch this to memcpy
+    for (int i = 0; i < segment_length; ++i) {
+
+        segment[i] = signal[start + i];
+
+	}
+
+    const double med = compute_median(segment, segment_length);
+	    
+    free(segment);
+
+	return med * th_mult;
+}
+
 static double robust_threshold(double * signal, const int start, const int end, const double th_mult){
 
 	const int segment_length = end - start;
@@ -184,7 +219,9 @@ int adaptiveThreshold(
 
 		const int end = min(i + win_len, signal_length - 1);
 
-		const double threshold = robust_threshold(signal, i , end, th_mult);
+		const double threshold = std_threshold(signal, i,end, th_mult);//robust_threshold(signal, i , end, th_mult);
+
+		printf("threshold : %f\n", threshold);
 
 		for(int j = prevent_overlap; j < win_len; j++){
 

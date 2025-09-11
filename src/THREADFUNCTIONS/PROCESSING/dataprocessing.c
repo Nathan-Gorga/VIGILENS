@@ -69,7 +69,7 @@ static void dataProcessing(void){
 
             if(simpleThresholdEventDetection(5.0f, event_buffer, event_buffer_size)){
 
-                printf("FOUND AN EVENT\n");
+                // printf("FOUND AN EVENT\n");
 
             }
 
