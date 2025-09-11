@@ -2,7 +2,7 @@
 
 pthread_mutex_t log_mutex;
 
-//there are multiple because different callers may fire these at the same time, creating the same thread at the same time (no bueno)
+// array of pthread_t to prevent two threads launching log_thread at the same time
 pthread_t log_thread[4];//0 : master, 1 : data intake, 2 : data processing, 3 : none
 
 void signalHandler(void) {
@@ -28,27 +28,29 @@ void setupSignalHandlers() {
 
 int initLoggingSystem(void){
 
-    log_file = fopen(LOG_FILE_NAME, "w");
-    
-    if(log_file == NULL){
-    
-        (void)printf(RED"ERROR in %s:%d\n : Could not open log file.\n"RESET, __FILE__, __LINE__);
-    
-        return -1;
-    }
+    #ifdef LOG_ENABLED
 
-    setupSignalHandlers();
-    
-    (void)clock_gettime(CLOCK_REALTIME, &begin);//don't change begin from now on
+        log_file = fopen(LOG_FILE_NAME, "w");
+        
+        if(log_file == NULL){
+        
+            (void)printf(RED"ERROR in %s:%d\n : Could not open log file.\n"RESET, __FILE__, __LINE__);
+        
+            return -1;
+        }
+
+        setupSignalHandlers();
+        
+        (void)clock_gettime(CLOCK_REALTIME, &begin);
+
+    #endif
 
     return logEntry(NONE, LOG_INFO, "LOGGING SYSTEM INITIALIZED");
 }
 
 #ifdef LOG_ENABLED
 
-
-
-static int __logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){//TODO : add macros to turn off logging
+static int __logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message){
     
     if(log_file == NULL){
     
@@ -192,16 +194,18 @@ int logEntry(const THREAD_ID thread_id, const LOG_TYPE log_type, char * message)
 }
 
 
-
 int closeLoggingSystem(void){
 
+    #ifdef LOG_ENABLED
 
-    if (log_file != NULL) {
-    
-        fclose(log_file);
+        if (log_file != NULL) {
+        
+            fclose(log_file);
 
-        return 0;
-    }
+            return 0;
+        }
+
+    #endif
 
     return -1;
 }

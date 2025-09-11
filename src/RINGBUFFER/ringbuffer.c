@@ -1,6 +1,5 @@
 #include "ringbuffer.h"
 
-
 struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){
     
     if(size == 0) return NULL; //size cannot be negative (size_t is unsigned)
@@ -25,7 +24,6 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
     return buffer;
 }
 
-
 void freeRingBuffer(struct ring_buffer * buffer){
 
     if(buffer == NULL) return;
@@ -34,7 +32,7 @@ void freeRingBuffer(struct ring_buffer * buffer){
 
     free(buffer->memory);
 
-freebuffer:
+    freebuffer:
 
     free(buffer);
 }
@@ -48,11 +46,9 @@ static bool isUnderflow(const struct ring_buffer * buffer, const size_t size_to_
     return test < 0;
 }
 
-
 static inline size_t _writeIndexAfterIncrement(const struct ring_buffer * buffer){
     return (buffer->write + 1) % buffer->size;
 }
-
 
 size_t writeIndexAfterIncrement(const struct ring_buffer * buffer){
 
@@ -70,11 +66,9 @@ size_t writeIndexAfterIncrement(const struct ring_buffer * buffer){
     return _writeIndexAfterIncrement(buffer);
 }
 
-
 static inline size_t _writeIndexAfterDecrement(const struct ring_buffer * buffer){
     return (buffer->write - 1) % buffer->size;
 }
-
 
 size_t writeIndexAfterDecrement(const struct ring_buffer * buffer){
 
@@ -93,15 +87,14 @@ size_t writeIndexAfterDecrement(const struct ring_buffer * buffer){
     
 }
 
-
-static inline size_t _writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x){//TESTME
+static inline size_t _writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x){
 
     //the negation is for speed purposes (false is more common in our case than true)
     return !isOverflow(buffer, x) ? buffer->write + x : (x + buffer->write) - buffer->size;
 
 }
 
-size_t writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x){//TESTME
+size_t writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x){
 
     if(buffer->type == EVENT_RING_BUFFER){
         
@@ -117,14 +110,12 @@ size_t writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x)
     return _writeIndexAfterAddingX(buffer, x);
 }
 
-
-
-static inline size_t _writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x){//TESTME
+static inline size_t _writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x){
     const int temp = buffer->write - x;//to avoid underflow
     return !isUnderflow(buffer, x) ? temp : temp + buffer->size;
 }
 
-size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x){//TESTME
+size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x){
 
     if(buffer->type == EVENT_RING_BUFFER){
         
@@ -140,8 +131,6 @@ size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size
     return _writeIndexAfterSubtractingX(buffer, x);
 }
 
-
-
 static inline void _writeIndexIncrement(struct ring_buffer * buffer){
 
     #ifdef ASSERT_ENABLED
@@ -152,7 +141,6 @@ static inline void _writeIndexIncrement(struct ring_buffer * buffer){
 
     buffer->write = (buffer->write + 1) % buffer->size;
 }
-
 
 static void writeIndexIncrement(struct ring_buffer * buffer){
 
@@ -167,7 +155,7 @@ static void writeIndexIncrement(struct ring_buffer * buffer){
     } else _writeIndexIncrement(buffer);
 }
 
-
+//FIXME : make this function less ambiguous (start and stop are included or not???)
 size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){
 
     #ifdef ASSERT_ENABLED
@@ -185,26 +173,23 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
     return buffer_size - start + stop;
 }
 
-void extractBufferFromRingBuffer(struct ring_buffer *buffer,
-                                 float *restrict data,
-                                 const size_t size_data,
-                                 const size_t start,
-                                 const size_t stop) {
-#ifdef ASSERT_ENABLED
-    assert(buffer != NULL);
-    assert(data != NULL);
-    assert(size_data <= buffer->size);
-    assert(start < buffer->size);
-    assert(stop < buffer->size);
-#endif
+void extractBufferFromRingBuffer(struct ring_buffer *buffer, float *restrict data, const size_t size_data, const size_t start, const size_t stop) {
 
-    const bool overflow = start > stop;
+    #ifdef ASSERT_ENABLED
+        assert(buffer != NULL);
+        assert(data != NULL);
+        assert(size_data <= buffer->size);
+        assert(start < buffer->size);
+        assert(stop < buffer->size);
+    #endif
 
-    size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
+        const bool overflow = start > stop;
 
-#ifdef ASSERT_ENABLED
-    assert(size == size_data);
-#endif
+        size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
+
+    #ifdef ASSERT_ENABLED
+        assert(size == size_data);
+    #endif
 
     if (!overflow) {
         // contiguous copy
@@ -213,10 +198,9 @@ void extractBufferFromRingBuffer(struct ring_buffer *buffer,
         // wrapped copy
         const size_t offset = buffer->size - start;
         memmove(data, buffer->memory + start, offset * sizeof(float));
-        memmove(data + offset, buffer->memory, stop * sizeof(float));  // fixed
+        memmove(data + offset, buffer->memory, stop * sizeof(float));  
     }
 }
-
 
 void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data){
     
@@ -230,10 +214,10 @@ void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data
 
     buffer->memory[buffer->write] = data;
 
-    buffer->write = (buffer->write + 1) % buffer->size; //we dont use writeIndexIncrement for this one, it is only used for internal buffer and therefore we need to bypass the mutex for speed
+    // we dont use writeIndexIncrement for this one, it is only used for 
+    // internal buffer and therefore we need to bypass the mutex for speed
+    buffer->write = (buffer->write + 1) % buffer->size; 
 }
-
-
 
 void addBufferToRingBuffer(struct ring_buffer * buffer, const float * restrict data, const size_t size){
 
@@ -280,3 +264,18 @@ void addBufferToRingBuffer(struct ring_buffer * buffer, const float * restrict d
         }
     }
 }
+
+//TODO : find better name
+size_t minusTail(const int tail, const int num_data_points){
+
+    return !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;
+}
+
+//TODO : find better name
+size_t addTail(const int tail, const int num_data_points){
+
+    return !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER_SIZE;
+
+}
+
+

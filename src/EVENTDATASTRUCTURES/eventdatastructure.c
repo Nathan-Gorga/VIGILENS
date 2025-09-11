@@ -1,6 +1,5 @@
 #include "eventdatastructure.h"
 
-
 pthread_mutex_t event_ring_buffer_mutex;
 
 pthread_mutex_t write_index_mutex; //this one is just to prevent double lock
@@ -22,7 +21,6 @@ static node * initNode(const size_t start, const size_t stop){
     return n;
 }
 
-
 static void freeNode(node * n){
     
     #ifdef ASSERT_ENABLED
@@ -34,8 +32,6 @@ static void freeNode(node * n){
     free(n);
 }
 
-
-
 static void initList(void){
 
     head = (head_node *)malloc(sizeof(head_node));
@@ -44,8 +40,6 @@ static void initList(void){
 
     head->next = NULL;
 }
-
-
 
 static void freeList(void){
     
@@ -65,7 +59,6 @@ static void freeList(void){
     free((void *)head);
 }
 
-
 static void initEventRingBuffer(const size_t size_buffer){
 
     #ifdef ASSERT_ENABLED
@@ -80,15 +73,11 @@ static void initEventRingBuffer(const size_t size_buffer){
 
 }
 
-
-
 static void freeEventRingBuffer(void){
     
     if(event_ring_buffer != NULL) freeRingBuffer((struct ring_buffer *)event_ring_buffer);
+
 }
-
-
-
 
 static void addNodeToList(node * n){
 
@@ -117,8 +106,6 @@ static void addNodeToList(node * n){
     curr->next = (node *)n;
 }
 
-
-
 static void popNodeFromList(void){
 
     #ifdef ASSERT_ENABLED
@@ -135,8 +122,6 @@ static void popNodeFromList(void){
 
     freeNode(curr);
 }
-
-
 
 static size_t _getEvent(float *  data){
     
@@ -167,9 +152,7 @@ static size_t _getEvent(float *  data){
     return size_data;
 }
 
-
 static void _addEvent(const float *  data, const size_t size_data){
-   // printf(RED"adding event\n"RESET);
 
     #ifdef ASSERT_ENABLED
 
@@ -200,7 +183,6 @@ static void _addEvent(const float *  data, const size_t size_data){
     addNodeToList(n);
 }
 
-
 void initEventDatastructure(const size_t size_buffer){
 
     #ifdef ASSERT_ENABLED
@@ -214,16 +196,12 @@ void initEventDatastructure(const size_t size_buffer){
     initList();
 }
 
-
 void freeEventDatastructure(void){
 
     freeEventRingBuffer();
 
     freeList();
 }
-
-
-
 
 size_t getEvent(float *  data){
     
@@ -235,7 +213,6 @@ size_t getEvent(float *  data){
     
     return ret;
 }
-
 
 void addEvent(const float * data, const size_t size_data){
     
@@ -273,22 +250,3 @@ int destroyMutexes(void){
     return 0;
 }
 
-
-void printNodeList(void){
-
-    node * curr = head->next;
-    
-    int i = 1;
-    
-    while(curr != NULL){
-    
-        printf("start : %zu, stop : %zu\n", curr->start, curr->stop);
-    
-        i++;
-    
-        curr = curr->next;
-    }
-    
-    printf("%d nodes (including the head)\n",i);
-
-}

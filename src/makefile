@@ -12,16 +12,13 @@ TARGET = VIGILENCE
 SRCS = main.c \
 	RINGBUFFER/ringbuffer.c \
 	EVENTDATASTRUCTURES/eventdatastructure.c \
-	THREADFUNCTIONS/DATAPROCESSING/dataprocessing.c \
-	THREADFUNCTIONS/DATAINTAKE/dataintake.c \
-	ALGOS/algos.c \
+	THREADFUNCTIONS/PROCESSING/dataprocessing.c \
+	THREADFUNCTIONS/INTAKE/dataintake.c \
 	LOG/log.c \
 	UART/uart.c \
 	MOCKUART/mockuart.c \
-	GRAPHING/graphing.c \
-	ALGOS/threshold_algos.c
-
-
+	ALGOS/THRESHOLD/threshold_algos.c \
+	ALGOS/FILTER/filter.c 
 
 # Object files
 OBJS = $(SRCS:.c=.o)

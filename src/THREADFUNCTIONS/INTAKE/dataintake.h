@@ -4,11 +4,10 @@
 #include "../../globaldefinition.h"
 #include "../../RINGBUFFER/ringbuffer.h"
 #include "../../EVENTDATASTRUCTURES/eventdatastructure.h"
-#include "../../ALGOS/algos.h"
+#include "../../ALGOS/THRESHOLD/threshold_algos.h"
 #include "../../LOG/log.h"
 #include "../../UART/uart.h"
 #include "../../MOCKUART/mockuart.h"
-#include "../../GRAPHING/graphing.h"
 
 
 

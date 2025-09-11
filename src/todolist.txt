@@ -1,7 +1,0 @@
-1. make the detection faster
-
-2. refine the constants baseline values, threshold values, baseline duration, event duration.
-
-3. rethink the data processing architecture for future algos to come.
-
-4. test nothing breaks

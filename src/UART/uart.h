@@ -9,14 +9,15 @@ courtesy to https://github.com/ultramcu
 
 #include "../globaldefinition.h"
 #include "../EVENTDATASTRUCTURES/eventdatastructure.h"
-#include "../ALGOS/algos.h"
+#include "../ALGOS/FILTER/filter.h"
 
 #include <fcntl.h>
 #include <termios.h>
 #include <stdint.h>
 
+// this switch can be toggled to switch between mock and true UART
+// find the macro section in dataintake.c
 #define UART_ENABLED
-
 
 #define RASPBERRY_TX_PIN 14
 #define RASPBERRY_RX_PIN 15
@@ -24,15 +25,17 @@ courtesy to https://github.com/ultramcu
 #define SERIAL_DEVICE "/dev/serial0"
 #define UART_BAUDRATE 115200
 
-#define UART_BUFFER_SIZE (size_t)(sizeof(openbci_packet) * SAMPLING_RATE / 2)
+#define UART_BUFFER_SIZE (size_t)(sizeof(openbci_packet) * SAMPLING_RATE / NUM_CHANNELS)
 
 #define PACKET_BUFFER_SIZE (size_t)(UART_BUFFER_SIZE / sizeof(openbci_packet))
 
-#define GAIN 1 //TRY : different value for best results (1 - 24)
+#define GAIN 1 // values can be from 1 to 24 (inversly proportional to SCALE_FACTOR)
 
+//https://docs.openbci.com/Cyton/CytonDataFormat/#interpreting-the-eeg-data
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
 
-#define MACHINE_USEABLE_SCALE_FACTOR 10000//22.2222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+// simply for ease of use, can be set to 1 if causes problems
+#define MACHINE_USEABLE_SCALE_FACTOR 10000 
 
 #define SAMPLE_TIME_uS (double)(1000000.0f / SAMPLING_RATE)
 
@@ -44,7 +47,7 @@ courtesy to https://github.com/ultramcu
 #define STOP_BYTE (byte)0xC2 //this stop byte code is relevant for user defined AUX Bytes
 
 
-//https://docs.openbci.com/Cyton/CytonDataFormat/
+//https://docs.openbci.com/Cyton/CytonDataFormat/#binary-format
 typedef union{
 
     byte packet[33];
@@ -79,8 +82,8 @@ typedef union{
 
 }openbci_packet;
 
+// preferable not to touch these assert, ensure the packet is always the right size at compile time
 static_assert(sizeof(openbci_packet) == 33, "openbci_packet size is not 33 bytes");
-
 static_assert(sizeof(((openbci_packet*)0)->fields) == 33, "fields size is not 33 bytes");
 
 enum TX_SIGNAL_TYPE{
@@ -89,19 +92,15 @@ enum TX_SIGNAL_TYPE{
     NUM_SIGNAL_TYPES
 };
 
+bool beginUART(void);
 
+void endUART(void);
 
-bool beginUART(void);//TODO : write function comment
+size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]);
 
-/**
- * @brief Close the serial file descriptor.
- */void endUART(void);
+bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);
 
-
-size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]); //TODO : write function comment
-
-bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
-
+// global file descriptor of the UART socket
 static int UART_fd;
 
 #endif

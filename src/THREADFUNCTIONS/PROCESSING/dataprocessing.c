@@ -1,29 +1,20 @@
 #include "dataprocessing.h"
 
-//#define printf(...) printf(DATA_PROCESSING_TEXT_COLOR"DATA PROCESSING:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
-
 static void cleanupHandler(void * event_buffer){
 
     (void)printf("Cancel signal received\n");
 
     if(event_buffer != NULL){
+
         free((float*)event_buffer);
+
     }
 
     (void)printf("Cleaned up thread\n");
 
 }
 
-
-
-
 static void dataProcessing(void){
-
-    #ifdef PRINTF_ENABLED
-
-    (void)printf("Thread launched succesfully\n");
-
-    #endif
 
     sigset_t set;
 
@@ -57,7 +48,7 @@ static void dataProcessing(void){
 
     if (sigwait(&set, &sig) == 0) {
 
-        (void)printf("Received SIGCONT, continuing execution.\n");
+        (void)printf("PROCESSING RECEIVED GO SIGNAL\n");
 
     } else {
 
@@ -66,25 +57,15 @@ static void dataProcessing(void){
         pthread_exit(NULL);
     }
 
-    (void)printf("Entering main loop\n");
+    printf("PROCESSING ENTERING MAIN LOOP\n");
 
     while(1){
 
         pthread_testcancel();
 
-        event_buffer_size = getEvent(event_buffer);//TODO : test the handling of the event
+        event_buffer_size = getEvent(event_buffer);
 
         if(event_buffer_size > 0){//there is an event
-
-        //    for(int i = 0; i < event_buffer_size; i++){
-
-        // 	printf("%f ", event_buffer[i]);
-
-        //    }printf("\n");
-
-            // printf("Got event of size %d\n", event_buffer_size);
-
-            logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
             if(simpleThresholdEventDetection(5.0f, event_buffer, event_buffer_size)){
 

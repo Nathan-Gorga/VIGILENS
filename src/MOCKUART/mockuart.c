@@ -1,7 +1,8 @@
 #include "mockuart.h"
 
-
-size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//this function needs to return 0s
+// this function was useful when UART wasn't implemented. 
+// feel free to make it send more realistic data for testing
+size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){
 
     const int probability = 1000000; 
 
@@ -10,7 +11,7 @@ size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//this function ne
     const size_t size = 124;
 
     if(send_signal){
-        printf(CYAN"SENDING SIGNAL\n"RESET);
+
         for(size_t i = 0; i < size; i++){
 
             data_points[i] = 100.0f;

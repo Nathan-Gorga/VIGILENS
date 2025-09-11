@@ -1,6 +1,7 @@
 #include "uart.h"
 
-static int32_t interpret24BitToInt(const byte data[3]){//DONTTOUCH
+//https://docs.openbci.com/Cyton/CytonDataFormat/#24-bit-signed-data-values
+static int32_t interpret24BitToInt(const byte data[3]){
     
     int32_t Int = (  
      ((0xFF & data[0]) << 16) |
@@ -17,12 +18,13 @@ static int32_t interpret24BitToInt(const byte data[3]){//DONTTOUCH
     return Int;
 }
 
-
-static inline float convertToFloat(const int32_t value){//DONTTOUCH
+static inline float convertToFloat(const int32_t value){
     return (float)(value * SCALE_FACTOR * MACHINE_USEABLE_SCALE_FACTOR);
 }
 
-static inline float channelDataToFloat(const byte data[3]){//DONTTOUCH
+static inline float channelDataToFloat(const byte data[3]){
+    // TODO : make filter a "togglable" function, 
+    // either by calling it externally after this function, or with a function parameter
     return filterDataPoint(convertToFloat(interpret24BitToInt(data)));
 }
 
@@ -49,6 +51,7 @@ static int32_t convertBaudrate(const int32_t baudrate){
     
     return B9600;
 }
+
 static bool openSerialFileDescriptor(void){
 
     UART_fd = open(SERIAL_DEVICE, O_RDWR | O_NOCTTY);
@@ -65,7 +68,7 @@ static bool openSerialFileDescriptor(void){
     return true;
 }
 
-static bool setTermiosOptions(void){//TESTME
+static bool setTermiosOptions(void){
     
     struct termios term_options;
 
@@ -96,8 +99,7 @@ static bool setTermiosOptions(void){//TESTME
     return true;
 }
 
-
-bool beginUART(void){//TESTME
+bool beginUART(void){
     
     if(!openSerialFileDescriptor()) return false;
 
@@ -111,13 +113,13 @@ bool beginUART(void){//TESTME
 
     return true;
 
-fail_uart:
+
+    fail_uart:
 
     endUART();
 
     return false;
 }
-
 
 void endUART(void){
 
@@ -125,45 +127,19 @@ void endUART(void){
 
     while(!sendUARTSignal(STOP_STREAM) && --attempts) usleep(100 * 1000);
 
-    //it isnt a big deal if send uart fails, so we dont need to pass it on in the return
-
     close(UART_fd);
 
 }
-
-
-// static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]){//DONTTOUCH
-    
-//     const size_t packet_size = sizeof(openbci_packet);
-
-//     size_t count = 0;
-
-
-//     for(int i = 0; i < size_read; i++){
-
-
-//         if(buffer[i] == START_BYTE){
-            
-//             memcpy(&packets[count++], &buffer[i], packet_size);
-            
-//             i += packet_size - 1;
-//         }
-//     }
-
-//     return count;
-// }
-
-
 
 size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parameter in this funciton to specify allowable wait time
 
     static uint8_t uart_accum_buf[UART_BUFFER_SIZE];  // persistent accumulation buffer
 
-    static size_t uart_accum_len = 0;              // how much valid data is stored
+    static size_t uart_accum_len = 0;
 
     openbci_packet packets[PACKET_BUFFER_SIZE];
 
-    size_t count = 0;  // how many valid packets were found this round
+    size_t valid_packets = 0;  
 
     fd_set read_UART_fd;
 
@@ -171,13 +147,14 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parame
 
     FD_SET(UART_fd, &read_UART_fd);
 
-    struct timeval timeout = {0, (__suseconds_t)(SAMPLE_TIME_uS / 2)};  // short timeout
+    struct timeval timeout = {0, (__suseconds_t)(SAMPLE_TIME_uS / 2)};  
 
+    //set to wait until timeout OR until data arrives, then unblocks
     const int ready = select(UART_fd + 1, &read_UART_fd, NULL, NULL, &timeout);
 
     if (ready > 0 && FD_ISSET(UART_fd, &read_UART_fd)) {
 
-        uint8_t temp_buf[64];  // temporary read buffer
+        uint8_t temp_buf[64];
 
         ssize_t size_read = read(UART_fd, temp_buf, sizeof(temp_buf));
 
@@ -202,21 +179,21 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parame
                 return 0;
             }
 
-            // parse complete packets from the accumulated buffer
+            // parse packets 
             const size_t packet_size = sizeof(openbci_packet);
 
             size_t processed = 0;
-
 	    
-            while (uart_accum_len - processed >= packet_size && count < PACKET_BUFFER_SIZE) {
+            while (uart_accum_len - processed >= packet_size && valid_packets < PACKET_BUFFER_SIZE) {
 
+                //look for the start of the packet
                 if ((byte)uart_accum_buf[processed] == START_BYTE) {
                     
-                    memcpy(&packets[count], &uart_accum_buf[processed], packet_size);
+                    memcpy(&packets[valid_packets], &uart_accum_buf[processed], packet_size);
 
-                    getChannelDataFromPacket(packets[count], data_points + (NUM_CHANNELS * count));
+                    getChannelDataFromPacket(packets[valid_packets], data_points + (NUM_CHANNELS * valid_packets));
 
-                    count++;
+                    valid_packets++;
 
                     processed += packet_size;
 
@@ -234,14 +211,11 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parame
         }
     }
 
-    return count * NUM_CHANNELS;  // total floats stored in data_points
+    return valid_packets * NUM_CHANNELS;  // total floats stored in data_points
 }
 
 
-
-bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){//TESTME
-
-    // TODO : openBCI sends $$$ when ready (before any signal), add this to the function
+bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type){
 
     byte to_send[2];
 
