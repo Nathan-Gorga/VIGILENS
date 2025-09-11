@@ -248,7 +248,7 @@ static void dataIntake(void){//TESTME : test everything
                         free(event_temp);
 
 
-                        // printf("SEND EVENT : %d\n", size_event);
+                        printf("SEND EVENT : %zu\n", size_event);
                         addEvent(event, size_event);
 
 
