@@ -132,26 +132,26 @@ void endUART(void){
 }
 
 
-static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]){//DONTTOUCH
+// static size_t getPacketsFromUARTBuffer(const byte buffer[], const size_t size_read, openbci_packet packets[]){//DONTTOUCH
     
-    const size_t packet_size = sizeof(openbci_packet);
+//     const size_t packet_size = sizeof(openbci_packet);
 
-    size_t count = 0;
-
-
-    for(int i = 0; i < size_read; i++){
+//     size_t count = 0;
 
 
-        if(buffer[i] == START_BYTE){
+//     for(int i = 0; i < size_read; i++){
+
+
+//         if(buffer[i] == START_BYTE){
             
-            memcpy(&packets[count++], &buffer[i], packet_size);
+//             memcpy(&packets[count++], &buffer[i], packet_size);
             
-            i += packet_size - 1;
-        }
-    }
+//             i += packet_size - 1;
+//         }
+//     }
 
-    return count;
-}
+//     return count;
+// }
 
 
 

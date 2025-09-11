@@ -51,23 +51,23 @@ static void _plot_point(float value, float min, float max, int width, const floa
 	}
 }
 
-static void plot_threshold(const float threshold){
+// static void plot_threshold(const float threshold){
 
-	const float min = -BOUNDARY;
-	const float max = BOUNDARY;
+// 	const float min = -BOUNDARY;
+// 	const float max = BOUNDARY;
 
-	const int width = 100;
+// 	const int width = 100;
 
-	putchar('\r');
+// 	putchar('\r');
 
-	const int pos = (int)((threshold - min) / (max - min) * (width - 1));
+// 	const int pos = (int)((threshold - min) / (max - min) * (width - 1));
 
-	for(int i = 0; i < pos; i++) printf("\033[1C");//move cursor to the right
+// 	for(int i = 0; i < pos; i++) printf("\033[1C");//move cursor to the right
 
-	putchar('|');
+// 	putchar('|');
 
 
-}
+// }
 
 
 void plot_point(const float point, const float threshold, const int timeout){
@@ -76,7 +76,6 @@ void plot_point(const float point, const float threshold, const int timeout){
 
 	static int function_call_count = 0;
 
-	static float maximum = 0;
 
 	if(function_call_count < timeout){
 

@@ -39,11 +39,11 @@ freebuffer:
     free(buffer);
 }
 
-static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add){
+static bool isOverflow(const struct ring_buffer * buffer, const size_t size_to_add){
     return (buffer->write + size_to_add) > buffer->size;
 }
 
-static bool isUnderflow(struct ring_buffer * buffer, const size_t size_to_subtract){
+static bool isUnderflow(const struct ring_buffer * buffer, const size_t size_to_subtract){
     const int test = buffer->write - size_to_subtract;//to avoid underflow
     return test < 0;
 }
@@ -185,7 +185,7 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
     return buffer_size - start + stop;
 }
 
-void extractBufferFromRingBuffer(const struct ring_buffer *buffer,
+void extractBufferFromRingBuffer(struct ring_buffer *buffer,
                                  float *restrict data,
                                  const size_t size_data,
                                  const size_t start,

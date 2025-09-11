@@ -51,18 +51,18 @@ static void freeList(void){
     
     if(head == NULL) return;
 
-    node * curr = head->next;
+    node * curr = (node *)head->next;
 
     while(curr != NULL){
 
-        node * next = curr->next;
+        node * next = (node *)curr->next;
 
         freeNode(curr);
 
         curr = next;
     }
 
-    free(head);
+    free((void *)head);
 }
 
 
@@ -84,13 +84,13 @@ static void initEventRingBuffer(const size_t size_buffer){
 
 static void freeEventRingBuffer(void){
     
-    if(event_ring_buffer != NULL) freeRingBuffer(event_ring_buffer);
+    if(event_ring_buffer != NULL) freeRingBuffer((struct ring_buffer *)event_ring_buffer);
 }
 
 
 
 
-static void addNodeToList(node * restrict n){
+static void addNodeToList(node * n){
 
     #ifdef ASSERT_ENABLED
 
@@ -102,19 +102,19 @@ static void addNodeToList(node * restrict n){
 
     if(head->next == NULL){
 
-        head->next = n;
+        head->next = (node *)n;
 
         return;
     }
 
-    node * curr = head->next;
+    node * curr = (node *)head->next;
 
     while(curr->next != NULL){
 
-        curr = curr->next;
+        curr = (node *)curr->next;
     }
 
-    curr->next = n;
+    curr->next = (node *)n;
 }
 
 
@@ -127,7 +127,7 @@ static void popNodeFromList(void){
 
     #endif
 
-    node * curr = head->next;
+    node * curr = (node *)head->next;
 
     if(curr == NULL) return;
 
@@ -138,7 +138,7 @@ static void popNodeFromList(void){
 
 
 
-static size_t _getEvent(float * restrict data){
+static size_t _getEvent(float *  data){
     
     #ifdef ASSERT_ENABLED
 
@@ -148,7 +148,7 @@ static size_t _getEvent(float * restrict data){
     
     if(head->next == NULL) return 0;//list is empty
 
-    node * event = head->next;
+    node * event = (node *)head->next;
 
     const size_t start = event->start;
 
@@ -158,7 +158,7 @@ static size_t _getEvent(float * restrict data){
     
     MUTEX_LOCK(&event_ring_buffer_mutex);
         
-        extractBufferFromRingBuffer(event_ring_buffer, data, size_data, start, stop);
+        extractBufferFromRingBuffer((struct ring_buffer *)event_ring_buffer, data, size_data, start, stop);
 
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
 
@@ -168,7 +168,7 @@ static size_t _getEvent(float * restrict data){
 }
 
 
-static void _addEvent(const float * restrict data, const size_t size_data){
+static void _addEvent(const float *  data, const size_t size_data){
    // printf(RED"adding event\n"RESET);
 
     #ifdef ASSERT_ENABLED
@@ -185,7 +185,7 @@ static void _addEvent(const float * restrict data, const size_t size_data){
 
         const size_t start = event_ring_buffer->write;
         
-        addBufferToRingBuffer(event_ring_buffer,data, size_data);
+        addBufferToRingBuffer((struct ring_buffer *)event_ring_buffer,data, size_data);
 
         const int test_stop = event_ring_buffer->write - 1;
         
@@ -225,7 +225,7 @@ void freeEventDatastructure(void){
 
 
 
-size_t getEvent(float * restrict data){
+size_t getEvent(float *  data){
     
     MUTEX_LOCK(&head_mutex);
 
@@ -237,7 +237,7 @@ size_t getEvent(float * restrict data){
 }
 
 
-void addEvent(const float * restrict data, const size_t size_data){
+void addEvent(const float * data, const size_t size_data){
     
     MUTEX_LOCK(&head_mutex);
 
@@ -268,7 +268,7 @@ int destroyMutexes(void){
 
     if(pthread_mutex_destroy(&ready_lock) == -1) return -1;
 
-    if(pthread_mutex_destroy(&ready_cond) == -1) return -1;
+    if(pthread_cond_destroy(&ready_cond) == -1) return -1;
   
     return 0;
 }

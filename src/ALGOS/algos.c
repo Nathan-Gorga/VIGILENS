@@ -1,96 +1,88 @@
 #include "algos.h"
 
-#ifdef DEBUG_ALGO
 
-    #define PRINTF_DEBUG do{printf(PURPLE"DEBUG : %s - %s:%d\n"RESET, __FILE__, __func__,__LINE__); fflush(stdout);}while(0);
 
-#else
+// size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION], size_t size_events[]){
 
-    #define PRINTF_DEBUG
+//     //TESTME : further with artifacts and noise and weird input buffers (like alternating true false for example)
+//     //FOR FUTURE DEBUGGING/UNDERSTANDING, HERE IS A DIAGRAM OF THE ALGORITHM BELOW : https://www.c  anva.com/design/DAGsqXG_BNU/qtS7Dkq2mF7FSWF6K4jTbQ/edit
 
-#endif
+//     #ifdef ASSERT_ENABLED
 
-size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION], size_t size_events[]){
+//     // assert(buffer != NULL);
 
-    //TESTME : further with artifacts and noise and weird input buffers (like alternating true false for example)
-    //FOR FUTURE DEBUGGING/UNDERSTANDING, HERE IS A DIAGRAM OF THE ALGORITHM BELOW : https://www.c  anva.com/design/DAGsqXG_BNU/qtS7Dkq2mF7FSWF6K4jTbQ/edit
+//     // assert(events != NULL);
 
-    #ifdef ASSERT_ENABLED
+//     // assert(size_buffer > 0);
 
-    // assert(buffer != NULL);
+//     // assert(size_events != NULL);
 
-    // assert(events != NULL);
+//     #endif
 
-    // assert(size_buffer > 0);
-
-    // assert(size_events != NULL);
-
-    #endif
-
-    enum {
-        SIGNAL = false,
-        BASELINE = true
-    }TYPE;//makes it clearer
+//     enum {
+//         SIGNAL = false,
+//         BASELINE = true
+//     }TYPE;//makes it clearer
     
-    size_t start = -1, Max = -1, Min = -1, counter_potential_events = 0;
-    bool investigating = false;
-    int i, j;
+//     size_t start = -1, Max = -1, Min = -1, counter_potential_events = 0;
+//     bool investigating = false;
+//     int i, j;
 
-    bool bool_buffer[INTERNAL_RING_BUFFER_SIZE];// NOTE : for now this is fine because it's the only use for this function but the size may be too small if used on event ring buffer
+//     bool bool_buffer[INTERNAL_RING_BUFFER_SIZE];// NOTE : for now this is fine because it's the only use for this function but the size may be too small if used on event ring buffer
 
-    if(bool_buffer == NULL) return -1;
+//     // if(bool_buffer == NULL) return -1;
 
-    for(i = 0; i < size_buffer; i++){
+//     for(i = 0; i < size_buffer; i++){
 
-        bool_buffer[i] = isBaseline(buffer[i], THRESHOLD_MAX, THRESHOLD_MIN);
-    }
+//         bool_buffer[i] = isBaseline(buffer[i], THRESHOLD_MAX, THRESHOLD_MIN);
+//     }
 
-    for(i = 0; i < size_buffer; i++){
+//     for(i = 0; i < size_buffer; i++){
 
-        if(bool_buffer[i] == SIGNAL){
+//         if(bool_buffer[i] == SIGNAL){
 
-            if(!investigating){
+//             if(!investigating){
    
-                //SET INVESTIGATION VALUES Of A SEGMENT
-                start = max(i - DETECTION_TOLERANCE, 0);
-                Min = min(start + MIN_EVENT_DURATION, size_buffer - 1);
-                Max = min(start + MAX_EVENT_DURATION, size_buffer - 1);
+//                 //SET INVESTIGATION VALUES Of A SEGMENT
+//                 start = max(i - DETECTION_TOLERANCE, 0);
+//                 Min = min(start + MIN_EVENT_DURATION, size_buffer - 1);
+//                 Max = min(start + MAX_EVENT_DURATION, size_buffer - 1);
 
-                investigating = true;
-            }
+//                 investigating = true;
+//             }
 
-            //GO TO THE END OF THE SIGNAL
-            for(i; i < size_buffer && bool_buffer[i + 1] == SIGNAL; i++);
+//             //GO TO THE END OF THE SIGNAL
+//             for(i; i < size_buffer && bool_buffer[i + 1] == SIGNAL; i++);
 
-            j = i + 1;
+//             j = i + 1;
 
-            //GO TO THE END OF THE BASELINE (TO MEASURE IT'S SIZE)
-            for(j; bool_buffer[j + 1] == BASELINE && j < i + 1 + MAX_EVENT_DURATION; j++);
+//             //GO TO THE END OF THE BASELINE (TO MEASURE IT'S SIZE)
+//             for(j; bool_buffer[j + 1] == BASELINE && j < i + 1 + MAX_EVENT_DURATION; j++);
         
-            //THE BASELINE IS LONG ENOUGH AND WE ARE NOT OVER THE BUFFER
-            if(j - i >= MIN_BASELINE_DURATION && j < size_buffer){
+//             //THE BASELINE IS LONG ENOUGH AND WE ARE NOT OVER THE BUFFER
+//             if(j - i >= MIN_BASELINE_DURATION && j < size_buffer){
 
-                //THE SIGNAL IS NOT TOO LONG OR TOO SHORT
-                if(Min < i && i < Max){
+//                 //THE SIGNAL IS NOT TOO LONG OR TOO SHORT
+//                 if(Min < i && i < Max){
                     
-                    //MARK IT AS AN EVENT
-                    size_events[counter_potential_events] = i - start;
+//                     //MARK IT AS AN EVENT
+//                     size_events[counter_potential_events] = i - start;
 
-                    (void)memmove(events[counter_potential_events], buffer + start, size_events[counter_potential_events] * sizeof(float));                    
+//                     (void)memmove(events[counter_potential_events], buffer + start, size_events[counter_potential_events] * sizeof(float));                    
                     
-                    counter_potential_events++;     
-                }
+//                     counter_potential_events++;     
+//                 }
 
-                investigating = false;
+//                 investigating = false;
 
-            }
-            //NOTE : if things start to break, put the i=j in an else{} statement (might help)
-            i = j;
-        }
-    }
+//             }
+//             //NOTE : if things start to break, put the i=j in an else{} statement (might help)
+//             i = j;
+//         }
+//     }
 
-    return counter_potential_events;
-}
+//     return counter_potential_events;
+// }
 
 
 

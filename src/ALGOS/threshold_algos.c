@@ -19,7 +19,7 @@ inline bool isBaseline(const float data_point, const float max, const float min)
 
 
 bool simpleThresholdEventDetection(const float threshold, const float event[MAX_EVENT_DURATION], const size_t size){
-	for(int i = 0; i < size; ++i){
+	for(size_t i = 0; i < size; ++i){
 
 		if(threshold <= event[i]) return true;
 
@@ -158,7 +158,7 @@ int adaptiveThreshold(
 	const int signal_length,
 	const int sample_freq,
 	const float win_size,
-	int * blink_indices,
+	size_t * blink_indices,
 	const float th_mult
 ) {
 	// for(int i = 0; i < 10; i++){

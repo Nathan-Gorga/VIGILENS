@@ -102,7 +102,7 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]); //TODO : write functi
 
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);//TODO : write function comment
 
-static u_int32_t UART_fd;
+static int UART_fd;
 
 #endif
 

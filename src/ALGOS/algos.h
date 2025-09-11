@@ -69,7 +69,7 @@
  *          events array, and their sizes are recorded in size_events. The function returns the total
  *          number of events detected. The function ensures that memory is properly managed and checks
  *          for null pointers and invalid sizes.
- */size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION], size_t size_events[]);
+ *///size_t markEventsInBuffer(float buffer[], const size_t size_buffer, float events[][MAX_EVENT_DURATION], size_t size_events[]);
 
 
 
@@ -96,7 +96,7 @@ int argmax(const double arr[], const int n);
 
 int find_local_maxima(double segment[], const int start, const int end);
 
-int adaptiveThreshold(float * eeg, const int signal_length, const int sample_freq, const float win_size, int * blink_indices, const float th_mult);
+int adaptiveThreshold(float * eeg, const int signal_length, const int sample_freq, const float win_size, size_t * blink_indices, const float th_mult);
 
 
 #endif

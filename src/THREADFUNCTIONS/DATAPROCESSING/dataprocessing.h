@@ -11,9 +11,8 @@
 #define DATA_PROCESSING_TEXT_COLOR YELLOW
 
 
-void * launchDataProcessing(void * arg);
+void * launchDataProcessing(void * _);
 
-static void dataProcessing(void);
 
 extern pthread_mutex_t ready_lock;
 

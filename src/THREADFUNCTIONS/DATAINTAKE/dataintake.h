@@ -16,7 +16,7 @@
 //#define PACKET_BUFFER_SIZE 10
 
 #define TIME_IN_INTERNAL_RING_BUFFER 3//TODO change to fit the best openBCI stream settings
-#define INTERNAL_RING_BUFFER_SIZE (size_t)(TIME_IN_INTERNAL_RING_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
+#define INTERNAL_RING_BUFFER_SIZE (int)(TIME_IN_INTERNAL_RING_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
 #define DATA_INTAKE_TEXT_COLOR BLUE
 #define TIME_IN_WINDOW 1.2f
@@ -26,23 +26,7 @@
 
 
 
-#ifdef DEBUG_INTAKE
-    #define PRINTF_DEBUG do{printf(PURPLE"DEBUG : %s - %s:%d\n"RESET, __FILE__, __func__,__LINE__); fflush(stdout);}while(0);
-#else
-    #define PRINTF_DEBUG
-#endif
-
-void * launchDataIntake(void * arg);
-
-static void dataIntake(void);
-
-static void dataIntake(void);
-
-static void cleanupHandler(void * internal_ring_buffer);
-
-static void masterStartupDialogue(void);
-
-
+void * launchDataIntake(void * _);
 
 
 extern pthread_mutex_t ready_lock;

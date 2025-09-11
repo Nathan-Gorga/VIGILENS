@@ -12,14 +12,14 @@
 
 #define MAX_EVENT_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * 2/*seconds*/)
 
-typedef struct{
+typedef struct node {
     struct node * next;
     size_t start;
     size_t stop;
 }node;
 
 typedef struct{
-    struct node * next;
+    node * next;
 }head_node;
 
 volatile static struct ring_buffer * event_ring_buffer;
@@ -35,114 +35,6 @@ extern pthread_mutex_t head_mutex;
 extern pthread_mutex_t ready_lock;
 
 extern pthread_cond_t ready_cond;
-
-//STATIC INITS AND FREES
-
-/**
- * @brief Initializes a node with a given start and stop index.
- *
- * @param start The start index of the node.
- * @param stop The stop index of the node.
- *
- * @return A newly allocated node with the given start and stop indices, or NULL if a memory allocation failure occurs.
- *
- * @details This function allocates memory for a node structure and initializes its members.
- *          The node's next pointer is set to NULL, and its start and stop indices are set to the given values.
- */static node * initNode(const size_t start, const size_t stop);
-
-
-/**
- * @brief Frees the memory allocated for a node.
- *
- * @param n The node to free.
- *
- * @details This function frees the memory allocated for a node.
- *
- * @pre n must not be NULL.
- */static void freeNode(node * n);
-
-
-/**
- * @brief Initializes the head node of the linked list.
- *
- * @details Allocates memory for a head node and initializes its members.
- *          The head node's next pointer is set to NULL.
- */static void initList(void);
-
-
-/**
- * @brief Frees the memory of a linked list of nodes.
- *
- * @details This function is called when the linked list of nodes is no longer needed.
- *          It is the user's responsability to call this function when the linked list is no longer needed.
- */static void freeList(void);
-
-
-/**
- * @brief Initializes the event ring buffer.
- *
- * @param size_buffer The size of the event ring buffer to create.
- *
- * @details This function initializes the event ring buffer with the given size.
- *          It asserts that the given size is greater than 0.
- *          It also asserts that the event ring buffer is not already initialized.
- *
- * @pre size_buffer must be greater than 0.
- *
- * @post event_ring_buffer is initialized with the given size.
- */static void initEventRingBuffer(const size_t size_buffer);
-
-
-/**
- * @brief Frees the memory of the event ring buffer.
- *
- * @details This function is called when the event ring buffer is no longer needed.
- *          It is the user's responsability to call this function when the event ring buffer is no longer needed.
- */static void freeEventRingBuffer(void);
-
-
-//STATIC EVENT RING BUFFER MANIPULATION
-
-/**
- * @brief Adds a node to the linked list.
- *
- * @param n The node to add to the list.
- *
- * @details This function adds a node to the linked list.
- *
- * @pre n must not be NULL and head must not be NULL.
- */static void addNodeToList(node * restrict n);
-
-
-
-
-
-/**
- * @brief Retrieves the next event from the event list and stores it in the provided buffer.
- *
- * @param data A pointer to a float pointer, which will be set to point to a buffer of floats containing the event.
- *
- * @return The size of the event in floats, or 0 if the event list is empty, or -1 if a memory allocation failure occurs.
- *
- * @details This function retrieves the next event from the event list and stores it in the provided buffer.
- *
- * @pre head must not be NULL, and data must not be NULL.
- *
- * @post head->next points to the next node in the list, or NULL if the list is empty.
- */static size_t _getEvent(float * restrict data);
-
-
-
-/**
- * @brief Adds an event to the event ring buffer and creates a node for it.
- *
- * @param data The buffer of floats representing the event to add.
- * @param size_data The number of floats in the event.
- *
- * @details This function adds the given event data to the event ring buffer.
- *
- * @pre data is not NULL, size_data is greater than 0, and head is not NULL.
- */static void _addEvent(const float * restrict data, const size_t size_data);
 
 
 //GLOBAL FUNCTIONS, called only once by main, don't need mutex
@@ -177,18 +69,6 @@ int createMutexes(void);
 
 int destroyMutexes(void);
 
-/**
- * @brief Returns the size of an event in the event ring buffer.
- *
- * @return The size of an event in the event ring buffer, or 0 if the list is empty.
- *
- * @details This function pops the first node from the linked list.
- *          It then extracts the event from the ring buffer using the start and stop indexes in the node.
- *          It then frees the node.
- *          If the list is empty, it returns 0.
- */static void popNodeFromList(void);
-
-
 
 
 /**
@@ -204,7 +84,7 @@ int destroyMutexes(void);
  * @pre data must not be NULL.
  *
  * @post head->next points to the next node in the list, or NULL if the list is empty.
- */size_t getEvent(float * restrict data);
+ */size_t getEvent(float * data);
 
 
 /**
@@ -220,7 +100,7 @@ int destroyMutexes(void);
  *
  * @pre data must not be NULL, size_data must be greater than 0, and the event data
  *      structure must be initialized.
- */void addEvent(const float * restrict data, const size_t size_data);
+ */void addEvent(const float * data, const size_t size_data);
 
 
 #endif

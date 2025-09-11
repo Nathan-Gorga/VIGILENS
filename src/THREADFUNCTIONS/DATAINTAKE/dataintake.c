@@ -1,6 +1,5 @@
 #include "dataintake.h"
 
-#define printf(...) printf(DATA_INTAKE_TEXT_COLOR"DATA INTAKE:%d - ",__LINE__); printf(__VA_ARGS__); printf(RESET)
 
 static void masterStartupDialogue(void){
 
@@ -71,18 +70,6 @@ size_t addTail(const int tail, const int num_data_points){
 }
 
 
-
-
-
-
-void * launchDataIntake(void * arg){
-    (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "launching data intake execution");
-    
-    dataIntake();
-
-    pthread_exit(NULL);
-}
-
 #define BLINK_DURATION 0.4f//in seconds
 
 
@@ -94,17 +81,15 @@ static void dataIntake(void){//TESTME : test everything
     
     int data_intake_count = 0;
     
-    int blink_indices[20];//TESTME : try different sizes
+    size_t blink_indices[20];//TESTME : try different sizes
 
     struct ring_buffer * internal_ring_buffer;
 
-    size_t i, tail = 0, num_potential_events = 0, num_data_points = 0, writePlusX, size_of_potential_events[50] = {0}, tail_min = 0, tail_max = 0;
+    size_t i, num_data_points = 0;
 
     size_t start_event, end_event;
 
-    bool freeze_tail = false, is_not_baseline = false, tail_is_overlap = false, loop = false;
-
-    float linear_buffer[INTERNAL_RING_BUFFER_SIZE] = {0.0f}, potential_events[50][ MAX_EVENT_DURATION ] = {0.0f}, channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
+    float channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
 
     float window_buffer[WINDOW_SIZE];
 
@@ -185,7 +170,7 @@ static void dataIntake(void){//TESTME : test everything
                 
                 const int signal_length = SAMPLING_RATE * TIME_IN_WINDOW;
 
-                int event_count[NUM_CHANNELS] = {0};
+                size_t event_count[NUM_CHANNELS] = {0};
 
                 float channel_windows[NUM_CHANNELS][(size_t)(SAMPLING_RATE * TIME_IN_WINDOW)];
 
@@ -214,19 +199,19 @@ static void dataIntake(void){//TESTME : test everything
                 
                 // indentify where in the window the blink is positioned
                 // no divide by 2 because of channel 2 shift
-                const size_t blink_in_window_start = NUM_SAMPLES_IN_BLINK;
+                // const size_t blink_in_window_start = NUM_SAMPLES_IN_BLINK;
                 const size_t blink_in_window_end = WINDOW_SIZE - (size_t)(NUM_SAMPLES_IN_BLINK);
                 
-                for(int i = 0; i < NUM_CHANNELS; i++){
+                for(i = 0; i < NUM_CHANNELS; i++){
 
-                    for(int j = 0; j < event_count[i]; j++){
+                    for(size_t j = 0; j < event_count[i]; j++){
                         
                         const size_t event_index = (internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
                         
                         
                         // printf("%zu <= %zu <= %zu\n", blink_in_window_start, blink_indices[j], blink_in_window_end);
 
-                        printf(" channel %d idx %d : %d\n",i, j, blink_indices[j]);
+                        // printf(" channel %d idx %d : %d\n",i, j, blink_indices[j]);
                         if(blink_indices[j] > blink_in_window_end) continue; //case 3
 
                         start_event = (internal_ring_buffer->size + event_index - NUM_SAMPLES_IN_BLINK) % internal_ring_buffer->size;
@@ -253,7 +238,7 @@ static void dataIntake(void){//TESTME : test everything
                             continue;
                         }
 
-                        for(int k = 0; k < size_event; k++){
+                        for(size_t k = 0; k < size_event; k++){
 
                             event[k] = event_temp[(k * NUM_CHANNELS) + i];
 
@@ -278,3 +263,17 @@ static void dataIntake(void){//TESTME : test everything
     pthread_cleanup_pop(1);
 }
 
+
+
+
+
+
+void * launchDataIntake(void * _){
+    (void)logEntry(THREAD_DATA_INTAKE, LOG_INFO, "launching data intake execution");
+    
+    (void)_; // compilation warning : unused parameter
+
+    dataIntake();
+
+    pthread_exit(NULL);
+}

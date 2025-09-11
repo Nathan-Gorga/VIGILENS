@@ -11,7 +11,7 @@ size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//this function ne
 
     if(send_signal){
         printf(CYAN"SENDING SIGNAL\n"RESET);
-        for(int i = 0; i < size; i++){
+        for(size_t i = 0; i < size; i++){
 
             data_points[i] = 100.0f;
 
@@ -20,7 +20,7 @@ size_t getMockUARTData(float data_points[PACKET_BUFFER_SIZE]){//this function ne
         return size;
     }
 
-    for(int i = 0; i < size; i++){
+    for(size_t i = 0; i < size; i++){
 
         data_points[i] = 0.0f;
 

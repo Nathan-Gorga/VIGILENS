@@ -54,44 +54,7 @@ size_t writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x)
 size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x);//TESTME
 
 
-/**
- * @brief Increments the write index of a ring buffer.
- *
- * @param buffer A pointer to the ring buffer whose write index is to be incremented.
- *
- * @details This function increments the write index of the given ring buffer. 
- *          If the write index reaches the buffer's size, it wraps around to 0.
- *          
- */static inline void _writeIndexIncrement(struct ring_buffer * buffer);
 
-
-
- /**
- * @brief Increments the write index of a ring buffer.
- *
- * @param buffer A pointer to the ring buffer whose write index is to be incremented.
- *
- * @details This function increments the write index of the given ring buffer. 
- *          Safe for multithreading.
- *
- * @pre buffer is not NULL.
- */static void writeIndexIncrement(struct ring_buffer * buffer);
-
-
-
-
-
-/**
- * @brief Checks if adding a specified amount of data to a ring buffer would overflow it.
- *
- * @param buffer The ring buffer to check.
- * @param size_to_add The amount of data to add.
- *
- * @return true if adding the specified amount of data would overflow the buffer, false otherwise.
- */static bool isOverflow(struct ring_buffer * buffer, const size_t size_to_add);
-
- 
- static bool isUnderflow(struct ring_buffer * buffer, const size_t size_to_subtract);
 
 
 /**
@@ -109,7 +72,7 @@ size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size
  *
  * @pre buffer is not NULL, data is not NULL, and size_data is equal to the size of the data
  *      that should be extracted.
- */void extractBufferFromRingBuffer(const struct ring_buffer * buffer, float * restrict data, const size_t size_data, const size_t start, const size_t stop);
+ */void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * restrict data, const size_t size_data, const size_t start, const size_t stop);
 
 
 

@@ -15,12 +15,6 @@ static void cleanupHandler(void * event_buffer){
 }
 
 
-void * launchDataProcessing(void * arg){
-
-    dataProcessing();
-
-    pthread_exit(NULL);
-}
 
 
 static void dataProcessing(void){
@@ -88,10 +82,7 @@ static void dataProcessing(void){
 
         //    }printf("\n");
 
-        
-            printf("Got event of size %d\n", event_buffer_size);
-
-        
+            // printf("Got event of size %d\n", event_buffer_size);
 
             logEntry(THREAD_DATA_PROCESSING, LOG_INFO, "got event from event buffer");
 
@@ -107,3 +98,18 @@ static void dataProcessing(void){
 
     pthread_cleanup_pop(1);
 }
+
+
+
+void * launchDataProcessing(void * _){
+
+    (void)_; // compilation warning : unused parameter
+
+    dataProcessing();
+
+    pthread_exit(NULL);
+}
+
+
+
+
