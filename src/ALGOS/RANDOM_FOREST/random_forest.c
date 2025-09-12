@@ -301,25 +301,27 @@ event_features featureExtraction(double event[], const size_t size){
 
 void printFeatures(const event_features feat){
     printf("slope 1 : %f, slope 2 : %f, slope 3 : %f\n", feat.slope_1,feat.slope_2,feat.slope_3);
-    printf("t1 : %zu, t2 : %zu, t3 : %zu\n", feat.t1,feat.t2,feat.t3);
+    printf("t1 : %d, t2 : %d, t3 : %d\n", feat.t1,feat.t2,feat.t3);
     printf("standard deviation : %f, sample entropy: %f\n", feat.std_dev,feat.sample_entropy);
 }
 
 
-int main() {
+// int main() {
     
     
-    int len;
-    double* vals = read_csv_values("./data/csv/blink3.csv", &len);
+//     int len;
+//     double* vals = read_csv_values("./data/csv/blink3.csv", &len);
 
-    if (!vals) return 1;
+//     if (!vals) return 1;
      
-    event_features feat = featureExtraction(vals, len); 
+//     event_features feat = featureExtraction(vals, len); 
      
-    printFeatures(feat);
+//     printFeatures(feat);
      
-    free(vals);
+//     free(vals);
     
 
-    return 0;
-}
+//     return 0;
+// }
+
+

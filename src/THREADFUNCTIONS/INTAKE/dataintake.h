@@ -8,6 +8,7 @@
 #include "../../LOG/log.h"
 #include "../../UART/uart.h"
 #include "../../MOCKUART/mockuart.h"
+#include "../../LED/led.h"
 
 
 #define TIME_IN_INTERNAL_RING_BUFFER 3//TODO change to fit the best openBCI stream settings

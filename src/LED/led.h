@@ -5,13 +5,6 @@
 #include <fcntl.h>
 #define GPIO_PIN "18"
 
-
-void gpio_export();
-
-void gpio_unexport();
-
-void gpio_direction(const char* dir);
-
-void gpio_write(const char* value);
+int ledFlash(void);
 
 #endif

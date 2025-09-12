@@ -218,28 +218,39 @@ int adaptiveThreshold(
 
 	for(int i = 0; i < signal_length; i++) signal[i] = fabs(eeg[i]);
 
-	for(int i = 0; i < signal_length; i += win_len){
+	// for(int i = 0; i < signal_length ; i += win_len){
 
-		const int end = min(i + win_len, signal_length - 1);
+	// 	const int end = min(i + win_len, signal_length - 1);
 
-		const double threshold = std_threshold(signal, i,end, th_mult);//robust_threshold(signal, i , end, th_mult);
+	// 	const double threshold = std_threshold(signal, i,end, th_mult);//robust_threshold(signal, i , end, th_mult);
 
-		printf("threshold : %f\n", threshold);
+	// 	printf("threshold : %f\n", threshold);
 
-		for(int j = prevent_overlap; j < win_len; j++){
+	// 	for(int j = prevent_overlap; j < win_len; j++){
 
-			const int idx = i + j;
+	// 		const int idx = i + j;
 
-			if(signal[idx] <= threshold) continue;
+	// 		if(signal[idx] <= threshold) continue;
 
-			const int limit = min(idx + refractory_samples, min(signal_length - 1, end + refractory_samples));
+	// 		const int limit = min(idx + refractory_samples, min(signal_length - 1, end + refractory_samples));
 
-			blink_indices[count++] = find_local_maxima(signal, idx, limit);
+	// 		blink_indices[count++] = find_local_maxima(signal, idx, limit);
 
-			j += refractory_samples;
+	// 		j += refractory_samples;
 
-			prevent_overlap = max(j - win_len, 0);
-		}
+	// 		prevent_overlap = max(j - win_len, 0);
+	// 	}
+	// }
+
+
+	const double threshold = std_threshold(signal, 0, signal_length, th_mult);
+	printf("threshold : %f\n", threshold);
+	for(int i = 0; i < signal_length; i++){
+		if(signal[i] < threshold) continue;
+		printf("i : %d, signal : %f\n", i, signal[i]);
+		blink_indices[count++] = find_local_maxima(signal, i, signal_length - 1);
+
+		i += refractory_samples; 
 	}
 
 	return count;

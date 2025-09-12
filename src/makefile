@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = clang
 CFLAGS = -g -Wall -Wextra -pedantic #-D_POSIX_C_SOURCE=200809L 
-LDFLAGS = -pthread -lm -lgsl
+LDFLAGS = -pthread -lm -lgsl -lgpiod
 PROF_FLAGS = #-pg
 
 
@@ -19,7 +19,8 @@ SRCS = main.c \
 	MOCKUART/mockuart.c \
 	ALGOS/THRESHOLD/threshold_algos.c \
 	ALGOS/FILTER/filter.c \
-	ALGOS/RANDOM_FOREST/random_forest.c
+	ALGOS/RANDOM_FOREST/random_forest.c \
+	LED/led.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
@@ -27,8 +28,7 @@ OBJS = $(SRCS:.c=.o)
 # Default rule
 all: $(TARGET)
 	@make clean
-	@./$(TARGET)
-	@gprof ./$(TARGET) gmon.out > analysis.txt
+	@sudo ./$(TARGET)
 
 # Link the target executable
 $(TARGET): $(OBJS)

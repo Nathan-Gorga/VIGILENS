@@ -147,9 +147,13 @@ static void dataIntake(void){
                 // const size_t blink_in_window_start = NUM_SAMPLES_IN_BLINK;
                 const size_t blink_in_window_end = WINDOW_SIZE - (size_t)(NUM_SAMPLES_IN_BLINK);
                 
+
+                if(event_count[0] > 0) ledFlash();
+
+            
                 for(i = 0; i < NUM_CHANNELS; i++){
 
-                    printf("found %zu in channel %zu\n", event_count[i], i);
+                    // printf("found %zu in channel %zu\n", event_count[i], i);
 
 
                     for(size_t j = 0; j < event_count[i]; j++){

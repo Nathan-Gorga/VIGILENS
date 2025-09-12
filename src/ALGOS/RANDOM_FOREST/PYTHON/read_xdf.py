@@ -11,7 +11,7 @@ import pyxdf
 
 
 # Load file
-data, header = pyxdf.load_xdf("./data/sub-P001/ses-S006/eeg/sub-P001_ses-S006_task-Default_run-001_eeg.xdf")
+data, header = pyxdf.load_xdf("../data/sub-P001/ses-S008/lslRecording_30_blinks_filter_bessel_0.1-15.xdf")
 
 print("Number of streams:", len(data))
 

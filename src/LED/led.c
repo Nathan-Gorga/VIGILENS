@@ -7,10 +7,13 @@
 #define BLINK_COUNT 10
 #define BLINK_DELAY_US 500000  // 0.5 seconds
 
-int main() {
+int ledFlash(void){
+
+    const int time_interval = 100000;
+
     struct gpiod_chip *chip;
     struct gpiod_line *line;
-    int ret, i;
+    
 
     // Open GPIO chip
     chip = gpiod_chip_open_by_name(CHIPNAME);
@@ -28,7 +31,7 @@ int main() {
     }
 
     // Request line as output, initial value 0 (LED off)
-    ret = gpiod_line_request_output(line, "led_blink", 0);
+    int ret = gpiod_line_request_output(line, "led_blink", 0);
     if (ret < 0) {
         perror("Request line as output failed");
         gpiod_chip_close(chip);
@@ -36,16 +39,17 @@ int main() {
     }
 
     // Blink the LED
-    for (i = 0; i < BLINK_COUNT; i++) {
-        gpiod_line_set_value(line, 1);  // LED ON
-        usleep(BLINK_DELAY_US);
-        gpiod_line_set_value(line, 0);  // LED OFF
-        usleep(BLINK_DELAY_US);
-    }
+    gpiod_line_set_value(line, 1);  // LED ON
+    usleep(time_interval);
+    gpiod_line_set_value(line, 0);  // LED OFF
+    
 
     // Release the line and close chip
     gpiod_line_release(line);
     gpiod_chip_close(chip);
 
     return 0;
+
 }
+
+
