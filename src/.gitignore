@@ -4,3 +4,4 @@ gmon.out
 perf.data
 analysis.txt
 gprof_env
+.venv
