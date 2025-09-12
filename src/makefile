@@ -18,7 +18,8 @@ SRCS = main.c \
 	UART/uart.c \
 	MOCKUART/mockuart.c \
 	ALGOS/THRESHOLD/threshold_algos.c \
-	ALGOS/FILTER/filter.c 
+	ALGOS/FILTER/filter.c \
+	ALGOS/RANDOM_FOREST/random_forest.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)

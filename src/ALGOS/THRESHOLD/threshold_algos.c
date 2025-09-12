@@ -48,6 +48,9 @@ static int fArrMax(const double arr[], const int n){
 }
 
 
+
+
+
 static int find_local_maxima(double segment[], const int start, const int end){
 
 	const int n = end - start;
