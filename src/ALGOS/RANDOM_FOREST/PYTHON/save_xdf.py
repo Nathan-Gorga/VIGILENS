@@ -35,4 +35,4 @@ def extract_segment_to_csv(xdf_file: str, out_file: str,
     print(f"Saved {len(x_seg)} samples to {out_file}")
 
 
-extract_segment_to_csv("../data/sub-P001/ses-S008/lslRecording_30_blinks_raw_3_sec_interval.xdf", "../noisy_blink13.csv", 11774, 12078, channel=0)
+extract_segment_to_csv("../data/sub-P001/ses-S008/lslRecording_30_blinks_raw_4_sec_interval.xdf", "../not_blink30.csv", 19751, 19941, channel=0)
