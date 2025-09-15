@@ -938,7 +938,7 @@ int main() {
     //extract data from CSV file
     double ** data = getNumericData("eeg_blinks.csv", &rows, &cols);
 
-    const double data_split = 0.1;
+    const double data_split = 0.12;
 
     printf("total rows of data : %d\n", rows);
     const int training_rows = (rows - 1) - (int)(rows * data_split);
@@ -989,12 +989,7 @@ int main() {
 
     free(data);
 
-
-
-
-
-
-
+    // process_folder("./data/csv", "eeg_blinks.csv");
 
     return 0;
 }

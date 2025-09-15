@@ -4,7 +4,7 @@
 #include "../../globaldefinition.h"
 #include <csv.h>
 
-#define MAX_ROWS 200
+#define MAX_ROWS 1000
 #define MAX_COLS 10
 #define MAX_FIELD_LEN 64
 
