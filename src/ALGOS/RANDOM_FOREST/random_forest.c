@@ -156,8 +156,7 @@ void printNode(tree_node * n){
     printf("label : %d\n", n->label);
 }
 
-#define MIN_SAMPLES 3
-#define MAX_DEPTH 10
+
 
 
 bool sameClass(double ** data, const size_t rows, const size_t cols){
@@ -867,17 +866,23 @@ int main() {
     //extract data from CSV file
     double ** data = getNumericData("eeg_blinks.csv", &rows, &cols);
 
-    const int training_rows = rows;
-    const int eval_rows = rows - 50;
+    const double data_split = 0.2;
+
+    printf("total rows of data : %d\n", rows);
+    const int training_rows = (rows - 1) - (int)(rows * data_split);
+
+    printf("training rows : %d\n", training_rows);
+    const int eval_rows = rows * data_split;
+    printf("eval rows : %d\n", eval_rows);
 
     const int bagging_size = rows;
-    const int forest_size = 10;
+    const int forest_size = 25;
 
     random_forest * forest = buildForest(data, training_rows, cols, forest_size, MAX_DEPTH, bagging_size);
 
     int vote = 0;
 
-    for(int i = 50; i < rows; i++){
+    for(int i = training_rows; i < rows; i++){
 
         const double * sample = data[i];
 
@@ -908,6 +913,13 @@ int main() {
     }
 
     free(data);
+
+
+
+
+
+
+
 
     return 0;
 }

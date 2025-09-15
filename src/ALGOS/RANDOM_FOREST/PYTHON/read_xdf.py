@@ -1,7 +1,7 @@
 import pyxdf
 
 # Load file
-data, header = pyxdf.load_xdf("../data/sub-P001/ses-S008/lslRecording_30_blinks_raw_4_sec_interval.xdf")
+data, header = pyxdf.load_xdf("../data/sub-P001/ses-S008/lslRecording_30_blinks_filter_bessel_0.1-15.xdf")
 
 print("Number of streams:", len(data))
 

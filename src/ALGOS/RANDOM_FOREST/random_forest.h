@@ -2,7 +2,7 @@
 #define RANDOM_FOREST_H
 
 #include "../../globaldefinition.h"
-#include "../../../../random-forest-in-c/csv_lib.h"
+#include "csv_lib.h"
 #include <dirent.h>
 #include <float.h>
 
@@ -70,7 +70,8 @@ typedef struct{
 
 } random_forest;
 
-
+#define MIN_SAMPLES 1
+#define MAX_DEPTH 20
 
 #endif
 
