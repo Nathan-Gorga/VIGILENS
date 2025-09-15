@@ -281,7 +281,7 @@ tree_node * buildTree(double ** data, const size_t rows, const size_t cols, cons
     //4. create node
     enum NODE_TYPE node_type = depth != 0 ? BRANCH : ROOT;
 
-    tree_node * node = createNode(node_type, best_feature, best_threshold, OTHER);
+    tree_node * node = createNode(node_type, best_feature, best_threshold, NOT_BLINK/*OTHER*/);
 
     //5. recurse on children
     // printf("Going into left branch\n");
@@ -310,7 +310,7 @@ tree_node * buildTree(double ** data, const size_t rows, const size_t cols, cons
 enum EVENT_TYPE predict(const tree_node *node, const double *sample) {
     if (node == NULL) {
         // safety fallback
-        return OTHER;
+        return NOT_BLINK;//OTHER;
     }
 
     if (node->type == LEAF) {
@@ -326,7 +326,7 @@ enum EVENT_TYPE predict(const tree_node *node, const double *sample) {
 
 enum EVENT_TYPE predictForest(random_forest * f, const double * sample){
 
-    if(f == NULL) return OTHER;
+    if(f == NULL) return NOT_BLINK;//OTHER;
 
 
     int vote[NUM_EVENT_TYPE] = {0};
@@ -857,6 +857,78 @@ void process_folder(const char *foldername, const char *outfile) {
     fclose(fp_out);
 }
 
+
+
+// Recursive helper to write JSON for a node
+void write_node_json(FILE *f, tree_node *node) {
+    if (!node) {
+        fprintf(f, "null");
+        return;
+    }
+
+    fprintf(f, "{\n");
+    fprintf(f, "\t\"type\": \"%d\",\n", node->type);
+    fprintf(f, "\t\"feature_index\": \"%d\",\n", node->feature_index);
+    fprintf(f, "\t\"threshold\": \"%.6f\",\n", node->threshold);
+    fprintf(f, "\t\"label\": \"%d\",\n", node->label);
+
+    fprintf(f, "\t\"left\": ");
+    write_node_json(f, node->left);
+    fprintf(f, ",\n");
+
+    fprintf(f, "\t\"right\": ");
+    write_node_json(f, node->right);
+
+    fprintf(f, "}\n");
+}
+
+void write_forest_struct_json(FILE * f, random_forest * forest){
+    if(!forest){
+        fprintf(f, "null");
+        return;
+    }
+
+    // fprintf(f, "{\n");
+    fprintf(f, "\t\"max_depth\": \"%d\",\n", forest->max_depth);
+    fprintf(f, "\t\"size\": \"%d\",\n", forest->size);
+    // fprintf(f, "},\n");    
+    fprintf(f, "\t\"forest\":");
+
+
+}
+
+// Main export function
+int save_forest_json(const char *filename, random_forest *forest) {
+    FILE *f = fopen(filename, "w");
+    if (!f) {
+        perror("Failed to open file");
+        return -1;
+    }
+    
+
+    fprintf(f, "{");
+
+    write_forest_struct_json(f, forest);
+    
+    fprintf(f, "[");
+    for(int i = 0; i < forest->size; i++){
+
+        write_node_json(f, forest->forest[i]);
+
+        if(i < forest->size - 1)fprintf(f, ",");
+
+    }
+
+    fprintf(f, "]");
+
+    fprintf(f, "}");
+
+
+
+    fclose(f);
+    return 0;
+}
+
 int main() {
 
     srand(time(NULL));
@@ -866,7 +938,7 @@ int main() {
     //extract data from CSV file
     double ** data = getNumericData("eeg_blinks.csv", &rows, &cols);
 
-    const double data_split = 0.2;
+    const double data_split = 0.1;
 
     printf("total rows of data : %d\n", rows);
     const int training_rows = (rows - 1) - (int)(rows * data_split);
@@ -875,8 +947,8 @@ int main() {
     const int eval_rows = rows * data_split;
     printf("eval rows : %d\n", eval_rows);
 
-    const int bagging_size = rows;
-    const int forest_size = 25;
+    const int bagging_size = training_rows;
+    const int forest_size = 5;
 
     random_forest * forest = buildForest(data, training_rows, cols, forest_size, MAX_DEPTH, bagging_size);
 
@@ -903,6 +975,9 @@ int main() {
     }
 
     printf("PREDICTION SCORE : %.1f% (%d/%d)\n",((float)vote/(float)eval_rows) * 100, vote, eval_rows);
+
+
+    save_forest_json("first_forest.json", forest);
 
     freeForest(forest);
 

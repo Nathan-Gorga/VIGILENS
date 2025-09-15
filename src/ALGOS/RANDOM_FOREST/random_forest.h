@@ -24,7 +24,7 @@ typedef struct {
 
 
 enum EVENT_TYPE{
-    OTHER = -1,
+    // OTHER = -1,
     NOT_BLINK,
     BLINK,
     NUM_EVENT_TYPE
@@ -70,8 +70,8 @@ typedef struct{
 
 } random_forest;
 
-#define MIN_SAMPLES 1
-#define MAX_DEPTH 20
+#define MIN_SAMPLES 3
+#define MAX_DEPTH 10
 
 #endif
 
