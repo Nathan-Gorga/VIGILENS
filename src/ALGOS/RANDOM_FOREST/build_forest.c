@@ -457,10 +457,12 @@ int main(void) {
 
     const int bagging_size = training_rows;
 
-    const int forest_size = 11;
+    // const int forest_size = 11;
         
 
-    random_forest * forest = buildForest(data, training_rows, cols, forest_size, MAX_DEPTH, bagging_size);
+
+    random_forest * forest = load_forest("./GOOD_FOREST_MODELS/best_model.json");
+    // random_forest * forest = buildForest(data, training_rows, cols, forest_size, MAX_DEPTH, bagging_size);
             
     int vote = 0;
 
@@ -470,6 +472,7 @@ int main(void) {
         
         const enum EVENT_TYPE prediction = predictForest(forest, sample);
         
+        printf("forest says %d , answer is %d\n", (int)prediction, (int)sample[cols -1]);
         
         if((int)prediction == (int)sample[cols-1]) vote++;
         

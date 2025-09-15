@@ -3,8 +3,11 @@
 
 #include "../../globaldefinition.h"
 #include <float.h>
-
+#include "csv_stuff.h"
 #include "event_feature.h"
+
+#define MIN_SAMPLES 3
+#define MAX_DEPTH 12
 
 
 enum NODE_TYPE{
@@ -45,8 +48,6 @@ typedef struct{
 
 } random_forest;
 
-#define MIN_SAMPLES 3
-#define MAX_DEPTH 12
 
 
 

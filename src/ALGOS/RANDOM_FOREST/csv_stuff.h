@@ -1,11 +1,13 @@
 #ifndef CSV_STUFF_H
 #define CSV_STUFF_H
 
-#include "../../globaldefinition.h"
-#include "build_forest.h"
-#include "event_feature.h"
 #include <csv.h>
 #include <dirent.h>
+#include "../../globaldefinition.h"
+#include "build_forest.h"
+#include "cjson/cJSON.h"  // You need cJSON library
+#include "event_feature.h"
+
 
 #define MAX_ROWS 1000
 #define MAX_COLS 10
@@ -19,5 +21,8 @@ typedef struct {
 } CSVData;
 
 double ** getNumericData(char * filename, size_t * rows, size_t * cols);
+
+struct random_forest* load_forest(const char *filename);
+
 
 #endif

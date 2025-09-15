@@ -343,36 +343,94 @@ int save_forest_json(const char *filename, random_forest *forest) {
     return 0;
 }
 
+// Recursive function to build a tree node from JSON object
+static tree_node * build_tree(cJSON *node_json) {
+    if (!node_json) return NULL;
 
+    tree_node *node = malloc(sizeof(tree_node));
+    if (!node) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return NULL;
+    }
 
-// int main(void){
+    node->type = atoi(cJSON_GetObjectItem(node_json, "type")->valuestring);
+    node->feature_index = atoi(cJSON_GetObjectItem(node_json, "feature_index")->valuestring);
+    node->threshold = atof(cJSON_GetObjectItem(node_json, "threshold")->valuestring);
+    node->label = atoi(cJSON_GetObjectItem(node_json, "label")->valuestring);
 
-//     size_t rows, cols;
+    cJSON *left = cJSON_GetObjectItem(node_json, "left");
+    cJSON *right = cJSON_GetObjectItem(node_json, "right");
 
-//     double ** data = getNumericData("./data/iris.csv", &rows, &cols);
+    node->left = (left && !cJSON_IsNull(left)) ? build_tree(left) : NULL;
+    node->right = (right && !cJSON_IsNull(right)) ? build_tree(right) : NULL;
 
+    return node;
+}
 
-//     for(int i = 0; i < rows - 1; i++){
-        
+// Load forest from JSON file
+struct random_forest* load_forest(const char *filename) {
+    FILE *fp = fopen(filename, "r");
+    if (!fp) {
+        perror("Failed to open file");
+        return NULL;
+    }
 
-//         for(int j = 0; j < cols ; j++){
-            
-            
-//             printf("%f\t", data[i][j]);
-    
-//         }
-    
-//         printf("\n");
+    fseek(fp, 0, SEEK_END);
+    long fsize = ftell(fp);
+    rewind(fp);
+
+    char *json_str = malloc(fsize + 1);
+    fread(json_str, 1, fsize, fp);
+    fclose(fp);
+    json_str[fsize] = '\0';
+
+    cJSON *json = cJSON_Parse(json_str);
+    if (!json) {
+        fprintf(stderr, "JSON parsing error\n");
+        free(json_str);
+        return NULL;
+    }
+
+    random_forest *forest = malloc(sizeof(random_forest));
+    forest->max_depth = atoi(cJSON_GetObjectItem(json, "max_depth")->valuestring);
+    forest->size = atoi(cJSON_GetObjectItem(json, "size")->valuestring);
+
+    cJSON *trees_json = cJSON_GetObjectItem(json, "forest");
+    forest->forest = malloc(forest->size * sizeof(tree_node*));
+
+    int i = 0;
+    cJSON *tree_json;
+    cJSON_ArrayForEach(tree_json, trees_json) {
+        forest->forest[i++] = build_tree(tree_json);
+    }
+
+    cJSON_Delete(json);
+    free(json_str);
+
+    return forest;
+}
+
+// Example traversal
+void print_tree(tree_node *node, int depth) {
+    if (!node) return;
+    for (int i = 0; i < depth; i++) printf("  ");
+    printf("Type:%d Feature:%d Thresh:%.6f Label:%d\n",
+           node->type, node->feature_index, node->threshold, node->label);
+    print_tree(node->left, depth + 1);
+    print_tree(node->right, depth + 1);
+}
+
+// int main() {
+//     RandomForest *forest = load_forest("good_forest_2.json");
+//     if (!forest) return 1;
+
+//     printf("Loaded forest with %d trees (max depth %d)\n", forest->size, forest->max_depth);
+//     for (int i = 0; i < forest->size; i++) {
+//         printf("Tree %d:\n", i);
+//         print_tree(forest->trees[i], 0);
 //     }
 
-
-//     for(int i = 0; i < rows; i++){
-    
-    
-//         free(data[i]);
-//     }
-
-//     free(data);
-
+//     // TODO: free memory
 //     return 0;
 // }
+

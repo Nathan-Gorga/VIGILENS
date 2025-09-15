@@ -19,6 +19,22 @@ enum EVENT_TYPE predict(const tree_node *node, const double *sample) {
     }
 }
 
+static int iarrmax(int arr[], const int size){
+    int max = arr[0];
+
+    int idx = 0; 
+
+    for(int i = 1; i < size; i++){
+        if(arr[i] >= max){
+            max = arr[i];
+            idx = i;
+        }
+    }
+
+    return idx;
+}
+
+
 enum EVENT_TYPE predictForest(random_forest * f, const double * sample){
 
     if(f == NULL) return NOT_BLINK;//OTHER;
