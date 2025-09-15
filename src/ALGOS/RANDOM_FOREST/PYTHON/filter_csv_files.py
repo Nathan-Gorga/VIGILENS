@@ -59,10 +59,10 @@ def process_csv_folder(folder: str, fs: float, lowcut: float, highcut: float, or
 # Example usage
 # -----------------------------
 if __name__ == "__main__":
-    folder = "../data/csv/"  # <- Change this to where your input CSVs are
+    folder = "./"  # <- Change this to where your input CSVs are
     fs = 250.0       # Sampling frequency (Hz) – set to your data’s fs
-    lowcut = 0.5     # Low cutoff frequency (Hz)
-    highcut = 10.0   # High cutoff frequency (Hz)
+    lowcut = 0.1     # Low cutoff frequency (Hz)
+    highcut = 30.0   # High cutoff frequency (Hz)
     order = 4        # Filter order
 
     process_csv_folder(folder, fs, lowcut, highcut, order)
