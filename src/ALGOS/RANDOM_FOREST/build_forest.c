@@ -457,7 +457,7 @@ int main(void) {
 
     const int bagging_size = training_rows;
 
-    // const int forest_size = 11;
+    const int forest_size = 17;
         
 
 
