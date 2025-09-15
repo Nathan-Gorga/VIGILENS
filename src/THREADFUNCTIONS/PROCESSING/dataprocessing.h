@@ -6,9 +6,13 @@
 #include "../../EVENTDATASTRUCTURES/eventdatastructure.h"
 #include "../../LOG/log.h"
 #include "../../ALGOS/THRESHOLD/threshold_algos.h"
-
+#include "../../ALGOS/RANDOM_FOREST/build_forest.h"
+#include "../../ALGOS/RANDOM_FOREST/predict_forest.h"
+#include "../../ALGOS/RANDOM_FOREST/event_feature.h"
 
 #define DATA_PROCESSING_TEXT_COLOR YELLOW
+#define JSON_FILE_NAME "./GOOD_FOREST_MODELS/best_model.json"
+
 
 void * launchDataProcessing(void * _);
 
