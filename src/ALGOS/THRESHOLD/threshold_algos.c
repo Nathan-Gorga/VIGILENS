@@ -137,6 +137,14 @@ static double std_threshold(double * signal, const int start, const int end, con
 	return med * th_mult;
 }
 
+
+static void derivate(double signal[], const int size, double * output){
+	for(int i = 0; i < size - 1; i++){
+		output[i] = signal[i+1] - signal[i];
+	}
+}
+
+
 static double robust_threshold(double * signal, const int start, const int end, const double th_mult){
 
 	const int segment_length = end - start;
@@ -201,8 +209,11 @@ int adaptiveThreshold(
 	const int sample_freq,
 	const float win_size,
 	size_t * blink_indices,
-	const float th_mult
+	const float th_mult,
+	bool * missing_data
 ) {
+
+	*missing_data = false;
 	
 	const int win_len = (win_size * sample_freq);
 
@@ -217,6 +228,76 @@ int adaptiveThreshold(
 	double signal[signal_length];
 
 	for(int i = 0; i < signal_length; i++) signal[i] = fabs(eeg[i]);
+
+	//calculate the threshold of the window
+	const double threshold = std_threshold(signal, 0, signal_length, th_mult);
+
+	int temp_blink[10];
+	int temp_blink_size = 0;
+
+	for(int i = 0; i < signal_length; i++){
+
+		//detect all above the threshold
+		if(signal[i] < threshold) continue;
+
+		const int temp_leftB = max(0, i - refractory_samples);
+		const int temp_rightB = min(signal_length - 1, i + refractory_samples);
+
+		//find local maximum
+		temp_blink[temp_blink_size++] = find_local_maxima(signal,temp_leftB, temp_rightB);
+
+		i += refractory_samples;
+	}
+
+	if(temp_blink_size == 0) return 0;
+
+	//derivate signal
+	double * derivated_signal = malloc((signal_length - 1) * sizeof(double));
+
+	derivate(signal, signal_length, derivated_signal);
+
+	
+	for(int i = 0; i < temp_blink_size; i++){
+
+		int left_boundary = -1;
+		int right_boundary = -1;
+		
+		int j;
+		//find turning point in rising edge
+		for(j = temp_blink[i]; derivated_signal[j] >= 0 && j >= 0; j--);	
+		if(derivated_signal[j] < 0) left_boundary = j;
+	
+		//find turning point in falling edge
+		for(j = temp_blink[i]; derivated_signal[j+1] <= 0 && j < signal_length - 1; j++);
+		if(derivated_signal[j] > 0) right_boundary = j;
+	
+		if(right_boundary != -1) blink_indices[count++] = temp_blink[i];
+
+		else if(left_boundary != -1){
+			*missing_data = true;
+			blink_indices[count++] = temp_blink[i];
+		}
+
+		else{
+			printf("found a peak with no boundaries, window may be too small!\n");
+		}
+
+	}
+
+		
+	
+	//if Peak, TP -> send the blink
+	//if TP, Peak -> send the blink and flip a pointer flag to wait for the rest of the signal to arrive
+
+	//if nothing -> send nothing-
+
+
+
+
+
+
+
+
 
 	// for(int i = 0; i < signal_length ; i += win_len){
 
@@ -243,15 +324,17 @@ int adaptiveThreshold(
 	// }
 
 
-	const double threshold = std_threshold(signal, 0, signal_length, th_mult);
-	printf("threshold : %f\n", threshold);
-	for(int i = 0; i < signal_length; i++){
-		if(signal[i] < threshold) continue;
-		printf("i : %d, signal : %f\n", i, signal[i]);
-		blink_indices[count++] = find_local_maxima(signal, i, signal_length - 1);
+	// const double threshold = std_threshold(signal, 0, signal_length, th_mult);
+	// printf("threshold : %f\n", threshold);
+	// for(int i = 0; i < signal_length; i++){
+	// 	if(signal[i] < threshold) continue;
+	// 	printf("i : %d, signal : %f\n", i, signal[i]);
+	// 	blink_indices[count++] = find_local_maxima(signal, i, signal_length - 1);
 
-		i += refractory_samples; 
-	}
+	// 	i += refractory_samples; 
+	// }
+
+	free(derivated_signal);
 
 	return count;
 }

@@ -33,7 +33,8 @@ int adaptiveThreshold(
 	const int sample_freq,
 	const float win_size,
 	size_t * blink_indices,
-	const float th_mult
+	const float th_mult,
+	bool * missing_data
 );
 
 #endif
