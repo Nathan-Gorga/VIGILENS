@@ -139,8 +139,11 @@ static double std_threshold(double * signal, const int start, const int end, con
 
 
 static void derivate(double signal[], const int size, double * output){
+	// printf("derivating\n");
 	for(int i = 0; i < size - 1; i++){
+
 		output[i] = signal[i+1] - signal[i];
+		// printf("%lf : %lf \n", signal[i], output[i]);
 	}
 }
 
@@ -202,6 +205,10 @@ static void derivate(double signal[], const int size, double * output){
 // 	return med + th_mult * mad;
 
 // }
+//TODO : find a better fix
+#define RIGHT_DOUBLE_BLINK_PREVENTION 70
+#define LEFT_DOUBLE_BLINK_PREVENTION 90
+
 
 int adaptiveThreshold(
 	double * eeg,
@@ -263,23 +270,43 @@ int adaptiveThreshold(
 		int right_boundary = -1;
 		
 		int j;
-		//find turning point in rising edge
-		for(j = temp_blink[i]; derivated_signal[j] >= 0 && j >= 0; j--);	
-		if(derivated_signal[j] < 0) left_boundary = j;
-	
-		//find turning point in falling edge
-		for(j = temp_blink[i]; derivated_signal[j+1] <= 0 && j < signal_length - 1; j++);
-		if(derivated_signal[j] > 0) right_boundary = j;
-	
-		if(right_boundary != -1) blink_indices[count++] = temp_blink[i];
 
-		else if(left_boundary != -1){
+		// printf("temp_blink : %d \n", temp_blink[i]);
+		// printf("looking for left boundary\n");
+
+		//find turning point in rising edge
+		for(j = temp_blink[i]; derivated_signal[j-1] > 0 && j > 0; j--){
+			// printf("j : %d, d : %lf\n",j, derivated_signal[j]);
+			left_boundary = j;
+		}
+		// if(derivated_signal[j] < 0) left_boundary = j;
+	
+
+		// printf("looking for right boundary\n");
+
+		//find turning point in falling edge
+		for(j = temp_blink[i]; derivated_signal[j+1] < 0 && j < signal_length - 1; j++){
+			// printf("j : %d, d : %lf\n",j+1, derivated_signal[j+1]);
+			right_boundary = j;
+		}
+		// if(derivated_signal[j] > 0) right_boundary = j;
+	
+		printf("left_boundary : %d, right_boundary : %d\n", left_boundary, right_boundary);
+
+		if(right_boundary != -1 && right_boundary < signal_length - RIGHT_DOUBLE_BLINK_PREVENTION ){//&& left_boundary != -1 && left_boundary < signal_length - LEFT_DOUBLE_BLINK_PREVENTION){
+			blink_indices[count++] = temp_blink[i];
+			ledFlash();			
+
+		} 
+
+		else if(left_boundary != -1){//} && left_boundary < signal_length - LEFT_DOUBLE_BLINK_PREVENTION){
+		
 			*missing_data = true;
 			blink_indices[count++] = temp_blink[i];
 		}
 
 		else{
-			printf("found a peak with no boundaries, window may be too small!\n");
+			printf(RED"PREVENTED FALSE POSITIVE\n"RESET);
 		}
 
 	}

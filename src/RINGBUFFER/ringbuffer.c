@@ -173,6 +173,8 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
     return buffer_size - start + stop;
 }
 
+
+// FIXME : this size_data == size business is a pain, find a better way
 void extractBufferFromRingBuffer(struct ring_buffer *buffer, double *restrict data, const size_t size_data, const size_t start, const size_t stop) {
 
     #ifdef ASSERT_ENABLED
@@ -186,6 +188,7 @@ void extractBufferFromRingBuffer(struct ring_buffer *buffer, double *restrict da
         const bool overflow = start > stop;
 
         size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
+
 
     #ifdef ASSERT_ENABLED
         assert(size == size_data);

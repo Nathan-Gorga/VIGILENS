@@ -86,10 +86,10 @@ static void dataProcessing(void){
 
         if(event_buffer_size > 0){//there is an event
 
-
+            printf(YELLOW"received event\n"RESET);
             const int channel_size = separateChannels(event_buffer, event_buffer_size, channel1, channel2);
 
-            printf(YELLOW"separated channels in sizes of %d\n"RESET, channel_size);
+            // printf(YELLOW"separated channels in sizes of %d\n"RESET, channel_size);
 
             const event_features signal_features1 = featureExtraction(channel1, channel_size);
             const event_features signal_features2 = featureExtraction(channel2, channel_size);

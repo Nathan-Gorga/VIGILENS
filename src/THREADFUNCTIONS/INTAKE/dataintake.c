@@ -122,8 +122,10 @@ static void dataIntake(void){
         data_intake_count = 0;
 
         const size_t extract_index = internal_ring_buffer->write;
+        const int s =  minusTail(extract_index, WINDOW_SIZE);
         
-        extractBufferFromRingBuffer(internal_ring_buffer, window_buffer, WINDOW_SIZE, minusTail(extract_index, WINDOW_SIZE), extract_index);
+
+        extractBufferFromRingBuffer(internal_ring_buffer, window_buffer, WINDOW_SIZE,s, extract_index);
 
         for(int i = 0; i < NUM_CHANNELS; i++){
 
@@ -147,13 +149,14 @@ static void dataIntake(void){
         
             if(event_count[i] <= 0) continue;
 
-            ledFlash();    
 
             int to_send_count = 0;
             int to_send[40];
 
             //get all the blinks in one channel                
             for(size_t j = 0; j < event_count[i] && !missing_data[i]; j++){
+            
+                printf(BLUE"sending CURRENT blinks\n"RESET);
 
                 //get indexes from blink_indices (absolute to ring buffer) and later buffer
                 to_send[to_send_count++] = (internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
@@ -162,13 +165,14 @@ static void dataIntake(void){
             
             //send all the blinks in later_blinks
             while(later_counts > 0){
+                printf(BLUE"sending later blinks\n"RESET);
 
                 to_send[to_send_count++] = later_blinks[--later_counts];
 
             }
 
             const int B = 250;// TODO : make this a macro constant so you can declare event_buffer on the stack
-            const int size_buf = B * 2 + 1;
+            const int size_buf = B * 2;
 
             double * event_buffer = malloc(size_buf * sizeof(double));
 
@@ -176,9 +180,8 @@ static void dataIntake(void){
 
                 const int event_index = to_send[j];
 
-                const int start_index = (event_index - B) % internal_ring_buffer->size;
-                const int end_index = (event_index + B) % internal_ring_buffer->size;
-
+                const int start_index = (internal_ring_buffer->size + event_index - B) % internal_ring_buffer->size;
+                const int end_index = (internal_ring_buffer->size + event_index + B) % internal_ring_buffer->size;
 
                 // extract the whole data
                 extractBufferFromRingBuffer(internal_ring_buffer, event_buffer, size_buf, start_index, end_index);

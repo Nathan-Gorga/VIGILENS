@@ -4,6 +4,7 @@
         "eventdatastructure.h": "c",
         "ringbuffer.h": "c",
         "threshold_algos.h": "c",
-        "uart.h": "c"
+        "uart.h": "c",
+        "dataintake.h": "c"
     }
 }

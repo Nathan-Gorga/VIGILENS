@@ -140,6 +140,7 @@ static size_t _getEvent(double *  data){
     const size_t stop = event->stop;
 
     const size_t size_data = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);     
+
     
     MUTEX_LOCK(&event_ring_buffer_mutex);
         
