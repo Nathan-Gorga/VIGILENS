@@ -1,22 +1,22 @@
 #include "threshold_algos.h"
 
-inline bool aboveThreshold(const float data_point, const float threshold){
+inline bool aboveThreshold(const double data_point, const double threshold){
 	return data_point >= threshold;
 }
 
 
-inline bool belowThreshold(const float data_point, const float threshold){
+inline bool belowThreshold(const double data_point, const double threshold){
 	return data_point <= threshold;
 }
 
-inline bool isBaseline(const float data_point, const float max, const float min){
+inline bool isBaseline(const double data_point, const double max, const double min){
 
 	const bool ret = !(aboveThreshold(data_point, max) || belowThreshold(data_point, min));
 
 	return ret;
 }
 
-bool simpleThresholdEventDetection(const float threshold, const float event[MAX_EVENT_DURATION], const size_t size){
+bool simpleThresholdEventDetection(const double threshold, const double event[MAX_EVENT_DURATION], const size_t size){
 	
 	for(size_t i = 0; i < size; ++i){
 
@@ -145,77 +145,77 @@ static void derivate(double signal[], const int size, double * output){
 }
 
 
-static double robust_threshold(double * signal, const int start, const int end, const double th_mult){
+// static double robust_threshold(double * signal, const int start, const int end, const double th_mult){
 
-	const int segment_length = end - start;
+// 	const int segment_length = end - start;
 
-	if (segment_length <= 0) {
+// 	if (segment_length <= 0) {
 
-		fprintf(stderr, "Invalid segment length: %d\n", segment_length);
+// 		fprintf(stderr, "Invalid segment length: %d\n", segment_length);
 
-		return -1.0;
+// 		return -1.0;
 
-	}
+// 	}
 
-    double *segment = (double *)malloc(segment_length * sizeof(double));//FIXME : heap is slow
+//     double *segment = (double *)malloc(segment_length * sizeof(double));//FIXME : heap is slow
 
-	if (!segment) {
+// 	if (!segment) {
 
-		perror("malloc failed");
+// 		perror("malloc failed");
 
-		return -1.0;
+// 		return -1.0;
 
-	}
+// 	}
 
-	//FIXME : switch this to memcpy
-    for (int i = 0; i < segment_length; ++i) {
+// 	//FIXME : switch this to memcpy
+//     for (int i = 0; i < segment_length; ++i) {
 
-        segment[i] = signal[start + i];
+//         segment[i] = signal[start + i];
 
-	}
+// 	}
 
-    const double med = compute_median(segment, segment_length);
+//     const double med = compute_median(segment, segment_length);
 	
-    double *temp = (double *)malloc(segment_length * sizeof(double)); //FIXME : heap is slow
+//     double *temp = (double *)malloc(segment_length * sizeof(double)); //FIXME : heap is slow
 
-    if (!temp) {
+//     if (!temp) {
     
-		perror("malloc failed");
+// 		perror("malloc failed");
     
-		free(segment);
+// 		free(segment);
     
-		return -1.0;
+// 		return -1.0;
 
-    }
+//     }
 
-    for (int j = 0; j < segment_length; ++j) {
+//     for (int j = 0; j < segment_length; ++j) {
 
-        temp[j] = fabs(signal[start + j] - med);  
+//         temp[j] = fabs(signal[start + j] - med);  
 
-    }
+//     }
 
-    const double mad = 1.4826 * compute_median(temp, segment_length);
+//     const double mad = 1.4826 * compute_median(temp, segment_length);
 
-    free(temp);
-    free(segment);
+//     free(temp);
+//     free(segment);
 
-	return med + th_mult * mad;
+// 	return med + th_mult * mad;
 
-}
+// }
 
 int adaptiveThreshold(
-	float * eeg,
+	double * eeg,
 	const int signal_length,
-	const int sample_freq,
-	const float win_size,
+	// const int sample_freq,
+	// const double win_size,
 	size_t * blink_indices,
-	const float th_mult,
+	const double th_mult,
 	bool * missing_data
 ) {
 
 	*missing_data = false;
 	
-	const int win_len = (win_size * sample_freq);
+	// const int win_len = (win_size * sample_freq);
 
 	//TODO : implement a static refractory tracker to handle events that overlap on windows
 
@@ -223,7 +223,7 @@ int adaptiveThreshold(
 
 	int count = 0;
 
-	int prevent_overlap = 0;
+	// int prevent_overlap = 0;
 
 	double signal[signal_length];
 

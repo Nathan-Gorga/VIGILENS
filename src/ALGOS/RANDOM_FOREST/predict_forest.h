@@ -13,3 +13,4 @@ enum EVENT_TYPE predictForest(random_forest * f, const double * sample);
 
 
 #endif
+

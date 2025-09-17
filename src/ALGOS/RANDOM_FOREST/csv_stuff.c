@@ -15,7 +15,10 @@ static void field_cb(void * s, size_t len, void * data){
     }
 }
 
-static void row_cb(int c, void *data){
+static void row_cb(int _, void *data){
+    
+    (void)_;
+
     CSVData *csvdata = (CSVData *)data;
 
     if(csvdata->row == 0){
@@ -49,7 +52,7 @@ static char ***load_csv(const char *filename, size_t * out_rows, size_t *out_col
         }
     }
 
-    CSVData csvdata = {matrix, 0, 0};
+    CSVData csvdata = {matrix, 0, 0, MAX_COLS};
 
     if(csv_init(&parser, 0) != 0){
         fprintf(stderr, "Failed to initialize parser\n");
@@ -90,12 +93,12 @@ static double **convertToNumeric(char ***data, size_t rows, size_t cols){
     
     double ** numeric  = malloc(rows * sizeof(double *));
     // printf("cols : %d : %s\n",cols , data[1][4]);
-    for(int i = 0; i < rows; i++){
+    for(size_t i = 0; i < rows; i++){
         numeric[i] = malloc(cols * sizeof(double));
     }
 
-    for(int i = 1; i < rows; i++){
-        for(int j = 0; j < cols; j++){
+    for(size_t i = 1; i < rows; i++){
+        for(size_t j = 0; j < cols; j++){
 
             if(j < cols - 1){
             
@@ -133,9 +136,9 @@ double ** getNumericData(char * filename, size_t * rows, size_t * cols){
 
     double ** data = convertToNumeric(raw, *rows, *cols);
 
-    for(int i = 0; i < *rows; i++){
+    for(size_t i = 0; i < *rows; i++){
     
-        for(int j = 0; j < *cols; j++){
+        for(size_t j = 0; j < *cols; j++){
     
             free(raw[i][j]);
     
@@ -303,8 +306,8 @@ void write_forest_struct_json(FILE * f, random_forest * forest){
     }
 
     // fprintf(f, "{\n");
-    fprintf(f, "\t\"max_depth\": \"%d\",\n", forest->max_depth);
-    fprintf(f, "\t\"size\": \"%d\",\n", forest->size);
+    fprintf(f, "\t\"max_depth\": \"%zu\",\n", forest->max_depth);
+    fprintf(f, "\t\"size\": \"%zu\",\n", forest->size);
     // fprintf(f, "},\n");    
     fprintf(f, "\t\"forest\":");
 
@@ -325,7 +328,7 @@ int save_forest_json(const char *filename, random_forest *forest) {
     write_forest_struct_json(f, forest);
     
     fprintf(f, "[");
-    for(int i = 0; i < forest->size; i++){
+    for(size_t i = 0; i < forest->size; i++){
 
         write_node_json(f, forest->forest[i]);
 
@@ -407,7 +410,7 @@ struct random_forest* load_forest(const char *filename) {
     cJSON_Delete(json);
     free(json_str);
 
-    return forest;
+    return (struct random_forest*)forest;
 }
 
 // Example traversal

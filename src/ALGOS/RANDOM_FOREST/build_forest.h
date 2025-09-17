@@ -39,7 +39,7 @@ typedef struct tree_node {
 } tree_node;
 
 
-typedef struct{
+typedef struct random_struct{
 
     size_t size;
     size_t max_depth;
@@ -89,3 +89,4 @@ random_forest * buildForest(
 
 
 #endif
+

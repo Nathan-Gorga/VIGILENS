@@ -18,18 +18,18 @@ static int32_t interpret24BitToInt(const byte data[3]){
     return Int;
 }
 
-static inline float convertToFloat(const int32_t value){
-    return (float)(value * SCALE_FACTOR * MACHINE_USEABLE_SCALE_FACTOR);
+static inline double convertToFloat(const int32_t value){
+    return (double)(value * SCALE_FACTOR * MACHINE_USEABLE_SCALE_FACTOR);
 }
 
-static inline float channelDataToFloat(const byte data[3]){
+static inline double channelDataToFloat(const byte data[3]){
     // TODO : make filter a "togglable" function, 
     // either by calling it externally after this function, or with a function parameter
     return filterDataPoint(convertToFloat(interpret24BitToInt(data)));
 }
 
 
-static void getChannelDataFromPacket(const openbci_packet packet, float data_point[NUM_CHANNELS]){//DONTTOUCH
+static void getChannelDataFromPacket(const openbci_packet packet, double data_point[NUM_CHANNELS]){//DONTTOUCH
     for(int i = 0; i < NUM_CHANNELS; i++){
         data_point[i] = channelDataToFloat(packet.fields.channel_data[i]);
     }
@@ -131,7 +131,7 @@ void endUART(void){
 
 }
 
-size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parameter in this funciton to specify allowable wait time
+size_t getUARTData(double data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parameter in this funciton to specify allowable wait time
 
     static uint8_t uart_accum_buf[UART_BUFFER_SIZE];  // persistent accumulation buffer
 
@@ -211,7 +211,7 @@ size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parame
         }
     }
 
-    return valid_packets * NUM_CHANNELS;  // total floats stored in data_points
+    return valid_packets * NUM_CHANNELS;  // total doubles stored in data_points
 }
 
 

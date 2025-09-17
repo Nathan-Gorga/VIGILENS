@@ -97,20 +97,20 @@ static int arrmin(double arr[], const int size){
     return idx;
 }
 
-static int arrmax(double arr[], const int size){
-    double max = arr[0];
+// static int arrmax(double arr[], const int size){
+//     double max = arr[0];
 
-    int idx = 0; 
+//     int idx = 0; 
 
-    for(int i = 1; i < size; i++){
-        if(arr[i] > max){
-            max = arr[i];
-            idx = i;
-        }
-    }
+//     for(int i = 1; i < size; i++){
+//         if(arr[i] > max){
+//             max = arr[i];
+//             idx = i;
+//         }
+//     }
 
-    return idx;
-}
+//     return idx;
+// }
 
 static int iarrmax(int arr[], const int size){
     int max = arr[0];
@@ -152,8 +152,8 @@ tree_node * createNode(const enum NODE_TYPE type, const int feature_index, const
 
 void printNode(tree_node * n){
     printf("type : %d\n", n->type);
-    printf("left : %p\n", n->left);
-    printf("right : %p\n", n->right);
+    printf("left : %p\n", (void *)n->left);
+    printf("right : %p\n", (void *)n->right);
     printf("feature idx : %d\n", n->feature_index);
     printf("threshold : %f\n", n->threshold);
     printf("label : %d\n", n->label);
@@ -165,7 +165,7 @@ void printNode(tree_node * n){
 bool sameClass(double ** data, const size_t rows, const size_t cols){
 
     // printf("rows : %d, cols : %d\n", rows, cols ); fflush(stdout);
-    for(int i = 0; i < rows - 1; i++){
+    for(size_t i = 0; i < rows - 1; i++){
         
         const double label1 = data[i][cols-1];
         
@@ -184,7 +184,7 @@ enum EVENT_TYPE majorityClass(double ** data,const size_t rows,const size_t cols
 
     // printf("In this dataset, there are %zu rows\n", rows); fflush(stdout);
 
-    for(int i = 0; i < rows; i++){
+    for(size_t i = 0; i < rows; i++){
     
         const int idx = data[i][cols-1];
         // printf("%d\n", idx);
@@ -227,7 +227,7 @@ tree_node * buildTree(double ** data, const size_t rows, const size_t cols, cons
 
     double * threshold = malloc((cols-1) * sizeof(double));
 
-    for(int i = 0; i < cols -1; i++){
+    for(size_t i = 0; i < cols -1; i++){
 
         for(int j = 0; j < n_samples; j++){
             
@@ -357,7 +357,7 @@ double ** bagging(double **data, const size_t rows, const size_t cols, const siz
 
     double ** agg_data = malloc(iterations * sizeof(double*));
 
-    for(int i = 0; i < iterations; i++){
+    for(size_t i = 0; i < iterations; i++){
 
         const int random_row = rand() % rows;
 
@@ -389,7 +389,7 @@ random_forest * createForest(const size_t size, const size_t max_depth){
 
 void freeForest(random_forest * f){
     
-    for(int i = 0; i < f->size; i++){
+    for(size_t i = 0; i < f->size; i++){
 
         freeTree(f->forest[i]);
 
@@ -414,13 +414,13 @@ random_forest * buildForest(
 
     if(!f) return NULL;
 
-    for(int i = 0; i < forest_size; i++){
+    for(size_t i = 0; i < forest_size; i++){
 
         double ** tree_data = bagging(data, rows, cols, bagging_size);
 
         f->forest[i] = buildTree(tree_data, bagging_size, cols, 0);
 
-        for(int j = 0; j < bagging_size; j++){
+        for(size_t j = 0; j < bagging_size; j++){
     
             free(tree_data[j]);
 
@@ -436,66 +436,66 @@ random_forest * buildForest(
 
 
 
-int main(void) {
+// int main(void) {
 
-    srand(time(NULL));
+//     srand(time(NULL));
 
-    size_t rows, cols;
+//     size_t rows, cols;
     
-    //extract data from CSV file
-    double ** data = getNumericData("new_eeg_data.csv", &rows, &cols);
+//     //extract data from CSV file
+//     double ** data = getNumericData("new_eeg_data.csv", &rows, &cols);
 
-    const double data_split = 0.2;
+//     const double data_split = 0.2;
 
 
-    printf("total rows of data : %d\n", rows);
-    const int training_rows = (rows ) - (int)(rows * data_split);
+//     printf("total rows of data : %d\n", rows);
+//     const int training_rows = (rows ) - (int)(rows * data_split);
 
-    printf("training rows : %d\n", training_rows);
-    const int eval_rows = rows * data_split;
-    printf("eval rows : %d\n", eval_rows);
+//     printf("training rows : %d\n", training_rows);
+//     const int eval_rows = rows * data_split;
+//     printf("eval rows : %d\n", eval_rows);
 
-    const int bagging_size = training_rows;
+//     const int bagging_size = training_rows;
 
-    const int forest_size = 17;
+//     const int forest_size = 17;
         
 
 
-    random_forest * forest = load_forest("./GOOD_FOREST_MODELS/best_model.json");
-    // random_forest * forest = buildForest(data, training_rows, cols, forest_size, MAX_DEPTH, bagging_size);
+//     random_forest * forest = load_forest("./GOOD_FOREST_MODELS/best_model.json");
+//     // random_forest * forest = buildForest(data, training_rows, cols, forest_size, MAX_DEPTH, bagging_size);
             
-    int vote = 0;
+//     int vote = 0;
 
-    for(int i = training_rows; i < rows; i++){
+//     for(int i = training_rows; i < rows; i++){
         
-        const double * sample = data[i];                
+//         const double * sample = data[i];                
         
-        const enum EVENT_TYPE prediction = predictForest(forest, sample);
+//         const enum EVENT_TYPE prediction = predictForest(forest, sample);
         
-        printf("forest says %d , answer is %d\n", (int)prediction, (int)sample[cols -1]);
+//         printf("forest says %d , answer is %d\n", (int)prediction, (int)sample[cols -1]);
         
-        if((int)prediction == (int)sample[cols-1]) vote++;
+//         if((int)prediction == (int)sample[cols-1]) vote++;
         
-    }
+//     }
 
 
-    printf("PREDICTION SCORE : %.2f% (%d/%d)\n",((float)vote/(float)eval_rows) * 100, vote, eval_rows);
+//     printf("PREDICTION SCORE : %.2f% (%d/%d)\n",((float)vote/(float)eval_rows) * 100, vote, eval_rows);
 
-    freeForest(forest);       
+//     freeForest(forest);       
 
-    for(int i = 0; i < rows; i++){
+//     for(int i = 0; i < rows; i++){
         
-        free(data[i]);
+//         free(data[i]);
         
-    }
+//     }
     
-    free(data);
+//     free(data);
 
 
 
-    // process_folder("./data/csv/", "eeg_blinks.csv");
+//     // process_folder("./data/csv/", "eeg_blinks.csv");
 
-    return 0;
-}
+//     return 0;
+// }
 
 

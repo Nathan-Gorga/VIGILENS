@@ -96,7 +96,7 @@ bool beginUART(void);
 
 void endUART(void);
 
-size_t getUARTData(float data_points[PACKET_BUFFER_SIZE]);
+size_t getUARTData(double data_points[PACKET_BUFFER_SIZE]);
 
 bool sendUARTSignal(const enum TX_SIGNAL_TYPE signal_type);
 

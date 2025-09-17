@@ -22,7 +22,8 @@ typedef struct {
 
 double ** getNumericData(char * filename, size_t * rows, size_t * cols);
 
-struct random_forest* load_forest(const char *filename);
+struct random_forest * load_forest(const char *filename);
 
 
 #endif
+

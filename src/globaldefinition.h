@@ -1,7 +1,7 @@
 #ifndef GLOBALDEFINITION_H
 #define GLOBALDEFINITION_H
 
-#define _DEFAULT_SOURCE
+// #define _DEFAULT_SOURCE
 
 #include <stdio.h>
 #include <stdlib.h>

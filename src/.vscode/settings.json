@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "build_forest.h": "c",
+        "eventdatastructure.h": "c",
+        "ringbuffer.h": "c",
+        "threshold_algos.h": "c",
+        "uart.h": "c"
+    }
+}

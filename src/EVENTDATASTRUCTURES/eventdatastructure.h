@@ -44,9 +44,9 @@ int createMutexes(void);
 
 int destroyMutexes(void);
 
-size_t getEvent(float * data);
+size_t getEvent(double * data);
 
-void addEvent(const float * data, const size_t size_data);
+void addEvent(double * data, const size_t size_data);
 
 #endif
 

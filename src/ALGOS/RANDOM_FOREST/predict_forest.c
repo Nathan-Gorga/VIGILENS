@@ -42,7 +42,7 @@ enum EVENT_TYPE predictForest(random_forest * f, const double * sample){
 
     int vote[NUM_EVENT_TYPE] = {0};
 
-    for(int i = 0; i < f->size; i++){
+    for(size_t i = 0; i < f->size; i++){
 
         // printf("Querying tree %d\n",i+1);
 

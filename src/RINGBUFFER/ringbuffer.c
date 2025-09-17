@@ -8,7 +8,7 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
 
     if(buffer == NULL) return NULL;
 
-    buffer->memory = (float*)calloc(size, sizeof(float));
+    buffer->memory = (double*)calloc(size, sizeof(double));
 
     if(buffer->memory == NULL) {
         free(buffer);
@@ -173,7 +173,7 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
     return buffer_size - start + stop;
 }
 
-void extractBufferFromRingBuffer(struct ring_buffer *buffer, float *restrict data, const size_t size_data, const size_t start, const size_t stop) {
+void extractBufferFromRingBuffer(struct ring_buffer *buffer, double *restrict data, const size_t size_data, const size_t start, const size_t stop) {
 
     #ifdef ASSERT_ENABLED
         assert(buffer != NULL);
@@ -193,16 +193,16 @@ void extractBufferFromRingBuffer(struct ring_buffer *buffer, float *restrict dat
 
     if (!overflow) {
         // contiguous copy
-        memmove(data, buffer->memory + start, size * sizeof(float));
+        memmove(data, buffer->memory + start, size * sizeof(double));
     } else {
         // wrapped copy
         const size_t offset = buffer->size - start;
-        memmove(data, buffer->memory + start, offset * sizeof(float));
-        memmove(data + offset, buffer->memory, stop * sizeof(float));  
+        memmove(data, buffer->memory + start, offset * sizeof(double));
+        memmove(data + offset, buffer->memory, stop * sizeof(double));  
     }
 }
 
-void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data){
+void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const double data){
     
     #ifdef ASSERT_ENABLED
 
@@ -219,7 +219,7 @@ void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data
     buffer->write = (buffer->write + 1) % buffer->size; 
 }
 
-void addBufferToRingBuffer(struct ring_buffer * buffer, const float * restrict data, const size_t size){
+void addBufferToRingBuffer(struct ring_buffer * buffer, const double * restrict data, const size_t size){
 
     #ifdef ASSERT_ENABLED
 

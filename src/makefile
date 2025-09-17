@@ -1,9 +1,8 @@
-# Compiler and flags
+ # Compiler and flags
 CC = clang
 CFLAGS = -g -Wall -Wextra -pedantic #-D_POSIX_C_SOURCE=200809L 
-LDFLAGS = -pthread -lm -lgsl -lgpiod
+LDFLAGS = -pthread -lm -lgsl -lgpiod -lcsv -lcjson
 PROF_FLAGS = #-pg
-
 
 # Target executable
 TARGET = VIGILENCE
@@ -19,8 +18,13 @@ SRCS = main.c \
 	MOCKUART/mockuart.c \
 	ALGOS/THRESHOLD/threshold_algos.c \
 	ALGOS/FILTER/filter.c \
-	ALGOS/RANDOM_FOREST/random_forest.c \
-	LED/led.c
+	LED/led.c \
+	ALGOS/RANDOM_FOREST/build_forest.c \
+	ALGOS/RANDOM_FOREST/csv_stuff.c \
+	ALGOS/RANDOM_FOREST/event_feature.c \
+	ALGOS/RANDOM_FOREST/predict_forest.c \
+	ALGOS/RANDOM_FOREST/test_forest.c 
+# 	ALGOS/RANDOM_FOREST/random_forest.c \
 
 # Object files
 OBJS = $(SRCS:.c=.o)

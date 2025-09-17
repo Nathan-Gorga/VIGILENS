@@ -123,7 +123,7 @@ static void popNodeFromList(void){
     freeNode(curr);
 }
 
-static size_t _getEvent(float *  data){
+static size_t _getEvent(double *  data){
     
     #ifdef ASSERT_ENABLED
 
@@ -152,7 +152,7 @@ static size_t _getEvent(float *  data){
     return size_data;
 }
 
-static void _addEvent(const float *  data, const size_t size_data){
+static void _addEvent(double *  data, const size_t size_data){
 
     #ifdef ASSERT_ENABLED
 
@@ -203,7 +203,7 @@ void freeEventDatastructure(void){
     freeList();
 }
 
-size_t getEvent(float *  data){
+size_t getEvent(double *  data){
     
     MUTEX_LOCK(&head_mutex);
 
@@ -214,7 +214,7 @@ size_t getEvent(float *  data){
     return ret;
 }
 
-void addEvent(const float * data, const size_t size_data){
+void addEvent(double * data, const size_t size_data){
     
     MUTEX_LOCK(&head_mutex);
 

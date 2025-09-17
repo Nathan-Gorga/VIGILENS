@@ -17,7 +17,7 @@ enum RING_BUFFER_TYPE{
 
 struct ring_buffer{
 
-    float * memory;
+    double * memory;
 
     size_t size;
 
@@ -39,13 +39,13 @@ size_t writeIndexAfterAddingX(const struct ring_buffer * buffer, const size_t x)
 
 size_t writeIndexAfterSubtractingX(const struct ring_buffer * buffer, const size_t x);
 
-void extractBufferFromRingBuffer(struct ring_buffer * buffer, float * restrict data, const size_t size_data, const size_t start, const size_t stop);
+void extractBufferFromRingBuffer(struct ring_buffer * buffer, double * restrict data, const size_t size_data, const size_t start, const size_t stop);
 
 size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop);
 
-void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const float data); 
+void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const double data); 
  
-void addBufferToRingBuffer(struct ring_buffer * buffer, const float * restrict data, const size_t size);
+void addBufferToRingBuffer(struct ring_buffer * buffer, const double * restrict data, const size_t size);
 
 //TODO : find better name
 size_t minusTail(const int tail, const int num_data_points);

@@ -7,7 +7,7 @@ static int fArrMax(double signal[], const size_t size, double * ret){
     int idx = 0;
     double max = signal[0];
 
-    for(int i = 1; i < size; i++){
+    for(size_t i = 1; i < size; i++){
         if(max < signal[i]){
             idx = i;
             max = signal[i];
@@ -25,7 +25,7 @@ static int fArrMin(double signal[], const size_t size, double * ret){
     int idx = 0;
     double min = signal[0];
 
-    for(int i = 1; i < size; i++){
+    for(size_t i = 1; i < size; i++){
         if(min > signal[i]){
             idx = i;
             min = signal[i];
@@ -81,7 +81,7 @@ static int findStart(double signal[], const size_t size, const double baseline, 
 
     int idx = 0;
 
-    for(int i = idx; i < size; i++){
+    for(size_t i = idx; i < size; i++){
 
         if(lower_boundary <= signal[i] && signal[i] <= upper_boundary){
 
@@ -113,7 +113,7 @@ static int findEnd(double signal[], const size_t size, const double baseline, co
 }
 
 
-static int findMiddle(const double* signal, int n, int idx_max, int idx_min, double baseline) {
+static int findMiddle(const double* signal, int idx_max, int idx_min, double baseline) {
     if (idx_max > idx_min) {
         int tmp = idx_max;
         idx_max = idx_min;
@@ -228,7 +228,7 @@ event_features featureExtraction(double event[], const size_t size){
     // find the middle baseline point for slope 2
 
     //if the drop is too sharp, higheset and lowest may be separated by only one index, meaning slope 2 will be 0
-    const int middle_idx = findMiddle(event,size, highest_idx, lowest_idx, baseline);
+    const int middle_idx = findMiddle(event, highest_idx, lowest_idx, baseline);
 
     //calculate slope 2
     const double slope_2 = calculateSlope(highest_idx, highest, middle_idx, baseline);

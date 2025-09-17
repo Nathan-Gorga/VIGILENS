@@ -22,7 +22,7 @@ static void masterStartupDialogue(void){
     //wait for go signal
     if(sigwait(&set, &sig) == 0) {
 
-        (void)printf("INTAKE RECEIVED GO SIGNAL\n");
+        (void)printf(BLUE"INTAKE RECEIVED GO SIGNAL\n"RESET);
 
     } else {
 
@@ -43,21 +43,25 @@ static void cleanupHandler(void * internal_ring_buffer){
 
 static void dataIntake(void){
     
-    int data_intake_count = 0;
+    size_t data_intake_count = 0;
 
     bool missing_data[NUM_CHANNELS] = {false};
     
     size_t blink_indices[20];
 
+    int later_blinks[20];
+
+    int later_counts = 0;
+
     struct ring_buffer * internal_ring_buffer;
 
     size_t i, num_data_points = 0;
 
-    size_t start_event, end_event;
+    // size_t start_event, end_event;
 
-    float channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
+    double channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
 
-    float window_buffer[WINDOW_SIZE];
+    double window_buffer[WINDOW_SIZE];
 
     internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
 
@@ -78,7 +82,7 @@ static void dataIntake(void){
 
     #endif
 
-    printf("INTAKE ENTERING MAIN LOOP\n");
+    printf(BLUE"INTAKE ENTERING MAIN LOOP\n"RESET);
 
     while(true){
 
@@ -100,145 +104,112 @@ static void dataIntake(void){
 
         #endif
 
-        if(num_data_points > 0){
+        
+        if(num_data_points <= 0) continue;
 
-            data_intake_count += num_data_points;
+        data_intake_count += num_data_points;
 
-            for(i = 0; i < num_data_points; i++){
+        for(i = 0; i < num_data_points; i++) addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
 
-                addFloatToRingBuffer(internal_ring_buffer, channel_data_point[i]);
+        if(data_intake_count < WINDOW_SIZE) continue;
+        
+        const int signal_length = SAMPLING_RATE * TIME_IN_WINDOW;
+
+        size_t event_count[NUM_CHANNELS] = {0};
+
+        double channel_windows[NUM_CHANNELS][(size_t)(SAMPLING_RATE * TIME_IN_WINDOW)];
+
+        data_intake_count = 0;
+
+        const size_t extract_index = internal_ring_buffer->write;
+        
+        extractBufferFromRingBuffer(internal_ring_buffer, window_buffer, WINDOW_SIZE, minusTail(extract_index, WINDOW_SIZE), extract_index);
+
+        for(int i = 0; i < NUM_CHANNELS; i++){
+
+            for(int j = 0; j < signal_length; j++){
+
+                const int idx = (j * NUM_CHANNELS) + i;
+
+                channel_windows[i][j] = window_buffer[idx]; 
 
             }
 
-            if(data_intake_count % WINDOW_SIZE == 0){
-                
-                const int signal_length = SAMPLING_RATE * TIME_IN_WINDOW;
+            event_count[i] = adaptiveThreshold(
+                channel_windows[i],
+                signal_length,
+                // SAMPLING_RATE,
+                // TIME_IN_WINDOW,
+                blink_indices,
+                THRESH_MULT,
+                &missing_data[i]
+            ); 
+        
+            if(event_count[i] <= 0) continue;
 
-                size_t event_count[NUM_CHANNELS] = {0};
+            ledFlash();    
 
-                float channel_windows[NUM_CHANNELS][(size_t)(SAMPLING_RATE * TIME_IN_WINDOW)];
+            int to_send_count = 0;
+            int to_send[40];
 
-                data_intake_count = 0;
+            //get all the blinks in one channel                
+            for(size_t j = 0; j < event_count[i] && !missing_data[i]; j++){
 
-                const size_t extract_index = internal_ring_buffer->write;
-             
-                extractBufferFromRingBuffer(internal_ring_buffer, window_buffer, WINDOW_SIZE, minusTail(extract_index, WINDOW_SIZE), extract_index);
-
-                for(int i = 0; i < NUM_CHANNELS; i++){
-
-                    for(int j = 0; j < signal_length; j++){
-
-                        const int idx = (j * NUM_CHANNELS) + i;
-
-                        channel_windows[i][j] = window_buffer[idx]; 
-
-                    }
-
-                    event_count[i] = adaptiveThreshold(
-                        channel_windows[i],
-                        signal_length,
-                        SAMPLING_RATE,
-                        TIME_IN_WINDOW,
-                        blink_indices,
-                        THRESH_MULT,
-                        &missing_data[i]//TODO : handle the missing data problem
-                    ); 
-                
-                    if(event_count[i] > 0) ledFlash();
-                
-                    if(missing_data[i]){
-                        // add channel index (absolute to ring bufer) to later buffer
-
-                        //swithc the missing data flag
-                        
-                    } else{
-
-                        //get indexes from blink_indices and later buffer
-
-                        // extract the whole data 
-
-                        //send it to processing thread
-                    }
-                
-                }
-                
-
-
-                
-
-
-
-
-
-                // indentify where in the window the blink is positioned
-                // no divide by 2 because of channel 2 shift
-                // const size_t blink_in_window_start = NUM_SAMPLES_IN_BLINK;
-                // const size_t blink_in_window_end = WINDOW_SIZE - (size_t)(NUM_SAMPLES_IN_BLINK);
-                
-
-                // if(event_count[0] > 0) ledFlash();
-
+                //get indexes from blink_indices (absolute to ring buffer) and later buffer
+                to_send[to_send_count++] = (internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
+                                           
+            }
             
-                // for(i = 0; i < NUM_CHANNELS; i++){
+            //send all the blinks in later_blinks
+            while(later_counts > 0){
 
-                //     // printf("found %zu in channel %zu\n", event_count[i], i);
+                to_send[to_send_count++] = later_blinks[--later_counts];
+
+            }
+
+            const int B = 250;// TODO : make this a macro constant so you can declare event_buffer on the stack
+            const int size_buf = B * 2 + 1;
+
+            double * event_buffer = malloc(size_buf * sizeof(double));
+
+            for(int j = 0; j < to_send_count; j++){
+
+                const int event_index = to_send[j];
+
+                const int start_index = (event_index - B) % internal_ring_buffer->size;
+                const int end_index = (event_index + B) % internal_ring_buffer->size;
 
 
-                //     for(size_t j = 0; j < event_count[i]; j++){
+                // extract the whole data
+                extractBufferFromRingBuffer(internal_ring_buffer, event_buffer, size_buf, start_index, end_index);
+
+                for(int k = 0; k < size_buf/2; k++){
+                    event_buffer[k] = event_buffer[(k * NUM_CHANNELS) + i];
+                }
+
+                //send it to processing thread
+                addEvent(event_buffer, size_buf / 2);
+            }
+
+            free(event_buffer); 
+
+            if(!missing_data[i]) continue;
+
+            // add channel index (absolute to ring buffer to later buffer
+            for(size_t j = 0; j < event_count[i]; j++){
+
+                later_blinks[later_counts++] = (internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
+
+            }
+
+            // switch the missing data flag
+            missing_data[i] = false;
                         
-                //         const size_t event_index = (internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
-                        
-                //         if(blink_indices[j] > blink_in_window_end) continue; //case 3
-
-                //         start_event = (internal_ring_buffer->size + event_index - NUM_SAMPLES_IN_BLINK) % internal_ring_buffer->size;
-
-                //         end_event = (event_index + NUM_SAMPLES_IN_BLINK) % internal_ring_buffer->size;
-
-                //         const size_t size_temp = numElementsBetweenIndexes(internal_ring_buffer->size, start_event, end_event);
-
-                //         float * event_temp = malloc(size_temp * sizeof(float));
-
-                //         if(!event_temp) continue;
-
-                //         extractBufferFromRingBuffer(internal_ring_buffer, event_temp, size_temp, start_event, end_event);
-
-                //         const size_t size_event = (size_temp / NUM_CHANNELS);
-
-                //         float * event = malloc(size_event * sizeof(float));
-
-                //         if(!event){
-     
-                //             free(event_temp);
-     
-                //             continue;
-     
-                //         }
-
-                //         for(size_t k = 0; k < size_event; k++){
-
-                //             event[k] = event_temp[(k * NUM_CHANNELS) + i];
-
-                //         }
-
-                //         free(event_temp);
-
-                //         // printf(RED"SEND EVENT : %zu\n"RESET, size_event);
-
-                //         addEvent(event, size_event);
-
-                //         free(event);
-                    
-                //     }
-                // }
-            }            
         }
     }
 
     pthread_cleanup_pop(1);
 }
-
-
-
 
 
 

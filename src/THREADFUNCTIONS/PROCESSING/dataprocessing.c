@@ -1,13 +1,13 @@
 #include "dataprocessing.h"
 
-random_forest * forest = NULL;
+struct random_forest * forest = NULL;
 
 static void cleanupHandler(void * event_buffer){
 
     (void)printf("Cancel signal received\n");
 
-    if(event_buffer != NULL) free((float*)event_buffer);
-    if(forest != NULL) freeForest(forest);
+    if(event_buffer != NULL) free((double*)event_buffer);
+    if(forest != NULL) freeForest((random_forest*)forest);
 
 
     (void)printf("Cleaned up thread\n");
@@ -43,7 +43,7 @@ static void dataProcessing(void){
 
     size_t event_buffer_size = 0;
 
-    float * event_buffer = calloc(MAX_EVENT_SIZE, sizeof(float));
+    double * event_buffer = calloc(MAX_EVENT_SIZE, sizeof(double));
 
     forest = load_forest(JSON_FILE_NAME);
 
@@ -57,7 +57,7 @@ static void dataProcessing(void){
 
         (void)pthread_cond_signal(&ready_cond);
 
-        (void)printf("Thread Ready!\n");
+        (void)printf(YELLOW"Thread Ready!\n"RESET);
 
         MUTEX_UNLOCK(&ready_lock);
 
@@ -67,7 +67,7 @@ static void dataProcessing(void){
 
     if (sigwait(&set, &sig) == 0) {
 
-        (void)printf("PROCESSING RECEIVED GO SIGNAL\n");
+        (void)printf(YELLOW"PROCESSING RECEIVED GO SIGNAL\n"RESET);
 
     } else {
 
@@ -76,7 +76,7 @@ static void dataProcessing(void){
         pthread_exit(NULL);
     }
 
-    printf("PROCESSING ENTERING MAIN LOOP\n");
+    printf(YELLOW"PROCESSING ENTERING MAIN LOOP\n"RESET);
 
     while(1){
 
@@ -88,6 +88,8 @@ static void dataProcessing(void){
 
 
             const int channel_size = separateChannels(event_buffer, event_buffer_size, channel1, channel2);
+
+            printf(YELLOW"separated channels in sizes of %d\n"RESET, channel_size);
 
             const event_features signal_features1 = featureExtraction(channel1, channel_size);
             const event_features signal_features2 = featureExtraction(channel2, channel_size);
@@ -114,15 +116,15 @@ static void dataProcessing(void){
                 signal_features2.sample_entropy,
             };
 
-            enum EVENT_TYPE prediction1 = predictForest(forest, sample1);
-            enum EVENT_TYPE prediction2 = predictForest(forest, sample2);
+            enum EVENT_TYPE prediction1 = predictForest((random_forest*)forest, sample1);
+            enum EVENT_TYPE prediction2 = predictForest((random_forest*)forest, sample2);
 
             if(prediction1 == BLINK){
-                printf("FOUND A BLINK ON CHANNEL 1!\n");
+                printf(YELLOW"FOUND A BLINK ON CHANNEL 1!\n"RESET);
             }
 
             if(prediction2 == BLINK){
-                printf("FOUND A BLINK ON CHANNEL 2!\n");
+                printf(YELLOW"FOUND A BLINK ON CHANNEL 2!\n"RESET);
             }
 
             event_buffer_size = 0;

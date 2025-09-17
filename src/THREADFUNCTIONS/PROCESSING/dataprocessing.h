@@ -10,8 +10,7 @@
 #include "../../ALGOS/RANDOM_FOREST/predict_forest.h"
 #include "../../ALGOS/RANDOM_FOREST/event_feature.h"
 
-#define DATA_PROCESSING_TEXT_COLOR YELLOW
-#define JSON_FILE_NAME "./GOOD_FOREST_MODELS/best_model.json"
+#define JSON_FILE_NAME "./ALGOS/RANDOM_FOREST/GOOD_FOREST_MODELS/best_model.json"
 
 
 void * launchDataProcessing(void * _);
