@@ -219,7 +219,7 @@ int adaptiveThreshold(
 	const double th_mult,
 	bool * missing_data
 ) {
-
+// printf("in threshodl\n");
 	*missing_data = false;
 	
 	// const int win_len = (win_size * sample_freq);
@@ -243,9 +243,11 @@ int adaptiveThreshold(
 	int temp_blink_size = 0;
 
 	for(int i = 0; i < signal_length; i++){
-
+		printf("signal : %lf, threshold : %lf\n", signal[i], threshold);
 		//detect all above the threshold
 		if(signal[i] < threshold) continue;
+
+		printf("passed threshodl\n");
 
 		const int temp_leftB = max(0, i - refractory_samples);
 		const int temp_rightB = min(signal_length - 1, i + refractory_samples);
