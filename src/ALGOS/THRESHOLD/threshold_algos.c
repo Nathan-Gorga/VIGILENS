@@ -16,7 +16,7 @@ inline bool isBaseline(const double data_point, const double max, const double m
 	return ret;
 }
 
-bool simpleThresholdEventDetection(const double threshold, const double event[MAX_EVENT_DURATION], const size_t size){
+bool simpleThresholdEventDetection(const double threshold, const double event[MAX_EVENT_SIZE], const size_t size){
 	
 	for(size_t i = 0; i < size; ++i){
 
@@ -55,7 +55,7 @@ static int find_local_maxima(double segment[], const int start, const int end){
 
 	const int n = end - start;
 
-	double window[MAX_EVENT_DURATION];
+	double window[MAX_EVENT_SIZE];
 
 	memmove(window, segment + start, n * sizeof(double));
 
@@ -101,7 +101,6 @@ double compute_median(double *data, int length) {
     return median;
 }
 
-//TODO : implement stdThreshold alongside robust and test which is best
 static double std_threshold(double * signal, const int start, const int end, const double th_mult){
 	const int segment_length = end - start;
 
@@ -123,12 +122,7 @@ static double std_threshold(double * signal, const int start, const int end, con
 
 	}
 
-	//FIXME : switch this to memcpy
-    for (int i = 0; i < segment_length; ++i) {
-
-        segment[i] = signal[start + i];
-
-	}
+	memmove(segment, signal + start, segment_length * sizeof(double));
 
     const double med = compute_median(segment, segment_length);
 	    
@@ -139,115 +133,96 @@ static double std_threshold(double * signal, const int start, const int end, con
 
 
 static void derivate(double signal[], const int size, double * output){
-	// printf("derivating\n");
+
 	for(int i = 0; i < size - 1; i++){
 
 		output[i] = signal[i+1] - signal[i];
-		// printf("%lf : %lf \n", signal[i], output[i]);
+
 	}
 }
 
 
-// static double robust_threshold(double * signal, const int start, const int end, const double th_mult){
+static double robust_threshold(double * signal, const int start, const int end, const double th_mult){
 
-// 	const int segment_length = end - start;
+	const int segment_length = end - start;
 
-// 	if (segment_length <= 0) {
+	if (segment_length <= 0) {
 
-// 		fprintf(stderr, "Invalid segment length: %d\n", segment_length);
+		fprintf(stderr, "Invalid segment length: %d\n", segment_length);
 
-// 		return -1.0;
+		return -1.0;
 
-// 	}
+	}
 
-//     double *segment = (double *)malloc(segment_length * sizeof(double));//FIXME : heap is slow
+    double *segment = (double *)malloc(segment_length * sizeof(double));//FIXME : heap is slow
 
-// 	if (!segment) {
+	if (!segment) {
 
-// 		perror("malloc failed");
+		perror("malloc failed");
 
-// 		return -1.0;
+		return -1.0;
 
-// 	}
+	}
 
-// 	//FIXME : switch this to memcpy
-//     for (int i = 0; i < segment_length; ++i) {
+	memmove(segment, signal + start, segment_length * sizeof(double));
 
-//         segment[i] = signal[start + i];
-
-// 	}
-
-//     const double med = compute_median(segment, segment_length);
+    const double med = compute_median(segment, segment_length);
 	
-//     double *temp = (double *)malloc(segment_length * sizeof(double)); //FIXME : heap is slow
+    double *temp = (double *)malloc(segment_length * sizeof(double)); //FIXME : heap is slow
 
-//     if (!temp) {
+    if (!temp) {
     
-// 		perror("malloc failed");
+		perror("malloc failed");
     
-// 		free(segment);
+		free(segment);
     
-// 		return -1.0;
+		return -1.0;
 
-//     }
+    }
 
-//     for (int j = 0; j < segment_length; ++j) {
+    for (int j = 0; j < segment_length; ++j) {
 
-//         temp[j] = fabs(signal[start + j] - med);  
+        temp[j] = fabs(signal[start + j] - med);  
 
-//     }
+    }
 
-//     const double mad = 1.4826 * compute_median(temp, segment_length);
+    const double mad = 1.4826 * compute_median(temp, segment_length);
 
-//     free(temp);
-//     free(segment);
+    free(temp);
+    free(segment);
 
-// 	return med + th_mult * mad;
+	return med + th_mult * mad;
 
-// }
-//TODO : find a better fix
-#define RIGHT_DOUBLE_BLINK_PREVENTION 70
-#define LEFT_DOUBLE_BLINK_PREVENTION 90
+}
 
 
 int adaptiveThreshold(
 	double * eeg,
 	const int signal_length,
-	// const int sample_freq,
-	// const double win_size,
 	size_t * blink_indices,
 	const double th_mult,
 	bool * missing_data
 ) {
-// printf("in threshodl\n");
-	*missing_data = false;
-	
-	// const int win_len = (win_size * sample_freq);
 
-	//TODO : implement a static refractory tracker to handle events that overlap on windows
+	*missing_data = false;
 
 	const int refractory_samples = REFRACTORY_SAMPLES;
 
 	int count = 0;
 
-	// int prevent_overlap = 0;
-
 	double signal[signal_length];
 
 	for(int i = 0; i < signal_length; i++) signal[i] = fabs(eeg[i]);
 
-	//calculate the threshold of the window
 	const double threshold = std_threshold(signal, 0, signal_length, th_mult);
 
 	int temp_blink[10];
 	int temp_blink_size = 0;
 
 	for(int i = 0; i < signal_length; i++){
-		// printf("signal : %lf, threshold : %lf\n", signal[i], threshold);
+
 		//detect all above the threshold
 		if(eeg[i] < threshold) continue;
-
-		// printf("passed threshodl\n");
 
 		const int temp_leftB = max(0, i - refractory_samples);
 		const int temp_rightB = min(signal_length - 1, i + refractory_samples);
@@ -261,7 +236,7 @@ int adaptiveThreshold(
 	if(temp_blink_size == 0) return 0;
 
 	//derivate signal
-	double * derivated_signal = malloc((signal_length - 1) * sizeof(double));
+	double * derivated_signal = malloc((signal_length - 1) * sizeof(double));//FIXME : HEAP IS SLOW
 
 	derivate(eeg, signal_length, derivated_signal);
 
@@ -274,29 +249,17 @@ int adaptiveThreshold(
 		
 		int j;
 
-		// printf("temp_blink : %d \n", temp_blink[i]);
-		// printf("looking for left boundary\n");
-
 		//find turning point in rising edge
 		for(j = temp_blink[i]; derivated_signal[j-1] > 0 && j > 0; j--){
-			// printf("j : %d, d : %lf\n",j, derivated_signal[j]);
 			left_boundary = j;
 		}
-		// if(derivated_signal[j] < 0) left_boundary = j;
-	
-
-		// printf("looking for right boundary\n");
 
 		//find turning point in falling edge
 		for(j = temp_blink[i]; derivated_signal[j+1] < 0 && j < signal_length - 1; j++){
-			// printf("j : %d, d : %lf\n",j+1, derivated_signal[j+1]);
 			right_boundary = j;
 		}
-		// if(derivated_signal[j] > 0) right_boundary = j;
-	
-		// printf("left_boundary : %d, right_boundary : %d\n", left_boundary, right_boundary);
 
-		if(right_boundary != -1 && right_boundary < signal_length - RIGHT_DOUBLE_BLINK_PREVENTION ){//&& left_boundary != -1 && left_boundary < signal_length - LEFT_DOUBLE_BLINK_PREVENTION){
+		if(right_boundary != -1){// && right_boundary < signal_length - RIGHT_DOUBLE_BLINK_PREVENTION ){//&& left_boundary != -1 && left_boundary < signal_length - LEFT_DOUBLE_BLINK_PREVENTION){
 			blink_indices[count++] = temp_blink[i];
 			ledFlash();	
 			db_blink = true;
@@ -310,63 +273,8 @@ int adaptiveThreshold(
 			db_blink = false;
 		}
 
-		else{
-			printf(RED"PREVENTED FALSE POSITIVE\n"RESET);
-			db_blink = false;
-
-		}
 
 	}
-
-		
-	
-	//if Peak, TP -> send the blink
-	//if TP, Peak -> send the blink and flip a pointer flag to wait for the rest of the signal to arrive
-
-	//if nothing -> send nothing-
-
-
-
-
-
-
-
-
-
-	// for(int i = 0; i < signal_length ; i += win_len){
-
-	// 	const int end = min(i + win_len, signal_length - 1);
-
-	// 	const double threshold = std_threshold(signal, i,end, th_mult);//robust_threshold(signal, i , end, th_mult);
-
-	// 	printf("threshold : %f\n", threshold);
-
-	// 	for(int j = prevent_overlap; j < win_len; j++){
-
-	// 		const int idx = i + j;
-
-	// 		if(signal[idx] <= threshold) continue;
-
-	// 		const int limit = min(idx + refractory_samples, min(signal_length - 1, end + refractory_samples));
-
-	// 		blink_indices[count++] = find_local_maxima(signal, idx, limit);
-
-	// 		j += refractory_samples;
-
-	// 		prevent_overlap = max(j - win_len, 0);
-	// 	}
-	// }
-
-
-	// const double threshold = std_threshold(signal, 0, signal_length, th_mult);
-	// printf("threshold : %f\n", threshold);
-	// for(int i = 0; i < signal_length; i++){
-	// 	if(signal[i] < threshold) continue;
-	// 	printf("i : %d, signal : %f\n", i, signal[i]);
-	// 	blink_indices[count++] = find_local_maxima(signal, i, signal_length - 1);
-
-	// 	i += refractory_samples; 
-	// }
 
 	free(derivated_signal);
 

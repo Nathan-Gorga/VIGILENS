@@ -14,28 +14,11 @@ static void cleanupHandler(void * event_buffer){
 
 }
 
-//FIXME : only works for two channels for now
-int separateChannels(double * data, const int size, double * channel1, double * channel2){
-
-    const int new_size = size / 2;
-
-    for(int i = 0; i < new_size; i++){
-        channel1[i] = data[i * 2];
-        channel2[i] = data[(i * 2) + 1];
-    }
-
-    return new_size;
-}
-
-
 static void dataProcessing(void){
 
     sigset_t set;
 
     int sig;
-
-    double channel1[MAX_EVENT_DURATION];
-    double channel2[MAX_EVENT_DURATION];
 
     while(sigemptyset(&set));
 
@@ -84,62 +67,32 @@ static void dataProcessing(void){
 
         event_buffer_size = getEvent(event_buffer);
 
-        if(event_buffer_size > 0){//there is an event
+        if(event_buffer_size <= 0) continue; // buffer is empty
+        
+        const event_features signal_features = featureExtraction(event_buffer,event_buffer_size);
 
-            // printf(YELLOW"received event \n"RESET);
-            for(int i = 0; i < event_buffer_size; i++){
-                // printf("%.1lf ", event_buffer[i]);
-            }//printf("\n");
+        double sample[] = {
+            signal_features.slope_1,
+            signal_features.slope_2,
+            signal_features.slope_3,
+            signal_features.t1,
+            signal_features.t2,
+            signal_features.t3,
+            signal_features.std_dev,
+            signal_features.sample_entropy,
+        };
 
-            // printf(YELLOW"received event of size : %d\n"RESET, event_buffer_size);
+        enum EVENT_TYPE prediction = predictForest((random_forest*)forest, sample);
 
-            //BUG : dont need to split data, already done in intake, check again just to be sure
-            // const int channel_size = separateChannels(event_buffer, event_buffer_size, channel1, channel2);
+        if(prediction == BLINK){
+            printf(GREEN"BLINK!\n"RESET);
+        } else {
+            printf(RED"NOT BLINK!\n"RESET);
 
-            // printf(YELLOW"separated channels in sizes of %d\n"RESET, channel_size);
-
-            const event_features signal_features1 = featureExtraction(event_buffer,event_buffer_size);
-            // const event_features signal_features2 = featureExtraction(channel2, channel_size);
-
-            double sample1[] = {
-                signal_features1.slope_1,
-                signal_features1.slope_2,
-                signal_features1.slope_3,
-                signal_features1.t1,
-                signal_features1.t2,
-                signal_features1.t3,
-                signal_features1.std_dev,
-                signal_features1.sample_entropy,
-            };
-
-            printFeatures(signal_features1);
-
-            // double sample2[] = {
-            //     signal_features2.slope_1,
-            //     signal_features2.slope_2,
-            //     signal_features2.slope_3,
-            //     signal_features2.t1,
-            //     signal_features2.t2,
-            //     signal_features2.t3,
-            //     signal_features2.std_dev,
-            //     signal_features2.sample_entropy,
-            // };
-
-            enum EVENT_TYPE prediction1 = predictForest((random_forest*)forest, sample1);
-            // enum EVENT_TYPE prediction2 = predictForest((random_forest*)forest, sample2);
-
-            if(prediction1 == BLINK){
-                printf(GREEN"BLINK!\n"RESET);
-            } else {
-                printf(RED"NOT BLINK!\n"RESET);
-
-            }
-            // if(prediction2 == BLINK){
-            //     printf(YELLOW"FOUND A BLINK ON CHANNEL 2!\n"RESET);
-            // }
-
-            event_buffer_size = 0;
         }
+
+        event_buffer_size = 0;
+    
     }
 
     pthread_cleanup_pop(1);

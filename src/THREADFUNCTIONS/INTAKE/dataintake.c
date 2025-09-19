@@ -57,11 +57,9 @@ static void dataIntake(void){
 
     size_t i, num_data_points = 0;
 
-    // size_t start_event, end_event;
-
     double channel_data_point[PACKET_BUFFER_SIZE] = {0.0f};
 
-    double window_buffer[WINDOW_SIZE];
+    double window_buffer[WINDOW_SIZE + 2];
 
     internal_ring_buffer = initRingBuffer(INTERNAL_RING_BUFFER_SIZE, INTERNAL_RING_BUFFER);
 
@@ -90,7 +88,7 @@ static void dataIntake(void){
 
         #ifdef UART_ENABLED
 
-            num_data_points = getUARTData(channel_data_point);
+            num_data_points = getUARTData(channel_data_point, SAMPLE_TIME_uS / 2);
 
         #else
 
@@ -104,7 +102,6 @@ static void dataIntake(void){
 
         #endif
 
-        
         if(num_data_points <= 0) continue;
 
         data_intake_count += num_data_points;
@@ -122,10 +119,9 @@ static void dataIntake(void){
         data_intake_count = 0;
 
         const size_t extract_index = internal_ring_buffer->write;
-        const int s =  minusTail(extract_index, WINDOW_SIZE);
-        
+        const int s =  minusTail(extract_index, WINDOW_SIZE);        
 
-        extractBufferFromRingBuffer(internal_ring_buffer, window_buffer, WINDOW_SIZE,s, extract_index);
+        extractBufferFromRingBuffer(internal_ring_buffer, window_buffer,s, extract_index);
 
         for(int i = 0; i < NUM_CHANNELS; i++){
 
@@ -134,21 +130,17 @@ static void dataIntake(void){
                 const int idx = (j * NUM_CHANNELS) + i;
 
                 channel_windows[i][j] = window_buffer[idx]; 
-                // printf("%.2f ", window_buffer[idx]);
-            } //printf("\n");
+            } 
 
             event_count[i] = adaptiveThreshold(
                 channel_windows[i],
                 signal_length,
-                // SAMPLING_RATE,
-                // TIME_IN_WINDOW,
                 blink_indices,
                 THRESH_MULT,
                 &missing_data[i]
             ); 
         
             if(event_count[i] <= 0) continue;
-            // ledFlash();
 
             int to_send_count = 0;
             int to_send[40];
@@ -158,54 +150,40 @@ static void dataIntake(void){
             
                 const int try = (s + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;//(internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
 
-                // printf("blink  : %d, %f\n", blink_indices[j], channel_windows[i][blink_indices[j]]);
-                // printf("ring   : %d, %f\n", try, internal_ring_buffer->memory[try]);
-
                 //get indexes from blink_indices (absolute to ring buffer) and later buffer
                 to_send[to_send_count++] = try;
-
-                
 
             }
             
             //send all the blinks in later_blinks
             while(later_counts > 0){
-                // printf(BLUE"sending later blinks\n"RESET);
-
                 to_send[to_send_count++] = later_blinks[--later_counts];
 
             }
 
-            const int B = 300;// TODO : make this a macro constant so you can declare event_buffer on the stack
-            const int size_buf = B * 2 + 1;
+            const int B = MAX_EVENT_SIZE;
+            const int size_buf = B * 2 + 2;
 
-            double * event_buffer = malloc(size_buf * sizeof(double));
+            double event_buffer[size_buf];
 
             for(int j = 0; j < to_send_count; j++){
 
                 const int event_index = to_send[j];
-
                 
                 const int start_index = (internal_ring_buffer->size + event_index - B) % internal_ring_buffer->size;
                 const int end_index = (internal_ring_buffer->size + event_index + B + 1) % internal_ring_buffer->size;
-                // printf("[%d; %d; %d]\n", start_index, event_index, end_index);
-                // printf("[%f; %f; %f]\n", internal_ring_buffer->memory[start_index],internal_ring_buffer->memory[event_index], internal_ring_buffer->memory[end_index]);
 
                 // extract the whole data
-                extractBufferFromRingBuffer(internal_ring_buffer, event_buffer, size_buf, start_index, end_index);
+                extractBufferFromRingBuffer(internal_ring_buffer, event_buffer, start_index, end_index);
 
-                // printf(BLUE"sending event\n"RESET);
 
                 for(int k = 0; k < size_buf/2; k++){
                     event_buffer[k] = event_buffer[(k * NUM_CHANNELS) + i];
-                    // printf("%.1f ", event_buffer[k]);
-                }//printf("\n");
+                }
 
                 //send it to processing thread
                 addEvent(event_buffer, size_buf / 2);
             }
-
-            free(event_buffer); 
 
             if(!missing_data[i]) continue;
 

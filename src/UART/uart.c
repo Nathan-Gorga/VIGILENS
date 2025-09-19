@@ -23,8 +23,7 @@ static inline double convertToFloat(const int32_t value){
 }
 
 static inline double channelDataToFloat(const byte data[3]){
-    // TODO : make filter a "togglable" function, 
-    // either by calling it externally after this function, or with a function parameter
+    
     return filterDataPoint(convertToFloat(interpret24BitToInt(data)));
 }
 
@@ -78,7 +77,6 @@ static bool setTermiosOptions(void){
 
     if(cfsetispeed(&term_options, baudrate) || cfsetospeed(&term_options, baudrate)) return false;
 
-    //FIXME  : sync openBCI UART settings with RPi
     term_options.c_cflag &= ~PARENB; // No parity
     term_options.c_cflag &= ~CSTOPB; // 1 stop bit
     term_options.c_cflag &= ~CSIZE;  // Clear size bits
@@ -131,7 +129,7 @@ void endUART(void){
 
 }
 
-size_t getUARTData(double data_points[PACKET_BUFFER_SIZE]) {//TODO : add a parameter in this funciton to specify allowable wait time
+size_t getUARTData(double data_points[PACKET_BUFFER_SIZE], const double wait_time) {
 
     static uint8_t uart_accum_buf[UART_BUFFER_SIZE];  // persistent accumulation buffer
 
@@ -147,69 +145,73 @@ size_t getUARTData(double data_points[PACKET_BUFFER_SIZE]) {//TODO : add a param
 
     FD_SET(UART_fd, &read_UART_fd);
 
-    struct timeval timeout = {0, (__suseconds_t)(SAMPLE_TIME_uS / 2)};  
+    struct timeval timeout = {0, (__suseconds_t)(wait_time)};  
 
     //set to wait until timeout OR until data arrives, then unblocks
     const int ready = select(UART_fd + 1, &read_UART_fd, NULL, NULL, &timeout);
 
-    if (ready > 0 && FD_ISSET(UART_fd, &read_UART_fd)) {
+  
 
-        uint8_t temp_buf[64];
+    if(ready <= 0 || !FD_ISSET(UART_fd, &read_UART_fd)) return 0;
 
-        ssize_t size_read = read(UART_fd, temp_buf, sizeof(temp_buf));
+    uint8_t temp_buf[64];
 
-        if (size_read > 0) {
+    ssize_t size_read = read(UART_fd, temp_buf, sizeof(temp_buf));
 
-            // append to accumulator buffer
+    if(size_read <= 0) return 0;
 
-            if (uart_accum_len + size_read < UART_BUFFER_SIZE) {
+    // append to accumulator buffer
 
-                memcpy(&uart_accum_buf[uart_accum_len], temp_buf, size_read);
+    if (uart_accum_len + size_read < UART_BUFFER_SIZE) {
 
-                uart_accum_len += size_read;
+        memcpy(&uart_accum_buf[uart_accum_len], temp_buf, size_read);
 
-            } else {
+        uart_accum_len += size_read;
 
-                // buffer overflow prevention: reset accumulation
+    } else {
 
-                uart_accum_len = 0;
+        // buffer overflow prevention: reset accumulation
 
-                fprintf(stderr, "UART buffer overflow — discarding accumulated data.\n");
+        uart_accum_len = 0;
 
-                return 0;
-            }
+        fprintf(stderr, "UART buffer overflow — discarding accumulated data.\n");
 
-            // parse packets 
-            const size_t packet_size = sizeof(openbci_packet);
-
-            size_t processed = 0;
-	    
-            while (uart_accum_len - processed >= packet_size && valid_packets < PACKET_BUFFER_SIZE) {
-
-                //look for the start of the packet
-                if ((byte)uart_accum_buf[processed] == START_BYTE) {
-                    
-                    memcpy(&packets[valid_packets], &uart_accum_buf[processed], packet_size);
-
-                    getChannelDataFromPacket(packets[valid_packets], data_points + (NUM_CHANNELS * valid_packets));
-
-                    valid_packets++;
-
-                    processed += packet_size;
-
-                } else {
-
-                    processed++;  // skip junk bytes until we find a START_BYTE
-                }
-            }
-
-            // shift unprocessed bytes to front of buffer
-
-            uart_accum_len -= processed;
-
-            memmove(uart_accum_buf, &uart_accum_buf[processed], uart_accum_len);
-        }
+        return 0;
     }
+
+    // parse packets 
+    const size_t packet_size = sizeof(openbci_packet);
+
+    size_t processed = 0;
+
+    while (uart_accum_len - processed >= packet_size && valid_packets < PACKET_BUFFER_SIZE) {
+
+        //look for the start of the packet
+        if((byte)uart_accum_buf[processed] != START_BYTE){
+
+            processed++;
+            
+            continue;
+
+        }
+        
+        memcpy(&packets[valid_packets], &uart_accum_buf[processed], packet_size);
+
+        getChannelDataFromPacket(packets[valid_packets], data_points + (NUM_CHANNELS * valid_packets));
+
+        valid_packets++;
+
+        processed += packet_size;
+
+    }
+
+    // shift unprocessed bytes to front of buffer
+
+    uart_accum_len -= processed;
+
+    memmove(uart_accum_buf, &uart_accum_buf[processed], uart_accum_len);
+
+
 
     return valid_packets * NUM_CHANNELS;  // total doubles stored in data_points
 }

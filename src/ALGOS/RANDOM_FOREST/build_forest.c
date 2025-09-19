@@ -445,7 +445,7 @@ random_forest * buildForest(
 //     //extract data from CSV file
 //     double ** data = getNumericData("new_features.csv", &rows, &cols);
 
-//     const double data_split = 0.15;
+//     const double data_split = 0.05;
 
 
 //     printf("total rows of data : %d\n", rows);
@@ -453,12 +453,12 @@ random_forest * buildForest(
 
 //     printf("training rows : %d\n", training_rows);
 //     const int eval_rows = rows * data_split;
-//     printf("eval rows : %d\n", eval_rows);
+//     printf("eval rows : %d\n", eval_rows -1 );
 
 //     const int bagging_size = training_rows;
 
-//     const int forest_size = 21;
-        
+//     const int forest_size = 11;
+
 
 
 //     // random_forest * forest = load_forest("./GOOD_FOREST_MODELS/best_model.json");
@@ -466,20 +466,20 @@ random_forest * buildForest(
             
 //     int vote = 0;
 
-//     for(int i = training_rows; i < rows; i++){
+//     for(int i = training_rows; i < rows - 1 ; i++){
         
 //         const double * sample = data[i];                
         
 //         const enum EVENT_TYPE prediction = predictForest(forest, sample);
         
-//         printf("forest says %d , answer is %d\n", (int)prediction, (int)sample[cols -1]);
+//         printf("forest says %d , answer is %d\n", (int)prediction, (int)sample[cols-1]);
         
 //         if((int)prediction == (int)sample[cols-1]) vote++;
         
 //     }
 
 
-//     printf("PREDICTION SCORE : %.2f% (%d/%d)\n",((float)vote/(float)eval_rows) * 100, vote, eval_rows);
+//     printf("PREDICTION SCORE : %.2f% (%d/%d)\n",((float)vote/(float)(eval_rows - 1)) * 100, vote, eval_rows -1);
 
 //     save_forest_json("try.json", forest);
 

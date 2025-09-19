@@ -180,7 +180,6 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 }
 
 
-// FIXME : check all the uses of  this function to make sure everything works properly
 void extractBufferFromRingBuffer(struct ring_buffer *buffer, double *restrict data, const size_t start, const size_t stop) {
 
     #ifdef ASSERT_ENABLED
@@ -268,17 +267,16 @@ void addBufferToRingBuffer(struct ring_buffer * buffer, const double * restrict 
     }
 }
 
-// TODO : change the use of this function
 
-// size_t minusTail(const int tail, const int num_data_points){
+size_t minusTail(const int tail, const int num_data_points){
 
-//     return !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;
-// }
+    return !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;
+}
 
-// size_t addTail(const int tail, const int num_data_points){
+size_t addTail(const int tail, const int num_data_points){
 
-//     return !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER_SIZE;
+    return !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER_SIZE;
 
-// }
+}
 
 

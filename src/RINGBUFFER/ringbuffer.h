@@ -33,9 +33,8 @@ void addFloatToRingBuffer(struct ring_buffer * restrict buffer, const double dat
  
 void addBufferToRingBuffer(struct ring_buffer * buffer, const double * restrict data, const size_t size);
 
-// size_t minusTail(const int tail, const int num_data_points);
-
-// size_t addTail(const int tail, const int num_data_points);
+size_t minusTail(const int tail, const int num_data_points);
+size_t addTail(const int tail, const int num_data_points);
 
 #endif
 

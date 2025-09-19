@@ -37,14 +37,11 @@ static int iarrmax(int arr[], const int size){
 
 enum EVENT_TYPE predictForest(random_forest * f, const double * sample){
 
-    if(f == NULL) return NOT_BLINK;//OTHER;
-
+    if(f == NULL) return NOT_BLINK;
 
     int vote[NUM_EVENT_TYPE] = {0};
 
     for(size_t i = 0; i < f->size; i++){
-
-        // printf("Querying tree %d\n",i+1);
 
         const int idx = predict(f->forest[i], sample);
 
@@ -52,8 +49,15 @@ enum EVENT_TYPE predictForest(random_forest * f, const double * sample){
 
     }  
 
+    const int ret = iarrmax(vote, NUM_EVENT_TYPE); 
 
-    return iarrmax(vote, NUM_EVENT_TYPE);
+    int total = 0; 
+    for(int i = 0; i < NUM_EVENT_TYPE; i++){
+        total += vote[i];
+    }
+
+    printf("(%.1f%) ", 100 * ((float)vote[ret]/(float)total));
+    return ret;
 
 }
 

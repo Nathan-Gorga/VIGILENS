@@ -109,16 +109,6 @@ static double **convertToNumeric(char ***data, size_t rows, size_t cols){
 
                 numeric[i - 1][j] = (double)atoi(species);
 
-                // if(strcmp(species, "setosa") == 0){
-                //     numeric[i - 1][j] = (double)SETOSA;//TODO : use enum
-                // } else if (strcmp(species, "versicolor") == 0){
-                //     numeric[i - 1][j] = (double)VERSICOLOR;
-                // } else if (strcmp(species, "virginica") == 0){
-                //     numeric[i - 1][j] = (double)VIRIGINICA;
-                // } else {
-                //     numeric[i - 1][j] = (double)NOT_IRIS;
-                // }
-
             }
         }
     }
@@ -423,18 +413,4 @@ void print_tree(tree_node *node, int depth) {
     print_tree(node->left, depth + 1);
     print_tree(node->right, depth + 1);
 }
-
-// int main() {
-//     RandomForest *forest = load_forest("good_forest_2.json");
-//     if (!forest) return 1;
-
-//     printf("Loaded forest with %d trees (max depth %d)\n", forest->size, forest->max_depth);
-//     for (int i = 0; i < forest->size; i++) {
-//         printf("Tree %d:\n", i);
-//         print_tree(forest->trees[i], 0);
-//     }
-
-//     // TODO: free memory
-//     return 0;
-// }
 

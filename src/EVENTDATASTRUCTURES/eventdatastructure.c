@@ -166,7 +166,7 @@ static size_t _getEvent(double * data){
     // the head mutex is locked for the whole function, here, only the ERB mutex
     MUTEX_LOCK(&event_ring_buffer_mutex);
         
-        extractBufferFromRingBuffer((struct ring_buffer *)event_ring_buffer, data, size_data, start, stop);
+        extractBufferFromRingBuffer((struct ring_buffer *)event_ring_buffer, data, start, stop);
 
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
 

@@ -1,5 +1,5 @@
-#ifndef MAROS_H
-#define MAROS_H
+#ifndef MACROS_H
+#define MACROS_H
 
 #include <stdint.h>
 
@@ -132,8 +132,7 @@
 
     #define EVENT_RING_BUFFER_SIZE (size_t)(TIME_IN_EVENT_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
-    // TODO : change all event durations and stuff to be on this constant
-    #define MAX_EVENT_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * 1/*seconds*/)
+    #define MAX_EVENT_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * 1.0/*seconds*/)
 
 /// RINGBUFFER
 
@@ -150,28 +149,25 @@
     #define TIME_IN_INTERNAL_RING_BUFFER 4.0f//seconds
     #define INTERNAL_RING_BUFFER_SIZE (int)(TIME_IN_INTERNAL_RING_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
-    #define TIME_IN_WINDOW 1.0f // seconds
+    #define TIME_IN_WINDOW 1.2//seconds
     #define WINDOW_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * TIME_IN_WINDOW)
 
 /// PROCESSING
 
-    #define JSON_FILE_NAME "./ALGOS/RANDOM_FOREST/GOOD_FOREST_MODELS/custom_features_3.json"
+    #define JSON_FILE_NAME "./ALGOS/RANDOM_FOREST/GOOD_FOREST_MODELS/maybe_this_one.json"
 
 /// ALGOS/THRESHOLD
 
     #define REFRACTORY_PERIOD 0.3f //seconds
     #define REFRACTORY_SAMPLES (size_t)(SAMPLING_RATE * REFRACTORY_PERIOD)
 
-    // #define BLINK_DURATION 0.4f//in seconds
-    // #define NUM_SAMPLES_IN_BLINK (size_t)(BLINK_DURATION * SAMPLING_RATE * NUM_CHANNELS)
-
     // best is 9.0f
     #define THRESH_MULT 7.0f
 
 /// ALGOS/RANDOM_FOREST
 
-    #define MIN_SAMPLES 3
-    #define MAX_DEPTH 12
+    #define MIN_SAMPLES 5
+    #define MAX_DEPTH 6
 
     enum NODE_TYPE{
         ROOT,
@@ -220,7 +216,7 @@
 
     #define CHIPNAME "gpiochip0"
     #define LED_PIN 18  // GPIO pin number
-    #define LED_DELAY_US 500000  // 0.5 seconds
+    #define LED_DELAY_US 150000  
 
 
 #endif
