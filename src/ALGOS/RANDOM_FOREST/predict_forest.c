@@ -52,13 +52,6 @@ enum EVENT_TYPE predictForest(random_forest * f, const double * sample){
 
     }  
 
-    // char ** str = {"Not Blink", "Blink"};
-    // printf("\n");
-
-    // for(int i = 0; i < NUM_EVENT_TYPE; i++){
-    //     printf("%d voted for %d\n", vote[i], i);
-    // }
-    // printf("\n");
 
     return iarrmax(vote, NUM_EVENT_TYPE);
 

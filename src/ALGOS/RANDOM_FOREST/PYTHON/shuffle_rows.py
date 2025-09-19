@@ -4,8 +4,8 @@ import os
 # -----------------------------
 # Parameters
 # -----------------------------
-input_file = "../eeg_blinks.csv"  # Replace with your CSV file
-output_file = "new_eeg_data.csv"   # Output file name
+input_file = "../custom_blink_features.csv"  # Replace with your CSV file
+output_file = "new_features.csv"   # Output file name
 
 # -----------------------------
 # Load CSV

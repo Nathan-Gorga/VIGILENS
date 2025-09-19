@@ -5,26 +5,21 @@
 #include "../EVENTDATASTRUCTURES/eventdatastructure.h"
 #include "../THREADFUNCTIONS/INTAKE/dataintake.h"
 
+
+// these types are to ensure that certain ring buffer function 
+// are only accessible to one and not the other
 enum RING_BUFFER_TYPE{
-
     INTERNAL_RING_BUFFER,
-
     EVENT_RING_BUFFER,
-
     NUM_RING_BUFFER_TYPES
-
 };
 
 struct ring_buffer{
 
-    double * memory;
-
-    size_t size;
-
-    size_t write;
-
-    enum RING_BUFFER_TYPE type;  
-    
+    double * memory; // the actual data is contained here
+    size_t size; // size of the memory
+    size_t write; // the write index of the buffer, new data is added at this position
+    enum RING_BUFFER_TYPE type; 
 };
 
 struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type);

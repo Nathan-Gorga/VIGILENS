@@ -443,9 +443,9 @@ random_forest * buildForest(
 //     size_t rows, cols;
     
 //     //extract data from CSV file
-//     double ** data = getNumericData("new_eeg_data.csv", &rows, &cols);
+//     double ** data = getNumericData("new_features.csv", &rows, &cols);
 
-//     const double data_split = 0.2;
+//     const double data_split = 0.15;
 
 
 //     printf("total rows of data : %d\n", rows);
@@ -457,12 +457,12 @@ random_forest * buildForest(
 
 //     const int bagging_size = training_rows;
 
-//     const int forest_size = 17;
+//     const int forest_size = 21;
         
 
 
-//     random_forest * forest = load_forest("./GOOD_FOREST_MODELS/best_model.json");
-//     // random_forest * forest = buildForest(data, training_rows, cols, forest_size, MAX_DEPTH, bagging_size);
+//     // random_forest * forest = load_forest("./GOOD_FOREST_MODELS/best_model.json");
+//     random_forest * forest = buildForest(data, training_rows, cols, forest_size, MAX_DEPTH, bagging_size);
             
 //     int vote = 0;
 
@@ -480,6 +480,8 @@ random_forest * buildForest(
 
 
 //     printf("PREDICTION SCORE : %.2f% (%d/%d)\n",((float)vote/(float)eval_rows) * 100, vote, eval_rows);
+
+//     save_forest_json("try.json", forest);
 
 //     freeForest(forest);       
 

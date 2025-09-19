@@ -1,19 +1,16 @@
 #include "main.h"
 
+// these variables are used to synchronise threads
+pthread_mutex_t ready_lock = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t ready_cond = PTHREAD_COND_INITIALIZER;
+int ready_count = 0;
+const int THREADS_TO_WAIT = 2;
+
 
 volatile bool keyboard_interrupt = false;
 
-pthread_mutex_t ready_lock = PTHREAD_MUTEX_INITIALIZER;
-
-pthread_cond_t ready_cond = PTHREAD_COND_INITIALIZER;
-
-int ready_count = 0;
-
-// increase this number if you want to launch and synchronise more threads at the start
-const int THREADS_TO_WAIT = 2;
-
 void handle_sigint(const int sig) {
-
+    
     (void)printf("Keyboard interrupt(%d) received\n",sig);
 
     keyboard_interrupt = true;
@@ -57,12 +54,14 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
     
     srand(time(NULL));
     
+    // not mandatory if not using logging system, I would still keep it here
     if(initLoggingSystem() != 0){
         
         (void)printf("Error initializing logging system\n"); return false;
 
     }
     
+    // preparing SIGINT(^C) callback function
     (void)signal(SIGINT, handle_sigint);
     
     sigset_t set;
@@ -71,9 +70,10 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
     
     while(sigaddset(&set, SIGCONT));
     
-    // Block SIGCONT in all threads, necessary for sigwait to work properly
+    // Block SIGCONT in all threads, necessary for SIGCONT to work properly
     while(pthread_sigmask(SIG_BLOCK, &set, NULL));
 
+    // Allocate memory for the event data ring buffer(ERB)
     initEventDatastructure(EVENT_RING_BUFFER_SIZE);
 
     if(createMutexes() != 0){
@@ -81,11 +81,13 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
         (void)printf("Error creating mutexes\n"); return false;
     }
 
+    // launch of intake thread
     if(pthread_create(data_intake_thread, NULL, launchDataIntake, NULL) != 0){
 
         (void)printf("Error creating data intake thread\n"); return false;
     }
 
+    // launch of processing thread
     if(pthread_create(data_processing_thread, NULL, launchDataProcessing, NULL) != 0){
 
         (void)printf("Error creating data processing thread\n"); return false;
@@ -98,29 +100,26 @@ static bool startupFunction(pthread_t * data_intake_thread, pthread_t * data_pro
 
 int main(void){
 
-    //STARTUP
+    
     pthread_t data_intake_thread, data_processing_thread;
 
     if(!startupFunction(&data_intake_thread, &data_processing_thread)) goto end;
 
-    //WAIT LOOP
-    while(!keyboard_interrupt) usleep(100);
+    // main stays idle until SIGINT is received
+    while(!keyboard_interrupt) usleep(1000);
 
-    //CLOSE
+    // send cancel signal
     (void)pthread_cancel(data_intake_thread);
-
     (void)pthread_cancel(data_processing_thread);
 
+    // terminate threads
     (void)pthread_join(data_intake_thread, NULL);
-
     (void)pthread_join(data_processing_thread, NULL);
 
     
     //CLEANUP
     end:
-
     freeEventDatastructure();
-
     (void)destroyMutexes();
 
     #ifdef UART_ENABLED
@@ -130,7 +129,6 @@ int main(void){
     #endif
 
     (void)usleep(500);
-
     (void)closeLoggingSystem();
 
     return 0;

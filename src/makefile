@@ -24,7 +24,6 @@ SRCS = main.c \
 	ALGOS/RANDOM_FOREST/event_feature.c \
 	ALGOS/RANDOM_FOREST/predict_forest.c \
 	ALGOS/RANDOM_FOREST/test_forest.c 
-# 	ALGOS/RANDOM_FOREST/random_forest.c \
 
 # Object files
 OBJS = $(SRCS:.c=.o)

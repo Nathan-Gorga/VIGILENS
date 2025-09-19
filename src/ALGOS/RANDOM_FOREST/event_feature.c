@@ -207,6 +207,8 @@ event_features featureExtraction(double event[], const size_t size){
     //calculate baseline
     const double baseline = estimateBaseline(event, size);
 
+    // printf("baseline : %lf\n", baseline);
+
     //find the index of start, the last baseline point before shifting from baseline
     const int start_idx = findStart(event, size, baseline, epsilon);
 
@@ -234,9 +236,9 @@ event_features featureExtraction(double event[], const size_t size){
     const double slope_2 = calculateSlope(highest_idx, highest, middle_idx, baseline);
 
     //calculate t1, t2, and t3
-    const int t1 = abs((int)middle_idx - (int)start_idx);
-    const int t2 = abs((int)end_idx - (int)middle_idx);
-    const int t3 =  abs((int)lowest_idx - (int)highest_idx);
+    const int t1 = (int)middle_idx - (int)start_idx;
+    const int t2 = (int)end_idx - (int)middle_idx;
+    const int t3 =  (int)lowest_idx - (int)highest_idx;
 
 
     //calculate sample entropy
@@ -253,7 +255,7 @@ event_features featureExtraction(double event[], const size_t size){
 
 
 void printFeatures(const event_features feat){
-    printf("slope 1 : %f, slope 2 : %f, slope 3 : %f\n", feat.slope_1,feat.slope_2,feat.slope_3);
-    printf("t1 : %d, t2 : %d, t3 : %d\n", feat.t1,feat.t2,feat.t3);
-    printf("standard deviation : %f, sample entropy: %f\n", feat.std_dev,feat.sample_entropy);
+    printf("%f,%f,%f,", feat.slope_1,feat.slope_2,feat.slope_3);
+    printf("%d,%d,%d,", feat.t1,feat.t2,feat.t3);
+    printf("%f,%f\n", feat.std_dev,feat.sample_entropy);
 }

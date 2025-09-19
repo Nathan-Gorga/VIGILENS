@@ -1,0 +1,192 @@
+{	"max_depth": "10",
+	"size": "5",
+	"forest":[{
+	"type": "0",
+	"feature_index": "2",
+	"threshold": "0.488716",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "1",
+	"feature_index": "1",
+	"threshold": "1.459296",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "1",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+}
+}
+,{
+	"type": "0",
+	"feature_index": "0",
+	"threshold": "0.458990",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "1",
+	"feature_index": "3",
+	"threshold": "160.500000",
+	"label": "0",
+	"left": {
+	"type": "1",
+	"feature_index": "0",
+	"threshold": "0.405381",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "1",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+}
+,
+	"right": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "1",
+	"left": null,
+	"right": null}
+}
+}
+,{
+	"type": "0",
+	"feature_index": "0",
+	"threshold": "0.458990",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "1",
+	"feature_index": "1",
+	"threshold": "-2.346526",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "1",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+}
+}
+,{
+	"type": "0",
+	"feature_index": "2",
+	"threshold": "0.488603",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "1",
+	"feature_index": "7",
+	"threshold": "0.605602",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "1",
+	"left": null,
+	"right": null}
+}
+}
+,{
+	"type": "0",
+	"feature_index": "0",
+	"threshold": "0.451553",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "1",
+	"feature_index": "2",
+	"threshold": "0.228804",
+	"label": "0",
+	"left": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "1",
+	"left": null,
+	"right": null}
+,
+	"right": {
+	"type": "2",
+	"feature_index": "-1",
+	"threshold": "-1.000000",
+	"label": "0",
+	"left": null,
+	"right": null}
+}
+}
+]}

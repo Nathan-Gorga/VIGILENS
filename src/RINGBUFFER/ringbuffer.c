@@ -1,6 +1,6 @@
 #include "ringbuffer.h"
 
-struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){
+struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TYPE type){//DONTTOUCH
     
     if(size == 0) return NULL; //size cannot be negative (size_t is unsigned)
 

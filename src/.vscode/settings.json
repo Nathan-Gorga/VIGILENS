@@ -5,6 +5,7 @@
         "ringbuffer.h": "c",
         "threshold_algos.h": "c",
         "uart.h": "c",
-        "dataintake.h": "c"
+        "dataintake.h": "c",
+        "event_feature.h": "c"
     }
 }

@@ -1,0 +1,248 @@
+BLINKS
+
+slope 1 : 0.312598, slope 2 : 2.467878, slope 3 : 0.270063
+t1 : 131, t2 : 167, t3 : -37
+standard deviation : 15.839615, sample entropy: 0.267521
+
+slope 1 : 0.315233, slope 2 : -9.456996, slope 3 : 0.323912
+t1 : 155, t2 : 143, t3 : 38
+standard deviation : 8.522594, sample entropy: 0.591972
+
+
+baseline : 0.009063
+slope 1 : 0.251001, slope 2 : 1.968376, slope 3 : 0.233430
+t1 : 130, t2 : 168, t3 : -27
+standard deviation : 12.136230, sample entropy: 0.338513
+
+slope 1 : 0.249016, slope 2 : 1.965914, slope 3 : 0.235031
+t1 : 131, t2 : 167, t3 : -27
+standard deviation : 12.138866, sample entropy: 0.339958
+
+slope 1 : 0.350327, slope 2 : 4.745340, slope 3 : 0.362252
+t1 : 138, t2 : 160, t3 : -24
+standard deviation : 18.313045, sample entropy: 0.230652
+
+slope 1 : 0.426428, slope 2 : 4.264278, slope 3 : 0.314880
+t1 : 108, t2 : 189, t3 : -25
+standard deviation : 18.350666, sample entropy: 0.237575
+
+slope 1 : 0.349447, slope 2 : 4.765182, slope 3 : 0.363089
+t1 : 139, t2 : 159, t3 : -24
+standard deviation : 18.308700, sample entropy: 0.226600
+
+
+slope 1 : 0.440315, slope 2 : 4.127957, slope 3 : 0.414352
+t1 : 134, t2 : 164, t3 : -33
+standard deviation : 23.381105, sample entropy: 0.271481
+
+
+slope 1 : 0.368368, slope 2 : 3.361359, slope 3 : 0.385937
+t1 : 130, t2 : 165, t3 : -29
+standard deviation : 20.065978, sample entropy: 0.274349
+
+slope 1 : 0.368204, slope 2 : 3.359860, slope 3 : 0.399540
+t1 : 130, t2 : 159, t3 : -29
+standard deviation : 20.065523, sample entropy: 0.271893
+
+slope 1 : 0.386293, slope 2 : 4.457222, slope 3 : 0.483990
+t1 : 137, t2 : 161, t3 : -25
+standard deviation : 21.361096, sample entropy: 0.305906
+
+baseline : -4.385604
+slope 1 : 0.375351, slope 2 : 3.495458, slope 3 : 0.312134
+t1 : 133, t2 : 165, t3 : -27
+standard deviation : 18.760342, sample entropy: 0.305133
+
+slope 1 : 0.369716, slope 2 : 3.466090, slope 3 : 0.316603
+t1 : 134, t2 : 164, t3 : -27
+standard deviation : 18.720429, sample entropy: 0.302953
+
+slope 1 : 0.441010, slope 2 : 4.380700, slope 3 : 0.427403
+t1 : 134, t2 : 164, t3 : -27
+standard deviation : 23.476013, sample entropy: 0.191164
+
+slope 1 : 0.439611, slope 2 : 4.396110, slope 3 : 0.428524
+t1 : 135, t2 : 163, t3 : -27
+standard deviation : 23.472811, sample entropy: 0.192278
+
+
+slope 1 : 0.445027, slope 2 : 4.172124, slope 3 : 0.424024
+t1 : 134, t2 : 164, t3 : -29
+standard deviation : 22.616073, sample entropy: 0.113145
+
+slope 1 : 0.428798, slope 2 : 4.019979, slope 3 : 0.483764
+t1 : 134, t2 : 164, t3 : -29
+standard deviation : 23.439149, sample entropy: 0.133470
+
+slope 1 : 0.437252, slope 2 : 4.044582, slope 3 : 0.478835
+t1 : 132, t2 : 165, t3 : -29
+standard deviation : 23.003101, sample entropy: 0.119403
+
+slope 1 : 0.429366, slope 2 : 3.788528, slope 3 : 0.392305
+t1 : 133, t2 : 165, t3 : -28
+standard deviation : 20.958906, sample entropy: 0.161481
+
+slope 1 : 0.452127, slope 2 : -1.937688, slope 3 : 0.786885
+t1 : 185, t2 : 113, t3 : 60
+standard deviation : 27.966814, sample entropy: 0.147038
+
+slope 1 : 0.344139, slope 2 : 3.441393, slope 3 : 0.451105
+t1 : 135, t2 : 163, t3 : -26
+standard deviation : 19.794334, sample entropy: 0.179724
+
+slope 1 : 0.324801, slope 2 : 3.410414, slope 3 : 0.470670
+t1 : 133, t2 : 163, t3 : -26
+standard deviation : 19.666431, sample entropy: 0.195972
+
+slope 1 : 0.318795, slope 2 : 3.392890, slope 3 : 0.451849
+t1 : 135, t2 : 163, t3 : -23
+standard deviation : 19.202036, sample entropy: 0.184448
+
+
+NOT_BLINKS
+
+
+
+slope 1 : 295.384685, slope 2 : 2013.986486, slope 3 : 892.187959
+t1 : 128, t2 : 170, t3 : -40
+standard deviation : 31330.187760, sample entropy: 0.022534
+
+slope 1 : 297.277128, slope 2 : 2013.376913, slope 3 : 887.538344
+t1 : 127, t2 : 171, t3 : -40
+standard deviation : 31330.187918, sample entropy: 0.022534
+
+slope 1 : inf, slope 2 : -327.647898, slope 3 : 7.704652
+t1 : 12, t2 : 286, t3 : 35
+standard deviation : 771.918453, sample entropy: 0.011339
+
+slope 1 : 0.277386, slope 2 : -2.755363, slope 3 : 0.224178
+t1 : 164, t2 : 134, t3 : 52
+standard deviation : 8.309321, sample entropy: 0.719878
+
+slope 1 : 0.267343, slope 2 : -2.673434, slope 3 : 0.800906
+t1 : 165, t2 : 133, t3 : 82
+standard deviation : 11.425490, sample entropy: 0.623824
+
+slope 1 : 0.308794, slope 2 : -2.894948, slope 3 : 0.205722
+t1 : 166, t2 : 132, t3 : 19
+standard deviation : 8.858002, sample entropy: 0.622554
+
+slope 1 : 0.557933, slope 2 : -1.952767, slope 3 : 0.359716
+t1 : 99, t2 : 199, t3 : 82
+standard deviation : 11.046648, sample entropy: 0.619232
+
+slope 1 : 0.481382, slope 2 : -1.679239, slope 3 : 1.053328
+t1 : 193, t2 : 105, t3 : 102
+standard deviation : 16.038311, sample entropy: 0.563883
+
+slope 1 : 0.321834, slope 2 : -23.493870, slope 3 : 0.505907
+t1 : 222, t2 : 75, t3 : 6
+standard deviation : 14.187030, sample entropy: 0.520343
+
+slope 1 : 0.557933, slope 2 : -1.952767, slope 3 : 0.359716
+t1 : 99, t2 : 199, t3 : 82
+standard deviation : 11.046648, sample entropy: 0.619232
+
+slope 1 : 0.481382, slope 2 : -1.679239, slope 3 : 1.053328
+t1 : 193, t2 : 105, t3 : 102
+standard deviation : 16.038311, sample entropy: 0.563883
+
+slope 1 : 0.919510, slope 2 : -3.727744, slope 3 : 0.843918
+t1 : 187, t2 : 111, t3 : 61
+standard deviation : 27.249198, sample entropy: 0.477362
+
+slope 1 : 0.919510, slope 2 : -3.727744, slope 3 : 0.843918
+t1 : 187, t2 : 111, t3 : 61
+standard deviation : 27.249198, sample entropy: 0.477362
+
+slope 1 : 0.995791, slope 2 : -49.789533, slope 3 : 1.042006
+t1 : 153, t2 : 145, t3 : 6
+standard deviation : 41.353772, sample entropy: 0.364507
+
+slope 1 : 0.995791, slope 2 : -49.789533, slope 3 : 1.042006
+t1 : 153, t2 : 145, t3 : 6
+standard deviation : 41.353772, sample entropy: 0.364507
+
+slope 1 : 0.358635, slope 2 : -6.933613, slope 3 : 2.941334
+t1 : 244, t2 : 53, t3 : 31
+standard deviation : 27.349735, sample entropy: 0.397642
+
+slope 1 : 0.886975, slope 2 : -44.348749, slope 3 : 0.794515
+t1 : 153, t2 : 145, t3 : 6
+standard deviation : 29.835404, sample entropy: 0.436060
+
+slope 1 : 0.830317, slope 2 : -35.703611, slope 3 : 0.891163
+t1 : 176, t2 : 122, t3 : 7
+standard deviation : 29.127833, sample entropy: 0.417364
+
+slope 1 : 0.886975, slope 2 : -44.348749, slope 3 : 0.794515
+t1 : 153, t2 : 145, t3 : 6
+standard deviation : 29.835404, sample entropy: 0.436060
+
+slope 1 : 0.773984, slope 2 : -39.666697, slope 3 : 1.048791
+t1 : 209, t2 : 89, t3 : 7
+standard deviation : 30.817039, sample entropy: 0.561759
+
+slope 1 : 0.604768, slope 2 : -6.479661, slope 3 : 0.558662
+t1 : 164, t2 : 134, t3 : 20
+standard deviation : 21.905881, sample entropy: 0.738618
+
+slope 1 : 0.600277, slope 2 : -45.020781, slope 3 : 0.493442
+t1 : 152, t2 : 146, t3 : 5
+standard deviation : 14.686675, sample entropy: 0.909588
+
+slope 1 : 0.615999, slope 2 : -6.555988, slope 3 : 0.546048
+t1 : 163, t2 : 135, t3 : 20
+standard deviation : 22.118256, sample entropy: 0.736383
+
+slope 1 : 0.750937, slope 2 : -15.984232, slope 3 : 0.558105
+t1 : 156, t2 : 142, t3 : 11
+standard deviation : 21.607875, sample entropy: 0.626030
+
+slope 1 : 0.700065, slope 2 : -17.501616, slope 3 : 0.612397
+t1 : 156, t2 : 142, t3 : 11
+standard deviation : 23.291193, sample entropy: 0.635425
+
+slope 1 : 0.932883, slope 2 : -34.749900, slope 3 : 1.146974
+t1 : 153, t2 : 145, t3 : 25
+standard deviation : 34.477226, sample entropy: 0.494742
+
+slope 1 : 0.837520, slope 2 : 0.952679, slope 3 : 0.121845
+t1 : 11, t2 : 286, t3 : -90
+standard deviation : 22.640224, sample entropy: 0.420542
+
+slope 1 : 0.485477, slope 2 : -9.102686, slope 3 : 0.507612
+t1 : 158, t2 : 140, t3 : 17
+standard deviation : 18.676677, sample entropy: 0.643806
+
+slope 1 : 0.781105, slope 2 : -29.291441, slope 3 : 0.641744
+t1 : 154, t2 : 144, t3 : 8
+standard deviation : 25.457286, sample entropy: 0.516037
+
+slope 1 : 0.465854, slope 2 : -8.676539, slope 3 : 0.533636
+t1 : 157, t2 : 140, t3 : 17
+standard deviation : 19.721639, sample entropy: 0.683427
+
+slope 1 : 0.781105, slope 2 : -29.291441, slope 3 : 0.641744
+t1 : 154, t2 : 144, t3 : 8
+standard deviation : 25.457286, sample entropy: 0.516037
+
+slope 1 : 0.746633, slope 2 : 4.479796, slope 3 : 0.759417
+t1 : 125, t2 : 173, t3 : -44
+standard deviation : 32.747244, sample entropy: 0.554597
+
+slope 1 : 0.485588, slope 2 : 18.105479, slope 3 : 1.084319
+t1 : 254, t2 : 44, t3 : -36
+standard deviation : 31.580073, sample entropy: 0.517509
+
+slope 1 : 1.179790, slope 2 : 11.797897, slope 3 : 0.901631
+t1 : 135, t2 : 163, t3 : -23
+standard deviation : 51.413630, sample entropy: 0.356126
+
+slope 1 : 0.761246, slope 2 : 20.839118, slope 3 : 1.331557
+t1 : 211, t2 : 87, t3 : -41
+standard deviation : 50.411877, sample entropy: 0.325739
+
+slope 1 : 1.303146, slope 2 : 11.380805, slope 3 : 0.844397
+t1 : 116, t2 : 182, t3 : -23
+standard deviation : 51.558679, sample entropy: 0.410194

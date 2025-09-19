@@ -1,8 +1,6 @@
 #ifndef GLOBALDEFINITION_H
 #define GLOBALDEFINITION_H
 
-// #define _DEFAULT_SOURCE
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,7 +16,7 @@
 #include <math.h>
 #include <limits.h>
 
-
+// color codes for text
 #define BLACK "\x1B[0;30m"
 #define RED "\x1B[0;31m"
 #define GREEN "\x1B[0;32m"
@@ -27,12 +25,11 @@
 #define PURPLE "\x1B[0;35m"
 #define CYAN "\x1B[0;36m"
 #define WHITE "\x1B[0;37m"
-
 #define RESET "\x1B[0m"
 
+// macro flags, you can toggle them
 #define ASSERT_ENABLED
-
-#define DEBUG
+// #define DEBUG
 // #define DEBUG_MAIN
 // #define DEBUG_INTAKE 
 // #define DEBUG_ALGO 
@@ -55,9 +52,12 @@
                                 pthread_exit(NULL);\
                             }
 
+// always useful
 #define min(a,b) ((a) < (b) ? (a) : (b))
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
+
+// this is depending on the OpenBCI, usually never changes
 #define SAMPLING_RATE 250
 #define NUM_CHANNELS 2
 

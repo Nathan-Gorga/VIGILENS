@@ -315,7 +315,8 @@ void write_forest_struct_json(FILE * f, random_forest * forest){
 }
 
 // Main export function
-int save_forest_json(const char *filename, random_forest *forest) {
+int save_forest_json(const char *filename, struct random_forest *forest) {
+
     FILE *f = fopen(filename, "w");
     if (!f) {
         perror("Failed to open file");
@@ -328,11 +329,11 @@ int save_forest_json(const char *filename, random_forest *forest) {
     write_forest_struct_json(f, forest);
     
     fprintf(f, "[");
-    for(size_t i = 0; i < forest->size; i++){
+    for(size_t i = 0; i < ((random_forest*)forest)->size; i++){
 
-        write_node_json(f, forest->forest[i]);
+        write_node_json(f, ((random_forest*)forest)->forest[i]);
 
-        if(i < forest->size - 1)fprintf(f, ",");
+        if(i < ((random_forest*)forest)->size - 1)fprintf(f, ",");
 
     }
 

@@ -24,6 +24,7 @@ double ** getNumericData(char * filename, size_t * rows, size_t * cols);
 
 struct random_forest * load_forest(const char *filename);
 
+int save_forest_json(const char *filename, struct random_forest *forest);
 
 #endif
 

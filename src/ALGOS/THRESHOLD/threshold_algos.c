@@ -243,17 +243,17 @@ int adaptiveThreshold(
 	int temp_blink_size = 0;
 
 	for(int i = 0; i < signal_length; i++){
-		printf("signal : %lf, threshold : %lf\n", signal[i], threshold);
+		// printf("signal : %lf, threshold : %lf\n", signal[i], threshold);
 		//detect all above the threshold
-		if(signal[i] < threshold) continue;
+		if(eeg[i] < threshold) continue;
 
-		printf("passed threshodl\n");
+		// printf("passed threshodl\n");
 
 		const int temp_leftB = max(0, i - refractory_samples);
 		const int temp_rightB = min(signal_length - 1, i + refractory_samples);
 
 		//find local maximum
-		temp_blink[temp_blink_size++] = find_local_maxima(signal,temp_leftB, temp_rightB);
+		temp_blink[temp_blink_size++] = find_local_maxima(eeg,temp_leftB, temp_rightB);
 
 		i += refractory_samples;
 	}
@@ -263,8 +263,9 @@ int adaptiveThreshold(
 	//derivate signal
 	double * derivated_signal = malloc((signal_length - 1) * sizeof(double));
 
-	derivate(signal, signal_length, derivated_signal);
+	derivate(eeg, signal_length, derivated_signal);
 
+	static bool db_blink = false;
 	
 	for(int i = 0; i < temp_blink_size; i++){
 
@@ -293,22 +294,26 @@ int adaptiveThreshold(
 		}
 		// if(derivated_signal[j] > 0) right_boundary = j;
 	
-		printf("left_boundary : %d, right_boundary : %d\n", left_boundary, right_boundary);
+		// printf("left_boundary : %d, right_boundary : %d\n", left_boundary, right_boundary);
 
 		if(right_boundary != -1 && right_boundary < signal_length - RIGHT_DOUBLE_BLINK_PREVENTION ){//&& left_boundary != -1 && left_boundary < signal_length - LEFT_DOUBLE_BLINK_PREVENTION){
 			blink_indices[count++] = temp_blink[i];
-			ledFlash();			
+			ledFlash();	
+			db_blink = true;
 
 		} 
 
 		else if(left_boundary != -1){//} && left_boundary < signal_length - LEFT_DOUBLE_BLINK_PREVENTION){
-		
+			if(!db_blink) ledFlash();
 			*missing_data = true;
 			blink_indices[count++] = temp_blink[i];
+			db_blink = false;
 		}
 
 		else{
 			printf(RED"PREVENTED FALSE POSITIVE\n"RESET);
+			db_blink = false;
+
 		}
 
 	}

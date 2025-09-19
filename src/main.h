@@ -1,3 +1,5 @@
+
+//TODO : create files with constants that are relevant and accessible
 #ifndef MAIN_H
 #define MAIN_H
 

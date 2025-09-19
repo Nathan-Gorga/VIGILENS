@@ -35,7 +35,7 @@ courtesy to https://github.com/ultramcu
 #define SCALE_FACTOR (double)(4.5f / GAIN / (pow(2.0f, 23.0f) - 1.0f))
 
 // simply for ease of use, can be set to 1 if causes problems
-#define MACHINE_USEABLE_SCALE_FACTOR 10000 
+#define MACHINE_USEABLE_SCALE_FACTOR 100000 
 
 #define SAMPLE_TIME_uS (double)(1000000.0f / SAMPLING_RATE)
 

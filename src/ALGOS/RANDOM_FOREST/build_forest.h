@@ -39,7 +39,7 @@ typedef struct tree_node {
 } tree_node;
 
 
-typedef struct random_struct{
+typedef struct {
 
     size_t size;
     size_t max_depth;

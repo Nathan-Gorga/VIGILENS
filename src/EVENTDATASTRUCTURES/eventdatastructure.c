@@ -2,11 +2,11 @@
 
 pthread_mutex_t event_ring_buffer_mutex;
 
-pthread_mutex_t write_index_mutex; //this one is just to prevent double lock
+pthread_mutex_t write_index_mutex; 
 
 pthread_mutex_t head_mutex;
 
-static node * initNode(const size_t start, const size_t stop){
+static node * initNode(const size_t start, const size_t stop){//DONTTOUCH
 
     node * n = (node *)malloc(sizeof(node));
 
@@ -21,7 +21,7 @@ static node * initNode(const size_t start, const size_t stop){
     return n;
 }
 
-static void freeNode(node * n){
+static void freeNode(node * n){//DONTTOUCH
     
     #ifdef ASSERT_ENABLED
     
@@ -32,7 +32,11 @@ static void freeNode(node * n){
     free(n);
 }
 
-static void initList(void){
+static void initList(void){//DONTTOUCH
+
+    /*
+    THE START OF THE LINKED LIST SHOULD ALWAYS BE HEAD, NOT A NODE
+    */
 
     head = (head_node *)malloc(sizeof(head_node));
 
@@ -41,7 +45,7 @@ static void initList(void){
     head->next = NULL;
 }
 
-static void freeList(void){
+static void freeList(void){//DONTTOUCH
     
     if(head == NULL) return;
 
@@ -59,7 +63,12 @@ static void freeList(void){
     free((void *)head);
 }
 
-static void initEventRingBuffer(const size_t size_buffer){
+static void initEventRingBuffer(const size_t size_buffer){//DONTTOUCH
+
+    /*
+    This function is a wraper of initRingBuffer, to check if the type is correct
+    
+    */
 
     #ifdef ASSERT_ENABLED
 
@@ -73,13 +82,22 @@ static void initEventRingBuffer(const size_t size_buffer){
 
 }
 
-static void freeEventRingBuffer(void){
+static void freeEventRingBuffer(void){//DONTTOUCH
+
+    /*
+    To match the init wrapper of the event buffer
+    */
     
     if(event_ring_buffer != NULL) freeRingBuffer((struct ring_buffer *)event_ring_buffer);
 
 }
 
-static void addNodeToList(node * n){
+static void addNodeToList(node * n){//DONTTOUCH
+
+    /*
+    works as a FIFO linked list
+    */
+
 
     #ifdef ASSERT_ENABLED
 
@@ -106,7 +124,7 @@ static void addNodeToList(node * n){
     curr->next = (node *)n;
 }
 
-static void popNodeFromList(void){
+static void popNodeFromList(void){//DONTTOUCH
 
     #ifdef ASSERT_ENABLED
 
@@ -123,8 +141,12 @@ static void popNodeFromList(void){
     freeNode(curr);
 }
 
-static size_t _getEvent(double *  data){
+static size_t _getEvent(double * data){
     
+    /*
+    This is the actual get event function, only accessible via the mutexed function wrapper
+    */
+
     #ifdef ASSERT_ENABLED
 
         assert(head != NULL);
@@ -141,7 +163,7 @@ static size_t _getEvent(double *  data){
 
     const size_t size_data = numElementsBetweenIndexes(event_ring_buffer->size, start, stop);     
 
-    
+    // the head mutex is locked for the whole function, here, only the ERB mutex
     MUTEX_LOCK(&event_ring_buffer_mutex);
         
         extractBufferFromRingBuffer((struct ring_buffer *)event_ring_buffer, data, size_data, start, stop);
@@ -155,6 +177,10 @@ static size_t _getEvent(double *  data){
 
 static void _addEvent(double *  data, const size_t size_data){
 
+    /*
+    this is the actual addEvent function, only accessible via the mutexed function wrapper
+    */
+
     #ifdef ASSERT_ENABLED
 
         assert(data != NULL);
@@ -165,6 +191,7 @@ static void _addEvent(double *  data, const size_t size_data){
 
     #endif
     
+    // the head mutex is locked for the whole funciton, here, only the ERB mutex
     MUTEX_LOCK(&event_ring_buffer_mutex);
 
         const size_t start = event_ring_buffer->write;
@@ -173,18 +200,16 @@ static void _addEvent(double *  data, const size_t size_data){
 
         const int test_stop = event_ring_buffer->write - 1;
         
-        const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size - 1;
-
     MUTEX_UNLOCK(&event_ring_buffer_mutex);
 
-    //printf("size_data = %d, start = %d, stop = %d\n", size_data, start, stop);
+    const size_t stop = test_stop >= 0 ? test_stop : event_ring_buffer->size - 1;
 
     node * n = initNode(start, stop);
 
     addNodeToList(n);
 }
 
-void initEventDatastructure(const size_t size_buffer){
+void initEventDatastructure(const size_t size_buffer){//DONTTOUCH
 
     #ifdef ASSERT_ENABLED
 
@@ -197,15 +222,22 @@ void initEventDatastructure(const size_t size_buffer){
     initList();
 }
 
-void freeEventDatastructure(void){
+void freeEventDatastructure(void){//DONTTOUCH
 
     freeEventRingBuffer();
 
     freeList();
 }
 
-size_t getEvent(double *  data){
+size_t getEvent(double *  data){//DONTTOUCH
     
+    /*
+    this function is the outward facing wrapper, 
+    you cannot access ERB without it
+
+    this is intentional as to not cause race conditions
+    */
+
     MUTEX_LOCK(&head_mutex);
 
         size_t ret = _getEvent(data);
@@ -215,8 +247,15 @@ size_t getEvent(double *  data){
     return ret;
 }
 
-void addEvent(double * data, const size_t size_data){
+void addEvent(double * data, const size_t size_data){//DONTTOUCH
     
+    /*
+    this function is the outward facing wrapper, 
+    you cannot access ERB without it
+
+    this is intentional as to not cause race conditions
+    */
+
     MUTEX_LOCK(&head_mutex);
 
         _addEvent(data, size_data);
@@ -225,7 +264,7 @@ void addEvent(double * data, const size_t size_data){
     
 }
 
-int createMutexes(void){
+int createMutexes(void){//DONTTOUCH
     
     if(pthread_mutex_init(&head_mutex, NULL) == -1) return -1;
 
@@ -236,7 +275,7 @@ int createMutexes(void){
     return 0;
 }
 
-int destroyMutexes(void){
+int destroyMutexes(void){//DONTTOUCH
 
     if(pthread_mutex_destroy(&head_mutex) == -1) return -1;
 

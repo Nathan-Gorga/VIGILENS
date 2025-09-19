@@ -134,8 +134,8 @@ static void dataIntake(void){
                 const int idx = (j * NUM_CHANNELS) + i;
 
                 channel_windows[i][j] = window_buffer[idx]; 
-
-            }
+                // printf("%.2f ", window_buffer[idx]);
+            } //printf("\n");
 
             event_count[i] = adaptiveThreshold(
                 channel_windows[i],
@@ -148,7 +148,7 @@ static void dataIntake(void){
             ); 
         
             if(event_count[i] <= 0) continue;
-
+            // ledFlash();
 
             int to_send_count = 0;
             int to_send[40];
@@ -156,23 +156,28 @@ static void dataIntake(void){
             //get all the blinks in one channel                
             for(size_t j = 0; j < event_count[i] && !missing_data[i]; j++){
             
-                printf(BLUE"sending CURRENT blinks\n"RESET);
+                const int try = (s + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;//(internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
+
+                // printf("blink  : %d, %f\n", blink_indices[j], channel_windows[i][blink_indices[j]]);
+                // printf("ring   : %d, %f\n", try, internal_ring_buffer->memory[try]);
 
                 //get indexes from blink_indices (absolute to ring buffer) and later buffer
-                to_send[to_send_count++] = (internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
-                                           
+                to_send[to_send_count++] = try;
+
+                
+
             }
             
             //send all the blinks in later_blinks
             while(later_counts > 0){
-                printf(BLUE"sending later blinks\n"RESET);
+                // printf(BLUE"sending later blinks\n"RESET);
 
                 to_send[to_send_count++] = later_blinks[--later_counts];
 
             }
 
-            const int B = 250;// TODO : make this a macro constant so you can declare event_buffer on the stack
-            const int size_buf = B * 2;
+            const int B = 300;// TODO : make this a macro constant so you can declare event_buffer on the stack
+            const int size_buf = B * 2 + 1;
 
             double * event_buffer = malloc(size_buf * sizeof(double));
 
@@ -180,15 +185,21 @@ static void dataIntake(void){
 
                 const int event_index = to_send[j];
 
+                
                 const int start_index = (internal_ring_buffer->size + event_index - B) % internal_ring_buffer->size;
-                const int end_index = (internal_ring_buffer->size + event_index + B) % internal_ring_buffer->size;
+                const int end_index = (internal_ring_buffer->size + event_index + B + 1) % internal_ring_buffer->size;
+                // printf("[%d; %d; %d]\n", start_index, event_index, end_index);
+                // printf("[%f; %f; %f]\n", internal_ring_buffer->memory[start_index],internal_ring_buffer->memory[event_index], internal_ring_buffer->memory[end_index]);
 
                 // extract the whole data
                 extractBufferFromRingBuffer(internal_ring_buffer, event_buffer, size_buf, start_index, end_index);
 
+                // printf(BLUE"sending event\n"RESET);
+
                 for(int k = 0; k < size_buf/2; k++){
                     event_buffer[k] = event_buffer[(k * NUM_CHANNELS) + i];
-                }
+                    // printf("%.1f ", event_buffer[k]);
+                }//printf("\n");
 
                 //send it to processing thread
                 addEvent(event_buffer, size_buf / 2);
@@ -201,7 +212,9 @@ static void dataIntake(void){
             // add channel index (absolute to ring buffer to later buffer
             for(size_t j = 0; j < event_count[i]; j++){
 
-                later_blinks[later_counts++] = (internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
+                const int try = (s + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;//(internal_ring_buffer->write + (blink_indices[j] * NUM_CHANNELS) + i) % internal_ring_buffer->size;
+
+                later_blinks[later_counts++] = try;
 
             }
 
