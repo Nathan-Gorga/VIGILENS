@@ -259,14 +259,14 @@ int adaptiveThreshold(
 			right_boundary = j;
 		}
 
-		if(right_boundary != -1){// && right_boundary < signal_length - RIGHT_DOUBLE_BLINK_PREVENTION ){//&& left_boundary != -1 && left_boundary < signal_length - LEFT_DOUBLE_BLINK_PREVENTION){
+		if(right_boundary != -1 && right_boundary < signal_length - 70 ){
 			blink_indices[count++] = temp_blink[i];
 			ledFlash();	
 			db_blink = true;
 
 		} 
 
-		else if(left_boundary != -1){//} && left_boundary < signal_length - LEFT_DOUBLE_BLINK_PREVENTION){
+		else if(left_boundary != -1 && left_boundary < signal_length - 90){
 			if(!db_blink) ledFlash();
 			*missing_data = true;
 			blink_indices[count++] = temp_blink[i];

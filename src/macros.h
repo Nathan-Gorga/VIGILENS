@@ -132,7 +132,7 @@
 
     #define EVENT_RING_BUFFER_SIZE (size_t)(TIME_IN_EVENT_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
-    #define MAX_EVENT_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * 1.0/*seconds*/)
+    #define MAX_EVENT_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * 1.2/*seconds*/)
 
 /// RINGBUFFER
 
@@ -149,7 +149,7 @@
     #define TIME_IN_INTERNAL_RING_BUFFER 4.0f//seconds
     #define INTERNAL_RING_BUFFER_SIZE (int)(TIME_IN_INTERNAL_RING_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
 
-    #define TIME_IN_WINDOW 1.2//seconds
+    #define TIME_IN_WINDOW 1.0//seconds
     #define WINDOW_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * TIME_IN_WINDOW)
 
 /// PROCESSING
@@ -161,8 +161,7 @@
     #define REFRACTORY_PERIOD 0.3f //seconds
     #define REFRACTORY_SAMPLES (size_t)(SAMPLING_RATE * REFRACTORY_PERIOD)
 
-    // best is 9.0f
-    #define THRESH_MULT 7.0f
+    #define THRESH_MULT 6.0f
 
 /// ALGOS/RANDOM_FOREST
 
