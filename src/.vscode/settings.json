@@ -6,6 +6,11 @@
         "threshold_algos.h": "c",
         "uart.h": "c",
         "dataintake.h": "c",
-        "event_feature.h": "c"
+        "event_feature.h": "c",
+        "globaldefinition.h": "c",
+        "sigset_t.h": "c",
+        "fcntl.h": "c",
+        "termios.h": "c",
+        "filter.h": "c"
     }
 }

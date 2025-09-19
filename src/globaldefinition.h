@@ -15,51 +15,9 @@
 #include <errno.h>
 #include <math.h>
 #include <limits.h>
-
-// color codes for text
-#define BLACK "\x1B[0;30m"
-#define RED "\x1B[0;31m"
-#define GREEN "\x1B[0;32m"
-#define YELLOW "\x1B[0;33m"
-#define BLUE "\x1B[0;34m"
-#define PURPLE "\x1B[0;35m"
-#define CYAN "\x1B[0;36m"
-#define WHITE "\x1B[0;37m"
-#define RESET "\x1B[0m"
-
-// macro flags, you can toggle them
-#define ASSERT_ENABLED
-// #define DEBUG
-// #define DEBUG_MAIN
-// #define DEBUG_INTAKE 
-// #define DEBUG_ALGO 
-
-// use this on a low level OS when hunting for SEGFAULTS
-#ifdef DEBUG
-    #define PRINTF_DEBUG do{printf(PURPLE"DEBUG : %s - %s:%d\n"RESET, __FILE__, __func__,__LINE__); fflush(stdout);}while(0);
-#else
-    #define PRINTF_DEBUG
-#endif
-
-// makes life a bit easier
-#define MUTEX_LOCK(mutex) if(pthread_mutex_lock(mutex) != 0){ \
-                                (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);\
-                                pthread_exit(NULL);\
-                           }
-
-#define MUTEX_UNLOCK(mutex) if(pthread_mutex_unlock(mutex) != 0){ \
-                                (void)printf("ERROR in %s:%d\n : You did something you shouldn't have...\n", __FILE__, __LINE__);\
-                                pthread_exit(NULL);\
-                            }
-
-// always useful
-#define min(a,b) ((a) < (b) ? (a) : (b))
-#define max(a,b) ((a) > (b) ? (a) : (b))
+#include "macros.h"
 
 
-// this is depending on the OpenBCI, usually never changes
-#define SAMPLING_RATE 250
-#define NUM_CHANNELS 2
 
 #endif
 

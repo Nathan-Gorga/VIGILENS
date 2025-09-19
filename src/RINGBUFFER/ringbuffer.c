@@ -24,7 +24,7 @@ struct ring_buffer * initRingBuffer(const size_t size, const enum RING_BUFFER_TY
     return buffer;
 }
 
-void freeRingBuffer(struct ring_buffer * buffer){
+void freeRingBuffer(struct ring_buffer * buffer){//DONTTOUCH
 
     if(buffer == NULL) return;
 
@@ -155,8 +155,14 @@ static void writeIndexIncrement(struct ring_buffer * buffer){
     } else _writeIndexIncrement(buffer);
 }
 
-//FIXME : make this function less ambiguous (start and stop are included or not???)
 size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, const size_t stop){
+
+    //BOTH INDEXES ARE INCLUDED :
+
+    // start = 0, stop = 1 : the elements are arr[0] and arr[1] so the answer is 2
+    // start = 10, stop = 20 : the elements are arr[10], arr[11], arr[12] ... arr[20] so the answer is 11
+    // buffer_size = 100, start = 1, stop = 0 : the elements in between these indexes are the whole buffer so the answer is 100
+
 
     #ifdef ASSERT_ENABLED
    
@@ -168,19 +174,18 @@ size_t numElementsBetweenIndexes(const size_t buffer_size, const size_t start, c
 
     #endif
 
-    if(stop > start) return stop - start;
+    if(stop > start) return stop - start + 1;
 
-    return buffer_size - start + stop;
+    return buffer_size - start + stop + 1;
 }
 
 
-// FIXME : this size_data == size business is a pain, find a better way
-void extractBufferFromRingBuffer(struct ring_buffer *buffer, double *restrict data, const size_t size_data, const size_t start, const size_t stop) {
+// FIXME : check all the uses of  this function to make sure everything works properly
+void extractBufferFromRingBuffer(struct ring_buffer *buffer, double *restrict data, const size_t start, const size_t stop) {
 
     #ifdef ASSERT_ENABLED
         assert(buffer != NULL);
         assert(data != NULL);
-        assert(size_data <= buffer->size);
         assert(start < buffer->size);
         assert(stop < buffer->size);
     #endif
@@ -188,11 +193,6 @@ void extractBufferFromRingBuffer(struct ring_buffer *buffer, double *restrict da
         const bool overflow = start > stop;
 
         size_t size = numElementsBetweenIndexes(buffer->size, start, stop);
-
-
-    #ifdef ASSERT_ENABLED
-        assert(size == size_data);
-    #endif
 
     if (!overflow) {
         // contiguous copy
@@ -268,17 +268,17 @@ void addBufferToRingBuffer(struct ring_buffer * buffer, const double * restrict 
     }
 }
 
-//TODO : find better name
-size_t minusTail(const int tail, const int num_data_points){
+// TODO : change the use of this function
 
-    return !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;
-}
+// size_t minusTail(const int tail, const int num_data_points){
 
-//TODO : find better name
-size_t addTail(const int tail, const int num_data_points){
+//     return !(tail - num_data_points < 0) ? tail - num_data_points : (tail - num_data_points) + INTERNAL_RING_BUFFER_SIZE;
+// }
 
-    return !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER_SIZE;
+// size_t addTail(const int tail, const int num_data_points){
 
-}
+//     return !(tail + num_data_points > INTERNAL_RING_BUFFER_SIZE) ? tail + num_data_points : (num_data_points + tail) - INTERNAL_RING_BUFFER_SIZE;
+
+// }
 
 

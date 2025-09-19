@@ -9,9 +9,6 @@
 #include "event_feature.h"
 
 
-#define MAX_ROWS 1000
-#define MAX_COLS 10
-#define MAX_FIELD_LEN 64
 
 typedef struct {
     char ***matrix;

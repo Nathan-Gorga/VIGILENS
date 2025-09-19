@@ -6,15 +6,6 @@
 #include "csv_stuff.h"
 #include "event_feature.h"
 
-#define MIN_SAMPLES 3
-#define MAX_DEPTH 12
-
-
-enum NODE_TYPE{
-    ROOT,
-    BRANCH,
-    LEAF
-};
 
 typedef struct {
     double value;

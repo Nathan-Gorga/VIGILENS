@@ -21,22 +21,6 @@ typedef struct {
 }event_features;
 
 
-enum EVENT_TYPE{
-    // OTHER = -1,
-    NOT_BLINK,
-    BLINK,
-    // SLOW_BLINK,
-    // DOUBLE_BLINK,
-    // HORIZONTAL_SACCADE
-    // VERTICAL_SACCADE
-    // MICRO_SLEEP
-    // EYES_CLOSED
-    // CLENCHED_JAW
-    // RAISE_EYEBROWS
-    // FURROW_EYEBROWS
-    NUM_EVENT_TYPE
-};
-
 
 event_features featureExtraction(double event[], const size_t size);
 

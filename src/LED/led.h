@@ -3,7 +3,9 @@
 
 #include "../globaldefinition.h"
 #include <fcntl.h>
-#define GPIO_PIN "18"
+#include <gpiod.h>
+#include <stdio.h>
+#include <unistd.h>
 
 int ledFlash(void);
 

@@ -1,15 +1,8 @@
-#include <gpiod.h>
-#include <stdio.h>
-#include <unistd.h>
-
-#define CHIPNAME "gpiochip0"
-#define LINE_NUM 18  // GPIO pin number
-#define BLINK_COUNT 10
-#define BLINK_DELAY_US 500000  // 0.5 seconds
+#include "led.h"
 
 int ledFlash(void){
 
-    const int time_interval = 100000;
+    const int time_interval = LED_DELAY_US;
 
     struct gpiod_chip *chip;
     struct gpiod_line *line;
@@ -23,7 +16,7 @@ int ledFlash(void){
     }
 
     // Get the line (GPIO)
-    line = gpiod_chip_get_line(chip, LINE_NUM);
+    line = gpiod_chip_get_line(chip, LED_PIN);
     if (!line) {
         perror("Get line failed");
         gpiod_chip_close(chip);

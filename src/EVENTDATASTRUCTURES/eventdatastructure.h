@@ -4,13 +4,6 @@
 #include "../globaldefinition.h"
 #include "../RINGBUFFER/ringbuffer.h"
 
-#define TIME_IN_BUFFER 10//seconds
-
-#define EVENT_RING_BUFFER_SIZE (size_t)(TIME_IN_BUFFER * SAMPLING_RATE * NUM_CHANNELS)
-
-// TODO : change all event durations and stuff to be on this constant
-#define MAX_EVENT_SIZE (size_t)(NUM_CHANNELS * SAMPLING_RATE * 1/*seconds*/)
-
 // node in the linked list that indexes events in the ERB
 typedef struct node {
     struct node * next; // points to the next node in the list, NULL if it's the last

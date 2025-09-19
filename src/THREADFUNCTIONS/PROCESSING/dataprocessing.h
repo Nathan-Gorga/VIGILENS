@@ -10,7 +10,6 @@
 #include "../../ALGOS/RANDOM_FOREST/predict_forest.h"
 #include "../../ALGOS/RANDOM_FOREST/event_feature.h"
 
-#define JSON_FILE_NAME "./ALGOS/RANDOM_FOREST/GOOD_FOREST_MODELS/custom_features_3.json"
 
 
 void * launchDataProcessing(void * _);
