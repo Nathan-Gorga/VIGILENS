@@ -142,6 +142,8 @@ static void dataIntake(void){
         
             if(event_count[i] <= 0) continue;
 
+            ledFlash();
+
             int to_send_count = 0;
             int to_send[40];
 

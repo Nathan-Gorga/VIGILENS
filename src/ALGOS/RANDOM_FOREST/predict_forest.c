@@ -56,7 +56,7 @@ enum EVENT_TYPE predictForest(random_forest * f, const double * sample){
         total += vote[i];
     }
 
-    printf("(%.1f%) ", 100 * ((float)vote[ret]/(float)total));
+    printf("(%.1f%%) ", 100 * ((float)vote[ret]/(float)total));
     return ret;
 
 }

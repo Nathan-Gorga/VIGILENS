@@ -141,7 +141,7 @@ static void derivate(double signal[], const int size, double * output){
 	}
 }
 
-
+/*
 static double robust_threshold(double * signal, const int start, const int end, const double th_mult){
 
 	const int segment_length = end - start;
@@ -194,7 +194,7 @@ static double robust_threshold(double * signal, const int start, const int end, 
 	return med + th_mult * mad;
 
 }
-
+*/
 
 int adaptiveThreshold(
 	double * eeg,
@@ -203,6 +203,8 @@ int adaptiveThreshold(
 	const double th_mult,
 	bool * missing_data
 ) {
+
+	static int overflow = 0;// this is used as a security to prevent an event overflowing in the next window
 
 	*missing_data = false;
 
@@ -219,7 +221,9 @@ int adaptiveThreshold(
 	int temp_blink[10];
 	int temp_blink_size = 0;
 
-	for(int i = 0; i < signal_length; i++){
+	int i;
+
+	for(i = overflow; i < signal_length; i++){
 
 		//detect all above the threshold
 		if(eeg[i] < threshold) continue;
@@ -233,6 +237,10 @@ int adaptiveThreshold(
 		i += refractory_samples;
 	}
 
+	overflow = max(i - signal_length, 0);
+
+	// printf("signal length : %d, overflow : %d\n", signal_length, overflow);	
+
 	if(temp_blink_size == 0) return 0;
 
 	//derivate signal
@@ -240,9 +248,9 @@ int adaptiveThreshold(
 
 	derivate(eeg, signal_length, derivated_signal);
 
-	static bool db_blink = false;
+	// static bool db_blink = false;
 	
-	for(int i = 0; i < temp_blink_size; i++){
+	for(i = 0; i < temp_blink_size; i++){
 
 		int left_boundary = -1;
 		int right_boundary = -1;
@@ -259,18 +267,18 @@ int adaptiveThreshold(
 			right_boundary = j;
 		}
 
-		if(right_boundary != -1 && right_boundary < signal_length - 70 ){
+		if(right_boundary != -1){// && right_boundary < signal_length - 70 ){
 			blink_indices[count++] = temp_blink[i];
-			ledFlash();	
-			db_blink = true;
+			// ledFlash();	
+			// db_blink = true;
 
 		} 
 
-		else if(left_boundary != -1 && left_boundary < signal_length - 90){
-			if(!db_blink) ledFlash();
+		else if(left_boundary != -1){// && left_boundary < signal_length - 90){
+			// if(!db_blink) ledFlash();
 			*missing_data = true;
 			blink_indices[count++] = temp_blink[i];
-			db_blink = false;
+			// db_blink = false;
 		}
 
 

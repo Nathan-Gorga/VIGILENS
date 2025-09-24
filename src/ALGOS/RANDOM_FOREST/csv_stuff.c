@@ -316,7 +316,7 @@ int save_forest_json(const char *filename, struct random_forest *forest) {
 
     fprintf(f, "{");
 
-    write_forest_struct_json(f, forest);
+    write_forest_struct_json(f, (random_forest*)forest);
     
     fprintf(f, "[");
     for(size_t i = 0; i < ((random_forest*)forest)->size; i++){
