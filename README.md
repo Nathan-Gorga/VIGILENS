@@ -1,6 +1,6 @@
-<h1>PROJECT VIGILENCE</h1>
+<h1>PROJECT VIGILENS</h1>
 
-Project Vigilence is a research project conducted at ISAE Supaero Neuroergonomics lab. It's goal is to develop and algorithm to detect mental and physical fatigue in jet fighter pilots and scuba divers using EOG data (Electro Oculo Graphy) : https://en.wikipedia.org/wiki/Electrooculography
+Project VIGILENS is a research project conducted at ISAE Supaero Neuroergonomics lab. It's goal is to develop and algorithm to detect mental and physical fatigue in jet fighter pilots and scuba divers using EOG data (Electro Oculo Graphy) : https://en.wikipedia.org/wiki/Electrooculography
 
 This repository contains the code to run the device that will gather real-time data during experiments and apply different algorithms.
 
